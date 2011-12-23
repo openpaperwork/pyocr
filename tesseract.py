@@ -236,20 +236,46 @@ def main():
         exit(1)
 
     filename = sys.argv[1]
-    if len(sys.argv) > 3:
+    if len(sys.argv) >= 2:
         lang = sys.argv[2]
     else:
         lang = None
+    print "File: [%s] ; Language: [%s]" % (filename, lang)
 
     image = Image.open(filename)
 
-    print "=== Tesseract result ==="
+    print "=== Testing Tesseract OCR ==="
     print image_to_string(image, lang=lang)
     sys.stdout.flush()
 
-    print "=== Tesseract boxes ==="
-    for box in image_to_string(image, lang=lang, boxes=True):
+    print "=== Testing Tesseract boxes ==="
+    boxes = image_to_string(image, lang=lang, boxes=True)
+    for box in boxes:
         print str(box)
+
+    print "=== Testing box writing ==="
+    with codecs.open("tmp.txt", 'w', encoding='utf-8') as file_descriptor:
+        write_box_file(file_descriptor, boxes)
+    print "Done"
+
+    print "=== Testing box reading ==="
+    new_boxes = []
+    with codecs.open("tmp.txt", 'r', encoding='utf-8') as file_descriptor:
+        new_boxes = read_box_file(file_descriptor)
+    if len(boxes) != len(new_boxes):
+        print "write_box_file() / read_box_files() failed !"
+        print ("not the same number of boxes: %d instead of %d" %
+               (len(new_boxes), len(boxes)))
+    else:
+        for i in range(0, len(boxes)):
+            if boxes[i] != new_boxes[i]:
+                print "write_box_file() / read_box_files() failed !"
+                print ("Elements %d are not identical:" % i)
+                print ("           [%s]" % (boxes[i]))
+                print ("instead of [%s]" % (new_boxes[i]))
+                break
+    print "Done"
+
 
 if __name__ == '__main__':
     main()
