@@ -4,25 +4,17 @@ Python-tesseract is an optical character recognition (OCR) tool for python.
 That is, it will recognize and "read" the text embedded in images.
 
 Python-tesseract is a wrapper for google's Tesseract-OCR
-( http://code.google.com/p/tesseract-ocr/ ).  It is also useful as a
-stand-alone invocation script to tesseract, as it can read all image types
+( http://code.google.com/p/tesseract-ocr/ ). It can read all image types
 supported by the Python Imaging Library, including jpeg, png, gif, bmp, tiff,
-and others, whereas tesseract-ocr by default only supports tiff and bmp.
-Additionally, if used as a script, Python-tesseract will print the recognized
-text in stead of writing it to a file. It also support bounding box data.
-Support for confidence estimates is planned for future releases.
-
+and others, whereas tesseract-ocr alone only supports tiff and bmp by default.
+It also support bounding box data. Support for confidence estimates is planned
+for future releases.
 
 USAGE:
-From the shell:
- $ ./tesseract.py test.png                  # prints recognized text in image
- $ ./tesseract.py -l fra test-european.jpg  # recognizes french text
-In python:
  > import Image
  > from tesseract import image_to_string
  > print image_to_string(Image.open('test.png'))
  > print image_to_string(Image.open('test-european.jpg'), lang='fra')
-
 
 INSTALLATION:
 * Python-tesseract requires python 2.5 or later.
@@ -32,13 +24,13 @@ INSTALLATION:
   You must be able to invoke the tesseract command as "tesseract". If this
   isn't the case, for example because tesseract isn't in your PATH, you will
   have to change the "TESSERACT_CMD" variable at the top of 'tesseract.py'.
-
+  Python-tesseract is tested with Tesseract >= 3.0 only.
 
 COPYRIGHT:
 Python-tesseract is released under the GPL v3.
 Copyright (c) Samuel Hoffstaetter, 2009
-http://wiki.github.com/hoffstaetter/python-tesseract
-
+Copyright (c) Jerome Flesch, 2011
+http://wiki.github.com/jflesch/python-tesseract
 '''
 
 import codecs
@@ -119,7 +111,7 @@ def tempnam():
 
 class TesseractError(Exception):
     """
-    Exception raised when tesseract fails.
+    Exception raised when Tesseract fails.
     """
     def __init__(self, status, message):
         Exception.__init__(self, message)
@@ -130,12 +122,12 @@ class TesseractError(Exception):
 
 class TesseractBox(object):
     """
-    Tesseract Box: Tesserax boxes are rectangles around each individual
+    Tesseract Box: Tesseract boxes are rectangles around each individual
     character recognized in the image.
     """
     def __init__(self, char, position, page):
         """
-        Instantiate a tesseract box
+        Instantiate a Tesseract box
 
         Arguments:
             char --- character found in this box
