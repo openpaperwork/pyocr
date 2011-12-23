@@ -275,7 +275,7 @@ def image_to_string(image, lang=None, boxes=False):
 
 def is_tesseract_available():
     """
-    Indicates if tesseract appear to be installed.
+    Indicates if tesseract appears to be installed.
 
     Returns:
         True --- if it is installed
