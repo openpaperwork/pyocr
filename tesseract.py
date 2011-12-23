@@ -43,7 +43,7 @@ import sys
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
 TESSERACT_CMD = 'tesseract'
 
-__all__ = ['image_to_string']
+__all__ = ['image_to_string', 'write_box_file', 'read_box_file', 'TesseractBox']
 
 
 def run_tesseract(input_filename, output_filename_base, lang=None,
@@ -196,6 +196,9 @@ class TesseractBox(object):
 def read_box_file(file_descriptor):
     """
     Extract of set of TesseractBox from the lines of 'file_descriptor'
+
+    Return:
+        An array of TesseractBox.
     """
     boxes = []  # note that the order of the boxes may matter to the caller
     for line in file_descriptor.readlines():
