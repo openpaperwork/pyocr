@@ -229,29 +229,26 @@ def main():
     """
     Main method: allow quick testing of the API
     """
-    if len(sys.argv) == 2:
-        filename = sys.argv[1]
-        try:
-            image = Image.open(filename)
-        except IOError:
-            sys.stderr.write('ERROR: Could not open file "%s"\n'
-                             % filename)
-            exit(1)
-        print image_to_string(image)
-    elif len(sys.argv) == 4 and sys.argv[1] == '-l':
+    if len(sys.argv) < 2 or not os.access(sys.argv[1], os.R_OK):
+        print "Usage:"
+        print "  %s <image file> [<tesseract lang>]" % (sys.argv[0])
+        exit(1)
+
+    filename = sys.argv[1]
+    if len(sys.argv) > 3:
         lang = sys.argv[2]
-        filename = sys.argv[3]
-        try:
-            image = Image.open(filename)
-        except IOError:
-            sys.stderr.write('ERROR: Could not open file "%s"\n'
-                             % filename)
-            exit(1)
-        print image_to_string(image, lang=lang)
     else:
-        sys.stderr.write(
-            'Usage: python tesseract.py [-l language] input_file\n')
-        exit(2)
+        lang = None
+
+    image = Image.open(filename)
+
+    print "=== Tesseract result ==="
+    print image_to_string(image, lang=lang)
+    sys.stdout.flush()
+
+    print "=== Tesseract boxes ==="
+    for box in image_to_string(image, lang=lang, boxes=True):
+        print str(box)
 
 if __name__ == '__main__':
     main()
