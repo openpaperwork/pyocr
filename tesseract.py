@@ -148,7 +148,12 @@ class TesseractBox(object):
         self.position = position
         self.page = page
 
-    def __str__(self):
+    def get_unicode_string(self):
+        """
+        Return the string corresponding to the box, in unicode (utf8).
+        This string can be stored in a file as-is (see write_box_file())
+        and reread using read_box_file().
+        """
         return "%s %d %d %d %d %d" % (
             self.char,
             self.position[0][0],
@@ -158,8 +163,45 @@ class TesseractBox(object):
             self.page
         )
 
+    def __str__(self):
+        return self.get_unicode_string().encode('ascii', 'replace')
 
-def read_boxes(file_descriptor):
+    def __box_cmp(self, other):
+        """
+        Comparison function.
+        """
+        if other == None:
+            return -1
+        for cmp_result in (cmp(self.page, other.page),
+                           cmp(self.char, other.char),
+                           cmp(self.position[0][1], other.position[0][1]),
+                           cmp(self.position[1][1], other.position[1][1]),
+                           cmp(self.position[0][0], other.position[0][0]),
+                           cmp(self.position[1][0], other.position[1][0])):
+            if cmp_result != 0:
+                return cmp_result
+        return 0
+
+    def __lt__(self, other):
+        return self.__box_cmp(other) < 0
+
+    def __gt__(self, other):
+        return self.__box_cmp(other) > 0
+
+    def __eq__(self, other):
+        return self.__box_cmp(other) == 0
+
+    def __le__(self, other):
+        return self.__box_cmp(other) <= 0
+
+    def __ge__(self, other):
+        return self.__box_cmp(other) >= 0
+
+    def __ne__(self, other):
+        return self.__box_cmp(other) != 0
+
+
+def read_box_file(file_descriptor):
     """
     Extract of set of TesseractBox from the lines of 'file_descriptor'
     """
@@ -173,7 +215,7 @@ def read_boxes(file_descriptor):
             continue
         position = ((int(elements[1]), int(elements[2])),
                     (int(elements[3]), int(elements[4])))
-        box = TesseractBox(unicode(elements[0]), position, int(elements[5]))
+        box = TesseractBox(elements[0], position, int(elements[5]))
         boxes.append(box)
     return boxes
 
@@ -182,9 +224,12 @@ def write_box_file(file_descriptor, boxes):
     """
     Write boxes in a box file. Output is in a the same format than tesseract's
     one.
+
+    Warning:
+        The file_descriptor must support UTF-8 ! (see module 'codecs')
     """
     for box in boxes:
-        file_descriptor.write(str(box) + "\n")
+        file_descriptor.write(box.get_unicode_string() + "\n")
 
 
 def image_to_string(image, lang=None, boxes=False):
@@ -197,6 +242,8 @@ def image_to_string(image, lang=None, boxes=False):
         if boxes == False (default): the text as read from the image
         if boxes == True: an array of TesseractBox
 
+    Warning:
+        the returned string is encoded in UTF-8
     '''
 
     input_file_name = '%s.bmp' % tempnam()
@@ -213,12 +260,12 @@ def image_to_string(image, lang=None, boxes=False):
                                          boxes=boxes)
         if status:
             raise TesseractError(status, errors)
-        file_desc = open(output_file_name)
+        file_desc = codecs.open(output_file_name, 'r', encoding='utf-8')
         try:
             if not boxes:
                 return file_desc.read().strip()
             else:
-                return read_boxes(file_desc)
+                return read_box_file(file_desc)
         finally:
             file_desc.close()
     finally:
