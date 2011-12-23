@@ -206,6 +206,14 @@ class TesseractBox(object):
     def __ne__(self, other):
         return self.__box_cmp(other) != 0
 
+    def __hash__(self):
+        position_hash = 0
+        position_hash += ((self.position[0][0] & 0xFF) << 0)
+        position_hash += ((self.position[0][1] & 0xFF) << 8)
+        position_hash += ((self.position[1][0] & 0xFF) << 16)
+        position_hash += ((self.position[1][1] & 0xFF) << 24)
+        return (position_hash ^ hash(self.char) ^ hash(self.page))
+
 
 def read_box_file(file_descriptor):
     """
