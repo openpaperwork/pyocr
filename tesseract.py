@@ -43,7 +43,13 @@ import sys
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
 TESSERACT_CMD = 'tesseract'
 
-__all__ = ['image_to_string', 'write_box_file', 'read_box_file', 'TesseractBox']
+__all__ = [
+    'image_to_string',
+    'is_tesseract_available',
+    'read_box_file',
+    'TesseractBox',
+    'write_box_file',
+]
 
 
 def run_tesseract(input_filename, output_filename_base, lang=None,
@@ -267,11 +273,35 @@ def image_to_string(image, lang=None, boxes=False):
         cleanup(input_file_name)
         cleanup(output_file_name)
 
+def is_tesseract_available():
+    """
+    Indicates if tesseract appear to be installed.
+
+    Returns:
+        True --- if it is installed
+        False --- if it isn't
+    """
+    for dir in os.environ["PATH"].split(os.pathsep):
+        path = os.path.join(dir, TESSERACT_CMD)
+        if os.path.exists(path) and os.access(path, os.X_OK):
+            return True
+    return False
 
 def main():
     """
     Main method: allow quick testing of the API
     """
+
+    print "Checking Tesseract availability ..."
+    tesseract_presence = is_tesseract_available()
+    if tesseract_presence:
+        print "OK"
+    else:
+        print "Tesseract not found in the PATH"
+        print "Command: %s" % (TESSERACT_CMD)
+        print "PATH: %s" % (os.getenv("PATH"))
+        exit(1)
+
     if len(sys.argv) < 2 or not os.access(sys.argv[1], os.R_OK):
         print "Usage:"
         print "  %s <image file> [<tesseract lang>]" % (sys.argv[0])
