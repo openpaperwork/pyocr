@@ -41,14 +41,15 @@ http://wiki.github.com/hoffstaetter/python-tesseract
 
 '''
 
-# CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
-TESSERACT_CMD = 'tesseract'
-
+import codecs
 import Image
+import os
 import StringIO
 import subprocess
 import sys
-import os
+
+# CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
+TESSERACT_CMD = 'tesseract'
 
 __all__ = ['image_to_string']
 
