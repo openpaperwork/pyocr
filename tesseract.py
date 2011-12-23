@@ -43,7 +43,15 @@ import sys
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
 TESSERACT_CMD = 'tesseract'
 
+TESSDATA_POSSIBLE_PATHS = [
+    "/usr/local/share/tessdata",
+    "/usr/share/tessdata",
+]
+
+TESSDATA_EXTENSION = ".traineddata"
+
 __all__ = [
+    'get_available_languages',
     'image_to_string',
     'is_tesseract_available',
     'read_box_file',
@@ -273,6 +281,7 @@ def image_to_string(image, lang=None, boxes=False):
         cleanup(input_file_name)
         cleanup(output_file_name)
 
+
 def is_tesseract_available():
     """
     Indicates if tesseract appears to be installed.
@@ -281,11 +290,32 @@ def is_tesseract_available():
         True --- if it is installed
         False --- if it isn't
     """
-    for dir in os.environ["PATH"].split(os.pathsep):
-        path = os.path.join(dir, TESSERACT_CMD)
+    for dirpath in os.environ["PATH"].split(os.pathsep):
+        path = os.path.join(dirpath, TESSERACT_CMD)
         if os.path.exists(path) and os.access(path, os.X_OK):
             return True
     return False
+
+
+def get_available_languages():
+    """
+    Returns the list of languages that Tesseract knows how to handle
+
+    Returns:
+        An array of strings. Note that most languages name conform to ISO 639
+        terminology, but not all. Most of the time, truncating the language
+        name name returned by this function to 3 letters should do the trick.
+    """
+    langs = []
+    for dirpath in TESSDATA_POSSIBLE_PATHS:
+        if not os.access(dirpath, os.R_OK):
+            continue
+        for filename in os.listdir(dirpath):
+            if filename.lower().endswith(TESSDATA_EXTENSION):
+                lang = filename[:(-1 * len(TESSDATA_EXTENSION))]
+                langs.append(lang)
+    return langs
+
 
 def main():
     """
@@ -301,6 +331,8 @@ def main():
         print "Command: %s" % (TESSERACT_CMD)
         print "PATH: %s" % (os.getenv("PATH"))
         exit(1)
+
+    print "Available languages: %s" % (get_available_languages())
 
     if len(sys.argv) < 2 or not os.access(sys.argv[1], os.R_OK):
         print "Usage:"
