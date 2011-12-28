@@ -6,7 +6,7 @@ setup(name="python-tesseract",
       version="0.1",
       description="A Python wrapper for Google Tesseract",
       packages=[''],
-      package_dir={ '': '' },
+      package_dir={ '': 'src' },
       data_files=[],
       scripts=[],
      )
