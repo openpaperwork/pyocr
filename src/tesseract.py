@@ -62,13 +62,14 @@ def run_tesseract(input_filename, output_filename_base, lang=None,
         command += ['batch.nochop', 'makebox']
 
     proc = subprocess.Popen(command,
-            stderr=subprocess.PIPE)
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT)
     # Beware that in some cases, tesseract may print more on stderr than
     # allowed by the buffer of subprocess.Popen.stderr. So we must read stderr
     # asap or Tesseract will remain stuck when trying to write again on stderr.
     # In the end, we just have to make sure that proc.stderr.read() is called
     # before proc.wait()
-    errors = proc.stderr.read()
+    errors = proc.stdout.read()
     return (proc.wait(), errors)
 
 
