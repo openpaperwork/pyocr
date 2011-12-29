@@ -40,6 +40,7 @@ __all__ = [
     'read_box_file',
     'TesseractBox',
     'write_box_file',
+    'get_tesseract_version',
 ]
 
 
@@ -309,6 +310,47 @@ def get_available_languages():
     return langs
 
 
+def get_version():
+    """
+    Return Tesseract version.
+
+    Returns:
+        A tuple corresponding to the version (for instance, (3, 0, 1) for 3.01)
+
+    Exception:
+        TesseractError --- Unable to run tesseract or to parse the version
+    """
+    command = [TESSERACT_CMD, "-v"]
+
+    proc = subprocess.Popen(command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT)
+    ver_string = proc.stdout.read()
+    ret = proc.wait()
+    if not ret in (0, 1):
+        raise TesseractError(ret, ver_string)
+
+    try:
+        major = int(ver_string.split(" ")[1].split(".")[0])
+        minor = int(ver_string.split(" ")[1].split(".")[1])
+    except IndexError:
+        raise TesseractError(ret,
+                ("Unable to parse Tesseract version (spliting failed): [%s]"
+                 % (ver_string)))
+    except ValueError:
+        raise TesseractError(ret,
+                ("Unable to parse Tesseract version (not a number): [%s]"
+                 % (ver_string)))
+
+    # minor must also be splited
+    update = (minor % 10)
+    minor /= 10
+
+    return (major, minor, update)
+
+
+
+
 def main():
     """
     Main method: allow quick testing of the API
@@ -324,6 +366,7 @@ def main():
         print "PATH: %s" % (os.getenv("PATH"))
         exit(1)
 
+    print "Tesseract version: %s" % str(get_tesseract_version())
     print "Available languages: %s" % (get_available_languages())
 
     if len(sys.argv) < 2 or not os.access(sys.argv[1], os.R_OK):
