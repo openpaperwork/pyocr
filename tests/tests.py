@@ -113,7 +113,7 @@ class TestBox(unittest.TestCase):
     def test_write_read(self):
         original_boxes = tesseract.image_to_string(Image.open("tests/test.png"),
                                                    boxes=True)
-        self.assertGreater(len(original_boxes), 0)
+        self.assertTrue(len(original_boxes) > 0)
 
         (file_descriptor, tmp_path) = tempfile.mkstemp()
         try:
