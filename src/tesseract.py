@@ -60,17 +60,19 @@ class TextBuilder(object):
     def __init__(self):
         pass
 
-    def read_file(self, file_descriptor):
+    @staticmethod
+    def read_file(file_descriptor):
         """
         Read a file and extract the content as a string
         """
         return file_descriptor.read().strip()
 
-    def write_file(self, file_descriptor, text):
+    @staticmethod
+    def write_file(file_descriptor, text):
         """
         Write a string in a file
         """
-        file_descriptor.write(data)
+        file_descriptor.write(text)
 
 
 class Box(object):
@@ -166,7 +168,8 @@ class BoxBuilder(object):
     def __init__(self):
         pass
 
-    def read_file(self, file_descriptor):
+    @staticmethod
+    def read_file(file_descriptor):
         """
         Extract of set of Box from the lines of 'file_descriptor'
 
@@ -187,7 +190,8 @@ class BoxBuilder(object):
             boxes.append(box)
         return boxes
 
-    def write_file(self, file_descriptor, boxes):
+    @staticmethod
+    def write_file(file_descriptor, boxes):
         """
         Write boxes in a box file. Output is in a the same format than
         tesseract's one.
