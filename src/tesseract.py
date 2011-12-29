@@ -189,8 +189,8 @@ class BoxBuilder(object):
 
     def write_file(self, file_descriptor, boxes):
         """
-        Write boxes in a box file. Output is in a the same format than tesseract's
-        one.
+        Write boxes in a box file. Output is in a the same format than
+        tesseract's one.
 
         Warning:
             The file_descriptor must support UTF-8 ! (see module 'codecs')
@@ -199,8 +199,8 @@ class BoxBuilder(object):
             file_descriptor.write(box.get_unicode_string() + "\n")
 
 
-
-def run_tesseract(input_filename, output_filename_base, lang=None, configs=None):
+def run_tesseract(input_filename, output_filename_base, lang=None,
+                  configs=None):
     '''
     Runs Tesseract:
         `TESSERACT_CMD` \
@@ -296,7 +296,8 @@ def image_to_string(image, lang=None, builder=None):
 
     input_file_name = '%s.bmp' % tempnam()
     output_file_name_base = tempnam()
-    output_file_name = '%s.%s' % (output_file_name_base, builder.file_extension)
+    output_file_name = ('%s.%s' % (output_file_name_base,
+                                   builder.file_extension))
 
     try:
         image.save(input_file_name)
