@@ -81,7 +81,7 @@ class TestBox(unittest.TestCase):
     These tests make sure that Tesseract box handling works fine.
     """
     def setUp(self):
-        pass
+        self.builder = tesseract.BoxBuilder()
 
     def __test_txt(self, image_file, expected_box_file, lang='eng'):
         image_file = "tests/" + image_file
@@ -89,11 +89,11 @@ class TestBox(unittest.TestCase):
 
         with codecs.open(expected_box_file, 'r', encoding='utf-8') \
                 as file_descriptor:
-            expected_boxes = tesseract.read_box_file(file_descriptor)
+            expected_boxes = self.builder.read_file(file_descriptor)
         expected_boxes.sort()
 
         boxes = tesseract.image_to_string(Image.open(image_file), lang=lang,
-                                          boxes=True)
+                                          builder=self.builder)
         boxes.sort()
 
         self.assertEqual(len(boxes), len(expected_boxes))
@@ -112,7 +112,7 @@ class TestBox(unittest.TestCase):
 
     def test_write_read(self):
         original_boxes = tesseract.image_to_string(Image.open("tests/test.png"),
-                                                   boxes=True)
+                                                   builder=self.builder)
         self.assertTrue(len(original_boxes) > 0)
 
         (file_descriptor, tmp_path) = tempfile.mkstemp()
@@ -121,10 +121,10 @@ class TestBox(unittest.TestCase):
             os.close(file_descriptor)
 
             with codecs.open(tmp_path, 'w', encoding='utf-8') as file_descriptor:
-                tesseract.write_box_file(file_descriptor, original_boxes)
+                self.builder.write_file(file_descriptor, original_boxes)
 
             with codecs.open(tmp_path, 'r', encoding='utf-8') as file_descriptor:
-                new_boxes = tesseract.read_box_file(file_descriptor)
+                new_boxes = self.builder.read_file(file_descriptor)
 
             self.assertEqual(len(new_boxes), len(original_boxes))
             for i in range(0, len(original_boxes)):
