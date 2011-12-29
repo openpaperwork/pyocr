@@ -17,6 +17,9 @@ class TestContext(unittest.TestCase):
     def setUp(self):
         pass
 
+    def test_available(self):
+        self.assertTrue(tesseract.is_tesseract_available())
+
     def test_version(self):
         self.assertEqual(tesseract.get_version(), (3, 0, 1),
                          ("Tesseract does not have the expected version"
@@ -136,6 +139,7 @@ def get_all_tests():
     all_tests = unittest.TestSuite()
 
     test_names = [
+        'test_available',
         'test_version',
         'test_langs',
     ]
