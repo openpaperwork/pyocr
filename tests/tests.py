@@ -8,7 +8,36 @@ import unittest
 import tesseract
 
 
+class TestContext(unittest.TestCase):
+    """
+    These tests make sure the requirements for the tests are met.
+    """
+    def setUp(self):
+        pass
+
+    def test_version(self):
+        self.assertEqual(tesseract.get_version(), (3, 0, 1),
+                         ("Tesseract does not have the expected version !"
+                          + " Tests will fail !"))
+
+    def test_langs(self):
+        langs = tesseract.get_available_languages()
+        self.assertTrue("eng" in langs, 
+                        ("English training does not appear to be installed."
+                         + " (required for the tests)"))
+        self.assertTrue("fra" in langs,
+                        ("English training does not appear to be installed."
+                         + " (required for the tests)"))
+
+    def tearDown(self):
+        pass
+
+
 class TestTxt(unittest.TestCase):
+    """
+    These tests make sure the "usual" OCR works fine. (the one generating
+    a .txt file)
+    """
     def setUp(self):
         pass
 
@@ -42,6 +71,9 @@ class TestTxt(unittest.TestCase):
 
 
 class TestBox(unittest.TestCase):
+    """
+    These tests make sure that Tesseract box handling works fine.
+    """
     def setUp(self):
         pass
 
@@ -80,6 +112,13 @@ def get_all_tests():
     all_tests = unittest.TestSuite()
 
     test_names = [
+        'test_version',
+        'test_langs',
+    ]
+    tests = unittest.TestSuite(map(TestContext, test_names))
+    all_tests.addTest(tests)
+
+    test_names = [
         'test_basic',
         'test_european',
         'test_french',
@@ -87,6 +126,11 @@ def get_all_tests():
     tests = unittest.TestSuite(map(TestTxt, test_names))
     all_tests.addTest(tests)
 
+    test_names = [
+        'test_basic',
+        'test_european',
+        'test_french',
+    ]
     tests = unittest.TestSuite(map(TestBox, test_names))
     all_tests.addTest(tests)
 

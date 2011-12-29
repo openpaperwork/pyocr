@@ -27,6 +27,15 @@ DEPENDENCIES:
 INSTALLATION:
 $ sudo python ./setup.py install
 
+TESTS:
+* Tests are made to be run with the latest versions of Tesseract. The first
+  test verifies that you're using the expected version.
+* Most tests simply call Tesseract using tesseract.py and compre the output
+  to reference files:
+  * test.png --> test.txt / test.box / ...
+  * test-european.jpg --> test.txt / test.box / ...
+  * ...
+
 COPYRIGHT:
 Python-tesseract is released under the GPL v3.
 Copyright (c) Samuel Hoffstaetter, 2009
