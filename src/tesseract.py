@@ -17,7 +17,6 @@ http://wiki.github.com/jflesch/python-tesseract
 '''
 
 import codecs
-import Image
 import os
 import StringIO
 import subprocess
