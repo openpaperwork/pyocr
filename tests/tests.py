@@ -1,7 +1,9 @@
 import codecs
 import Image
+import os
 import sys
 sys.path = [ "src" ] + sys.path
+import tempfile
 
 import unittest
 
@@ -17,17 +19,17 @@ class TestContext(unittest.TestCase):
 
     def test_version(self):
         self.assertEqual(tesseract.get_version(), (3, 0, 1),
-                         ("Tesseract does not have the expected version !"
-                          + " Tests will fail !"))
+                         ("Tesseract does not have the expected version"
+                          " (3.01) ! Tests will fail !"))
 
     def test_langs(self):
         langs = tesseract.get_available_languages()
         self.assertTrue("eng" in langs, 
                         ("English training does not appear to be installed."
-                         + " (required for the tests)"))
+                         " (required for the tests)"))
         self.assertTrue("fra" in langs,
                         ("English training does not appear to be installed."
-                         + " (required for the tests)"))
+                         " (required for the tests)"))
 
     def tearDown(self):
         pass
@@ -104,6 +106,28 @@ class TestBox(unittest.TestCase):
     def test_french(self):
         self.__test_txt('test-french.jpg', 'test-french.box', 'fra')
 
+    def test_write_read(self):
+        original_boxes = tesseract.image_to_string(Image.open("tests/test.png"),
+                                                   boxes=True)
+        self.assertGreater(len(original_boxes), 0)
+
+        (file_descriptor, tmp_path) = tempfile.mkstemp()
+        try:
+            # we must open the file with codecs.open() for utf-8 support
+            os.close(file_descriptor)
+
+            with codecs.open(tmp_path, 'w', encoding='utf-8') as file_descriptor:
+                tesseract.write_box_file(file_descriptor, original_boxes)
+
+            with codecs.open(tmp_path, 'r', encoding='utf-8') as file_descriptor:
+                new_boxes = tesseract.read_box_file(file_descriptor)
+
+            self.assertEqual(len(new_boxes), len(original_boxes))
+            for i in range(0, len(original_boxes)):
+                self.assertEqual(new_boxes[i], original_boxes[i])
+        finally:
+            os.remove(tmp_path)
+
     def tearDown(self):
         pass
 
@@ -130,6 +154,7 @@ def get_all_tests():
         'test_basic',
         'test_european',
         'test_french',
+        'test_write_read',
     ]
     tests = unittest.TestSuite(map(TestBox, test_names))
     all_tests.addTest(tests)
