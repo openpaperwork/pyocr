@@ -18,7 +18,8 @@ class TestContext(unittest.TestCase):
         pass
 
     def test_available(self):
-        self.assertTrue(tesseract.is_tesseract_available())
+        self.assertTrue(tesseract.is_tesseract_available(),
+                       "Tesseract not found. Is it installed ?")
 
     def test_version(self):
         self.assertEqual(tesseract.get_version(), (3, 0, 1),
@@ -31,7 +32,7 @@ class TestContext(unittest.TestCase):
                         ("English training does not appear to be installed."
                          " (required for the tests)"))
         self.assertTrue("fra" in langs,
-                        ("English training does not appear to be installed."
+                        ("French training does not appear to be installed."
                          " (required for the tests)"))
 
     def tearDown(self):
