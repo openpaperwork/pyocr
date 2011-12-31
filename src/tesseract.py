@@ -21,6 +21,8 @@ import os
 import StringIO
 import subprocess
 import sys
+import xml.dom.minidom
+
 
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
 TESSERACT_CMD = 'tesseract'
@@ -32,6 +34,7 @@ TESSDATA_POSSIBLE_PATHS = [
 
 TESSDATA_EXTENSION = ".traineddata"
 
+
 __all__ = [
     'get_available_languages',
     'get_tesseract_version',
@@ -39,8 +42,9 @@ __all__ = [
     'is_tesseract_available',
     'read_box_file',
     'Box',
-    'BoxBuilder',
+    'CharBoxBuilder',
     'TextBuilder',
+    'WordBoxBuilder',
     'write_box_file',
 ]
 
@@ -78,22 +82,22 @@ class TextBuilder(object):
 class Box(object):
     """
     Tesseract Box: Tesseract boxes are rectangles around each individual
-    character recognized in the image.
+    element recognized in the image. Elements are char or word depending
+    of the builder.
     """
-    def __init__(self, char, position, page):
+
+    def __init__(self, content, position):
         """
         Instantiate a Tesseract box
 
         Arguments:
-            char --- character found in this box
+            content --- a single string
             position --- the position of the box on the image. Given as a
                 tuple of tuple:
                 ((width_pt_x, height_pt_x), (width_pt_y, height_pt_y))
-            page --- page number, as specified in the box file (usually 0)
         """
-        self.char = char
+        self.content = content 
         self.position = position
-        self.page = page
 
     def get_unicode_string(self):
         """
@@ -101,14 +105,24 @@ class Box(object):
         This string can be stored in a file as-is (see write_box_file())
         and reread using read_box_file().
         """
-        return "%s %d %d %d %d %d" % (
-            self.char,
+        return "%s %d %d %d %d" % (
+            self.content,
             self.position[0][0],
             self.position[0][1],
             self.position[1][0],
             self.position[1][1],
-            self.page
         )
+
+    def get_xml_tag(self):
+        span_tag = xml.dom.minidom.Element("span")
+        span_tag.setAttribute("class", "ocr_word")
+        span_tag.setAttribute("title", ("bbox %d %d %d %d" % (
+                (self.position[0][0], self.position[0][1],
+                 self.position[1][0], self.position[1][1]))))
+        txt = xml.dom.minidom.Text()
+        txt.data = self.content
+        span_tag.appendChild(txt)
+        return span_tag
 
     def __str__(self):
         return self.get_unicode_string().encode('ascii', 'replace')
@@ -119,9 +133,7 @@ class Box(object):
         """
         if other == None:
             return -1
-        for cmp_result in (cmp(self.page, other.page),
-                           cmp(self.char, other.char),
-                           cmp(self.position[0][1], other.position[0][1]),
+        for cmp_result in (cmp(self.position[0][1], other.position[0][1]),
                            cmp(self.position[1][1], other.position[1][1]),
                            cmp(self.position[0][0], other.position[0][0]),
                            cmp(self.position[1][0], other.position[1][0])):
@@ -153,10 +165,10 @@ class Box(object):
         position_hash += ((self.position[0][1] & 0xFF) << 8)
         position_hash += ((self.position[1][0] & 0xFF) << 16)
         position_hash += ((self.position[1][1] & 0xFF) << 24)
-        return (position_hash ^ hash(self.char) ^ hash(self.page))
+        return (position_hash ^ hash(self.content) ^ hash(self.content))
 
 
-class BoxBuilder(object):
+class CharBoxBuilder(object):
     """
     If passed to image_to_string(), image_to_string() will return an array of
     Box. Each box correspond to a character recognized in the image.
@@ -186,7 +198,7 @@ class BoxBuilder(object):
                 continue
             position = ((int(elements[1]), int(elements[2])),
                         (int(elements[3]), int(elements[4])))
-            box = Box(elements[0], position, int(elements[5]))
+            box = Box(elements[0], position)
             boxes.append(box)
         return boxes
 
@@ -200,7 +212,76 @@ class BoxBuilder(object):
             The file_descriptor must support UTF-8 ! (see module 'codecs')
         """
         for box in boxes:
-            file_descriptor.write(box.get_unicode_string() + "\n")
+            file_descriptor.write(box.get_unicode_string() + " 0\n")
+
+
+class WordBoxBuilder(object):
+    """
+    If passed to image_to_string(), image_to_string() will return an array of
+    Box. Each box correspond to a word recognized in the image.
+    """
+
+    file_extension = "html"
+    tesseract_configs = ['hocr']
+
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def __parse_position(xml_tag):
+        title = xml_tag.getAttribute("title")
+        title = title.split("; ")
+        title = title[-1]
+        title = title.split(" ")
+        position = ((int(title[1]), int(title[2])),
+                    (int(title[3]), int(title[4])))
+        return position
+
+    @staticmethod
+    def __extract_txt(xml_tag):
+        txt = ""
+        for tag in xml_tag.childNodes:
+            if tag.nodeType == tag.TEXT_NODE:
+                txt += tag.wholeText
+            else:
+                txt += WordBoxBuilder.__extract_txt(tag)
+        return txt
+
+        element = elements[0]
+
+    @staticmethod
+    def read_file(file_descriptor):
+        """
+        Extract of set of Box from the lines of 'file_descriptor'
+
+        Return:
+            An array of Box.
+        """
+        xml_string = file_descriptor.read().encode("utf-8")
+        xml_doc = xml.dom.minidom.parseString(xml_string)
+        boxes = []
+        for tag in xml_doc.getElementsByTagName("span"):
+            if ("ocr_word" != tag.getAttribute("class")):
+                continue
+            txt = WordBoxBuilder.__extract_txt(tag)
+            position = WordBoxBuilder.__parse_position(tag)
+            box = Box(txt, position)
+            boxes.append(box)
+        return boxes
+
+    @staticmethod
+    def write_file(file_descriptor, boxes):
+        """
+        Write boxes in a box file. Output is a *very* *simplified* version
+        of hOCR.
+
+        Warning:
+            The file_descriptor must support UTF-8 ! (see module 'codecs')
+        """
+        file_descriptor.write(u"<body>\n")
+        for box in boxes:
+            file_descriptor.write(box.get_xml_tag().toxml() + u"\n")
+        file_descriptor.write(u"</body>\n")
 
 
 def run_tesseract(input_filename, output_filename_base, lang=None,
@@ -287,7 +368,7 @@ def image_to_string(image, lang=None, builder=None):
         lang --- tesseract language to use
         builder --- builder used to configure Tesseract and read its result.
             The builder is used to specify the type of output expected.
-            Possible builders are TextBuilder or BoxBuilder. If builder ==
+            Possible builders are TextBuilder or CharBoxBuilder. If builder ==
             None, the builder used will be TextBuilder.
 
     Returns:

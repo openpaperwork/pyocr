@@ -76,12 +76,12 @@ class TestTxt(unittest.TestCase):
         pass
 
 
-class TestBox(unittest.TestCase):
+class TestCharBox(unittest.TestCase):
     """
     These tests make sure that Tesseract box handling works fine.
     """
     def setUp(self):
-        self.builder = tesseract.BoxBuilder()
+        self.builder = tesseract.CharBoxBuilder()
 
     def __test_txt(self, image_file, expected_box_file, lang='eng'):
         image_file = "tests/" + image_file
@@ -136,6 +136,66 @@ class TestBox(unittest.TestCase):
         pass
 
 
+class TestWordBox(unittest.TestCase):
+    """
+    These tests make sure that Tesseract box handling works fine.
+    """
+    def setUp(self):
+        self.builder = tesseract.WordBoxBuilder()
+
+    def __test_txt(self, image_file, expected_box_file, lang='eng'):
+        image_file = "tests/" + image_file
+        expected_box_file = "tests/" + expected_box_file
+
+        with codecs.open(expected_box_file, 'r', encoding='utf-8') \
+                as file_descriptor:
+            expected_boxes = self.builder.read_file(file_descriptor)
+        expected_boxes.sort()
+
+        boxes = tesseract.image_to_string(Image.open(image_file), lang=lang,
+                                          builder=self.builder)
+        boxes.sort()
+
+        self.assertEqual(len(boxes), len(expected_boxes))
+
+        for i in range(0, min(len(boxes), len(expected_boxes))):
+            self.assertEqual(boxes[i], expected_boxes[i])
+
+    def test_basic(self):
+        self.__test_txt('test.png', 'test.words')
+
+    def test_european(self):
+        self.__test_txt('test-european.jpg', 'test-european.words')
+
+    def test_french(self):
+        self.__test_txt('test-french.jpg', 'test-french.words', 'fra')
+
+    def test_write_read(self):
+        original_boxes = tesseract.image_to_string(Image.open("tests/test.png"),
+                                                   builder=self.builder)
+        self.assertTrue(len(original_boxes) > 0)
+
+        (file_descriptor, tmp_path) = tempfile.mkstemp()
+        try:
+            # we must open the file with codecs.open() for utf-8 support
+            os.close(file_descriptor)
+
+            with codecs.open(tmp_path, 'w', encoding='utf-8') as file_descriptor:
+                self.builder.write_file(file_descriptor, original_boxes)
+
+            with codecs.open(tmp_path, 'r', encoding='utf-8') as file_descriptor:
+                new_boxes = self.builder.read_file(file_descriptor)
+
+            self.assertEqual(len(new_boxes), len(original_boxes))
+            for i in range(0, len(original_boxes)):
+                self.assertEqual(new_boxes[i], original_boxes[i])
+        finally:
+            os.remove(tmp_path)
+
+    def tearDown(self):
+        pass
+
+
 def get_all_tests():
     all_tests = unittest.TestSuite()
 
@@ -161,7 +221,16 @@ def get_all_tests():
         'test_french',
         'test_write_read',
     ]
-    tests = unittest.TestSuite(map(TestBox, test_names))
+    tests = unittest.TestSuite(map(TestCharBox, test_names))
+    all_tests.addTest(tests)
+
+    test_names = [
+        'test_basic',
+        'test_european',
+        'test_french',
+        'test_write_read',
+    ]
+    tests = unittest.TestSuite(map(TestWordBox, test_names))
     all_tests.addTest(tests)
 
     return all_tests
