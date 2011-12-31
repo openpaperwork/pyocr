@@ -239,7 +239,7 @@ class WordBoxBuilder(object):
 
     @staticmethod
     def __extract_txt(xml_tag):
-        txt = ""
+        txt = u""
         for tag in xml_tag.childNodes:
             if tag.nodeType == tag.TEXT_NODE:
                 txt += tag.wholeText
