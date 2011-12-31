@@ -159,6 +159,8 @@ class TestWordBox(unittest.TestCase):
         self.assertEqual(len(boxes), len(expected_boxes))
 
         for i in range(0, min(len(boxes), len(expected_boxes))):
+            self.assertEqual(type(expected_boxes[i].content), unicode)
+            self.assertEqual(type(boxes[i].content), unicode)
             self.assertEqual(boxes[i], expected_boxes[i])
 
     def test_basic(self):
