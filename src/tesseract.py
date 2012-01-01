@@ -96,7 +96,7 @@ class Box(object):
                 tuple of tuple:
                 ((width_pt_x, height_pt_x), (width_pt_y, height_pt_y))
         """
-        self.content = content 
+        self.content = content
         self.position = position
 
     def get_unicode_string(self):
