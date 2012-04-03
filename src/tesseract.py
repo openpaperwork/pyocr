@@ -13,7 +13,7 @@ COPYRIGHT:
 Python-tesseract is released under the GPL v3.
 Copyright (c) Samuel Hoffstaetter, 2009
 Copyright (c) Jerome Flesch, 2011
-http://wiki.github.com/jflesch/python-tesseract
+https://github.com/jflesch/python-tesseract#readme
 '''
 
 import codecs
@@ -36,13 +36,14 @@ TESSDATA_EXTENSION = ".traineddata"
 
 
 __all__ = [
+    'Box',
+    'CharBoxBuilder',
     'get_available_languages',
-    'get_tesseract_version',
+    'get_version',
     'image_to_string',
     'is_tesseract_available',
     'read_box_file',
-    'Box',
-    'CharBoxBuilder',
+    'TesseractError',
     'TextBuilder',
     'WordBoxBuilder',
     'write_box_file',
