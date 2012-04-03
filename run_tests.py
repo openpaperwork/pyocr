@@ -1,9 +1,17 @@
 #!/usr/bin/env python
 
 import sys
+sys.path = [ "src" ] + sys.path
 import unittest
 
-from tests import tests
+import pyocr
+
+from tests import tests_tesseract
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(tests.get_all_tests())
+    print "OCR tool found:"
+    for tool in pyocr.get_available_tools():
+        print "- %s" % tool.get_name()
+    print "---"
+    print "Tesseract:"
+    unittest.TextTestRunner().run(tests_tesseract.get_all_tests())

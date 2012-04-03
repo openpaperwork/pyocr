@@ -7,6 +7,7 @@ import tempfile
 
 import unittest
 
+import builders
 import tesseract
 
 
@@ -141,7 +142,7 @@ class TestWordBox(unittest.TestCase):
     These tests make sure that Tesseract box handling works fine.
     """
     def setUp(self):
-        self.builder = tesseract.WordBoxBuilder()
+        self.builder = builders.WordBoxBuilder()
 
     def __test_txt(self, image_file, expected_box_file, lang='eng'):
         image_file = "tests/" + image_file
