@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 '''
 Python-tesseract is a wrapper for google's Tesseract-OCR
 ( http://code.google.com/p/tesseract-ocr/ ).
@@ -228,7 +228,7 @@ def image_to_string(image, lang=None, builder=None):
         cleanup(output_file_name)
 
 
-def is_available():
+def is_tesseract_available():
     """
     Indicates if Tesseract appears to be installed.
 
