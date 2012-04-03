@@ -18,7 +18,7 @@ class TestContext(unittest.TestCase):
         pass
 
     def test_available(self):
-        self.assertTrue(tesseract.is_tesseract_available(),
+        self.assertTrue(tesseract.is_available(),
                        "Tesseract not found. Is it installed ?")
 
     def test_version(self):
