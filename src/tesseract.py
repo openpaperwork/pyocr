@@ -41,7 +41,7 @@ __all__ = [
     'get_available_languages',
     'get_version',
     'image_to_string',
-    'is_available',
+    'is_tesseract_available',
     'read_box_file',
     'TesseractError',
     'TextBuilder',
@@ -401,7 +401,7 @@ def image_to_string(image, lang=None, builder=None):
         cleanup(output_file_name)
 
 
-def is_available():
+def is_tesseract_available():
     """
     Indicates if Tesseract appears to be installed.
 
