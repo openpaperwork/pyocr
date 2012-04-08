@@ -1,3 +1,5 @@
+from HTMLParser import HTMLParser
+import re
 import xml
 
 __all__ = [
@@ -105,6 +107,7 @@ class TextBuilder(object):
 
     file_extension = "txt"
     tesseract_configs = []
+    cuneiform_config = "text"
 
     def __init__(self):
         pass
@@ -136,51 +139,62 @@ class WordBoxBuilder(object):
 
     file_extension = "html"
     tesseract_configs = ['hocr']
+    cuneiform_config = "hocr"
 
     def __init__(self):
         pass
 
-    @staticmethod
-    def __parse_position(xml_tag):
-        title = xml_tag.getAttribute("title")
-        title = title.split("; ")
-        title = title[-1]
-        title = title.split(" ")
-        position = ((int(title[1]), int(title[2])),
-                    (int(title[3]), int(title[4])))
-        return position
+    class WordHTMLParser(HTMLParser):
+        def __init__(self):
+            HTMLParser.__init__(self)
+            self.__current_box_position = None
+            self.__current_box_text = None
+            self.boxes = []
 
-    @staticmethod
-    def __extract_txt(xml_tag):
-        txt = u""
-        for tag in xml_tag.childNodes:
-            if tag.nodeType == tag.TEXT_NODE:
-                txt += tag.wholeText
-            else:
-                txt += WordBoxBuilder.__extract_txt(tag)
-        return txt
+        @staticmethod
+        def __parse_position(title):
+            title = title.split("; ")
+            title = title[-1]
+            title = title.split(" ")
+            position = ((int(title[1]), int(title[2])),
+                        (int(title[3]), int(title[4])))
+            return position
 
-        element = elements[0]
+        def handle_starttag(self, tag, attrs):
+            if (tag != "span"):
+                return
+            for attr in attrs:
+                if attr[0] == 'class' and attr[1] != 'ocr_word':
+                    return
+                if attr[0] == 'title':
+                    position = self.__parse_position(attr[1])
+            self.__current_box_position = position
+            self.__current_box_text = u""
 
-    @staticmethod
-    def read_file(file_descriptor):
+        def handle_data(self, data):
+            if self.__current_box_text == None:
+                return
+            self.__current_box_text += data
+
+        def handle_endtag(self, tag):
+            if (self.__current_box_text == None):
+                return
+            box = Box(self.__current_box_text, self.__current_box_position)
+            self.boxes.append(box)
+            self.__current_box_text = None
+
+
+    def read_file(self, file_descriptor):
         """
         Extract of set of Box from the lines of 'file_descriptor'
 
         Return:
             An array of Box.
         """
-        xml_string = file_descriptor.read().encode("utf-8")
-        xml_doc = xml.dom.minidom.parseString(xml_string)
-        boxes = []
-        for tag in xml_doc.getElementsByTagName("span"):
-            if ("ocr_word" != tag.getAttribute("class")):
-                continue
-            txt = WordBoxBuilder.__extract_txt(tag)
-            position = WordBoxBuilder.__parse_position(tag)
-            box = Box(txt, position)
-            boxes.append(box)
-        return boxes
+        html_str = file_descriptor.read()
+        parser = self.WordHTMLParser()
+        parser.feed(html_str)
+        return parser.boxes
 
     @staticmethod
     def write_file(file_descriptor, boxes):
