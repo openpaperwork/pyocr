@@ -49,8 +49,8 @@ class TestTxt(unittest.TestCase):
         pass
 
     def __test_txt(self, image_file, expected_output_file, lang='eng'):
-        image_file = "tests/" + image_file
-        expected_output_file = "tests/" + expected_output_file
+        image_file = "tests/data/" + image_file
+        expected_output_file = "tests/tesseract/" + expected_output_file
 
         expected_output = ""
         with codecs.open(expected_output_file, 'r', encoding='utf-8') \
@@ -85,8 +85,8 @@ class TestCharBox(unittest.TestCase):
         self.builder = tesseract.CharBoxBuilder()
 
     def __test_txt(self, image_file, expected_box_file, lang='eng'):
-        image_file = "tests/" + image_file
-        expected_box_file = "tests/" + expected_box_file
+        image_file = "tests/data/" + image_file
+        expected_box_file = "tests/tesseract/" + expected_box_file
 
         with codecs.open(expected_box_file, 'r', encoding='utf-8') \
                 as file_descriptor:
@@ -112,8 +112,8 @@ class TestCharBox(unittest.TestCase):
         self.__test_txt('test-french.jpg', 'test-french.box', 'fra')
 
     def test_write_read(self):
-        original_boxes = tesseract.image_to_string(Image.open("tests/test.png"),
-                                                   builder=self.builder)
+        original_boxes = tesseract.image_to_string(
+                Image.open("tests/data/test.png"), builder=self.builder)
         self.assertTrue(len(original_boxes) > 0)
 
         (file_descriptor, tmp_path) = tempfile.mkstemp()
@@ -145,8 +145,8 @@ class TestWordBox(unittest.TestCase):
         self.builder = builders.WordBoxBuilder()
 
     def __test_txt(self, image_file, expected_box_file, lang='eng'):
-        image_file = "tests/" + image_file
-        expected_box_file = "tests/" + expected_box_file
+        image_file = "tests/data/" + image_file
+        expected_box_file = "tests/tesseract/" + expected_box_file
 
         with codecs.open(expected_box_file, 'r', encoding='utf-8') \
                 as file_descriptor:
@@ -174,8 +174,8 @@ class TestWordBox(unittest.TestCase):
         self.__test_txt('test-french.jpg', 'test-french.words', 'fra')
 
     def test_write_read(self):
-        original_boxes = tesseract.image_to_string(Image.open("tests/test.png"),
-                                                   builder=self.builder)
+        original_boxes = tesseract.image_to_string(
+                Image.open("tests/data/test.png"), builder=self.builder)
         self.assertTrue(len(original_boxes) > 0)
 
         (file_descriptor, tmp_path) = tempfile.mkstemp()
