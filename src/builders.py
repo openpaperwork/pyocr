@@ -1,3 +1,10 @@
+"""
+Builders: Each builder specifies the expected output format
+
+raw text : TextBuilder
+word + boxes : WordBoxBuilder
+"""
+
 from HTMLParser import HTMLParser
 import re
 import xml
