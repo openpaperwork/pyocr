@@ -11,8 +11,9 @@ __all__ = [
 
 class Box(object):
     """
-    Boxes are rectangles around each individual element recognized in the image.
-    Elements are either char or word depending of the builder that was used.
+    Boxes are rectangles around each individual element recognized in the
+    image. Elements are either char or word depending of the builder that
+    was used.
     """
 
     def __init__(self, content, position):
@@ -146,7 +147,7 @@ class WordBoxBuilder(object):
 
     class WordHTMLParser(HTMLParser):
         """
-        Tesseract style: Tesseract provides handy but custom hOCR tags: ocr_word
+        Tesseract style: Tesseract provides handy but non-standard hOCR tags: ocr_word
         """
         def __init__(self):
             HTMLParser.__init__(self)

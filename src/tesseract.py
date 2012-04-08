@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 '''
-Python-tesseract is a wrapper for google's Tesseract-OCR
+tesseract.py is a wrapper for google's Tesseract-OCR
 ( http://code.google.com/p/tesseract-ocr/ ).
 
 USAGE:
@@ -10,9 +10,9 @@ USAGE:
  > print image_to_string(Image.open('test-european.jpg'), lang='fra')
 
 COPYRIGHT:
-Python-tesseract is released under the GPL v3.
+Pyocr is released under the GPL v3.
 Copyright (c) Samuel Hoffstaetter, 2009
-Copyright (c) Jerome Flesch, 2011
+Copyright (c) Jerome Flesch, 2011-2012
 https://github.com/jflesch/python-tesseract#readme
 '''
 
