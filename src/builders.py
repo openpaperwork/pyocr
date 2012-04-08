@@ -107,7 +107,7 @@ class TextBuilder(object):
 
     file_extension = "txt"
     tesseract_configs = []
-    cuneiform_config = "text"
+    cuneiform_args = ["-f", "text"]
 
     def __init__(self):
         pass
@@ -139,12 +139,15 @@ class WordBoxBuilder(object):
 
     file_extension = "html"
     tesseract_configs = ['hocr']
-    cuneiform_config = "hocr"
+    cuneiform_args = ["-f", "hocr"]
 
     def __init__(self):
         pass
 
     class WordHTMLParser(HTMLParser):
+        """
+        Tesseract style: Tesseract provides handy but custom hOCR tags: ocr_word
+        """
         def __init__(self):
             HTMLParser.__init__(self)
             self.__current_box_position = None
@@ -163,12 +166,16 @@ class WordBoxBuilder(object):
         def handle_starttag(self, tag, attrs):
             if (tag != "span"):
                 return
+            position = None
             for attr in attrs:
-                if attr[0] == 'class' and attr[1] != 'ocr_word':
+                if (attr[0] == 'class'
+                    and (attr[1] != 'ocr_word')):
                     return
                 if attr[0] == 'title':
-                    position = self.__parse_position(attr[1])
-            self.__current_box_position = position
+                    position = attr[1]
+            if position == None:
+                return
+            self.__current_box_position = self.__parse_position(position)
             self.__current_box_text = u""
 
         def handle_data(self, data):
@@ -179,10 +186,86 @@ class WordBoxBuilder(object):
         def handle_endtag(self, tag):
             if (self.__current_box_text == None):
                 return
-            box = Box(self.__current_box_text, self.__current_box_position)
+            box_position = self.__current_box_position
+            box = Box(self.__current_box_text, box_position)
             self.boxes.append(box)
             self.__current_box_text = None
 
+        @staticmethod
+        def __str__():
+            return "WordHTMLParser"
+
+    class LineHTMLParser(HTMLParser):
+        """
+        Cuneiform style: Cuneiform provides the OCR line by line, and for each
+        line, the position of all its characters.
+        Spaces have "-1 -1 -1 -1" for position".
+        """
+        def __init__(self):
+            HTMLParser.__init__(self)
+            self.boxes = []
+            self.__line_text = None
+            self.__char_positions = None
+
+        def handle_starttag(self, tag, attrs):
+            TAG_TYPE_CONTENT = 0
+            TAG_TYPE_POSITIONS = 1
+
+            if (tag != "span"):
+                return
+            tag_type = -1
+            for attr in attrs:
+                if attr[0] == 'class':
+                    if attr[1] == 'ocr_line':
+                        tag_type = TAG_TYPE_CONTENT
+                    elif attr[1] == 'ocr_cinfo':
+                        tag_type = TAG_TYPE_POSITIONS
+
+            if tag_type == TAG_TYPE_CONTENT:
+                self.__line_text = u""
+                self.__char_positions = []
+                return
+            elif tag_type == TAG_TYPE_POSITIONS:
+                for attr in attrs:
+                    if attr[0] == 'title':
+                        self.__char_positions = attr[1].split(" ")
+                self.__char_positions = self.__char_positions[1:] # strip x_bboxes
+                if self.__char_positions[-1] == "":
+                    self.__char_positions[:-1]
+                try:
+                    while True:
+                        self.__char_positions.remove("-1")
+                except ValueError:
+                    pass
+
+        def handle_data(self, data):
+            if self.__line_text == None:
+                return
+            self.__line_text += data
+
+        def handle_endtag(self, tag):
+            if self.__line_text == None or self.__char_positions == []:
+                return
+            words = self.__line_text.split(" ")
+            for word in words:
+                if word == "":
+                    continue
+                positions = self.__char_positions[0:4*len(word)]
+                self.__char_positions = self.__char_positions[4*len(word):]
+
+                left_pos = min([int(positions[x]) for x in range(0, 4*len(word), 4)])
+                top_pos = min([int(positions[x]) for x in range(1, 4*len(word), 4)])
+                right_pos = max([int(positions[x]) for x in range(2, 4*len(word), 4)])
+                bottom_pos = max([int(positions[x]) for x in range(3, 4*len(word), 4)])
+
+                box_pos = ((left_pos, top_pos), (right_pos, bottom_pos))
+                box = Box(word, box_pos)
+                self.boxes.append(box)
+            self.__line_text = None
+
+        @staticmethod
+        def __str__():
+            return "LineHTMLParser"
 
     def read_file(self, file_descriptor):
         """
@@ -191,10 +274,14 @@ class WordBoxBuilder(object):
         Return:
             An array of Box.
         """
+        parsers = [ self.WordHTMLParser(), self.LineHTMLParser() ]
         html_str = file_descriptor.read()
-        parser = self.WordHTMLParser()
-        parser.feed(html_str)
-        return parser.boxes
+
+        for p in parsers:
+            p.feed(html_str)
+            if len(p.boxes) > 0:
+                return p.boxes
+        return []
 
     @staticmethod
     def write_file(file_descriptor, boxes):

@@ -45,6 +45,7 @@ WEBSITE:
 https://github.com/jflesch/python-tesseract#readme
 """
 
+import cuneiform
 import tesseract
 
 __all__ = [
@@ -54,8 +55,10 @@ __all__ = [
 
 
 TOOLS = [ # in preference order
-    tesseract
+    cuneiform,
+    tesseract,
 ]
+
 
 def get_available_tools():
     """
@@ -66,4 +69,3 @@ def get_available_tools():
         if tool.is_available():
             available.append(tool)
     return available
-

@@ -24,6 +24,7 @@ import sys
 import xml.dom.minidom
 
 import builders
+import util
 
 
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
@@ -165,7 +166,7 @@ def cleanup(filename):
 def tempnam():
     ''' Returns a temporary file-name '''
 
-    # prevent os.tempnam from printing an error...
+    # prevent os.tempnam from printing an error
     stderr = sys.stderr
     try:
         sys.stderr = StringIO.StringIO()
@@ -229,18 +230,7 @@ def image_to_string(image, lang=None, builder=None):
 
 
 def is_available():
-    """
-    Indicates if Tesseract appears to be installed.
-
-    Returns:
-        True --- if it is installed
-        False --- if it isn't
-    """
-    for dirpath in os.environ["PATH"].split(os.pathsep):
-        path = os.path.join(dirpath, TESSERACT_CMD)
-        if os.path.exists(path) and os.access(path, os.X_OK):
-            return True
-    return False
+    return util.is_on_path(TESSERACT_CMD)
 
 
 def get_available_languages():
