@@ -228,7 +228,7 @@ def image_to_string(image, lang=None, builder=None):
         cleanup(output_file_name)
 
 
-def is_tesseract_available():
+def is_available():
     """
     Indicates if Tesseract appears to be installed.
 
