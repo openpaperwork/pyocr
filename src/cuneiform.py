@@ -112,7 +112,6 @@ def is_available():
     return util.is_on_path(CUNEIFORM_CMD)
 
 
-
 def get_available_languages():
     proc = subprocess.Popen([ CUNEIFORM_CMD, "-l" ], stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT)
