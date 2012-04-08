@@ -1,4 +1,19 @@
 #!/usr/bin/env python2
+'''
+cuneiform.py is a wrapper for Cuneiform
+
+USAGE:
+ > import Image
+ > from cuneiform import image_to_string
+ > print image_to_string(Image.open('test.png'))
+ > print image_to_string(Image.open('test-european.jpg'), lang='fra')
+
+COPYRIGHT:
+Pyocr is released under the GPL v3.
+Copyright (c) Samuel Hoffstaetter, 2009
+Copyright (c) Jerome Flesch, 2011-2012
+https://github.com/jflesch/python-tesseract#readme
+'''
 
 import codecs
 import os
