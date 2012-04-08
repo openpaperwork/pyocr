@@ -95,12 +95,12 @@ def image_to_string(image, lang=None, builder=None):
     output_file_name = ('%s.%s' % (output_file_name_base,
                                    builder.file_extension))
 
-    cmd = [ CUNEIFORM_CMD ]
+    cmd = [CUNEIFORM_CMD]
     if lang != None:
-        cmd += [ "-l", lang ]
+        cmd += ["-l", lang]
     cmd += builder.cuneiform_args
-    cmd += [ "-o", output_file_name ]
-    cmd += [ "-" ] # stdin
+    cmd += ["-o", output_file_name]
+    cmd += ["-"]  # stdin
 
     try:
         img_data = StringIO.StringIO()
@@ -128,7 +128,7 @@ def is_available():
 
 
 def get_available_languages():
-    proc = subprocess.Popen([ CUNEIFORM_CMD, "-l" ], stdout=subprocess.PIPE,
+    proc = subprocess.Popen([CUNEIFORM_CMD, "-l"], stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT)
     output = proc.stdout.read()
     proc.wait()
@@ -145,7 +145,7 @@ def get_available_languages():
 
 
 def get_version():
-    proc = subprocess.Popen([ CUNEIFORM_CMD ], stdout=subprocess.PIPE,
+    proc = subprocess.Popen([CUNEIFORM_CMD], stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT)
     output = proc.stdout.read()
     proc.wait()

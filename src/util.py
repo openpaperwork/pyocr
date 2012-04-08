@@ -2,6 +2,7 @@
 
 import os
 
+
 def is_on_path(exec_name):
     """
     Indicates if the command 'exec_name' appears to be installed.

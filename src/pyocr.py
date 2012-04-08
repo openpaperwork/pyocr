@@ -54,7 +54,7 @@ __all__ = [
 ]
 
 
-TOOLS = [ # in preference order
+TOOLS = [  # in preference order
     cuneiform,
     tesseract,
 ]

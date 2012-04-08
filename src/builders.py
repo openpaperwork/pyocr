@@ -147,7 +147,8 @@ class WordBoxBuilder(object):
 
     class WordHTMLParser(HTMLParser):
         """
-        Tesseract style: Tesseract provides handy but non-standard hOCR tags: ocr_word
+        Tesseract style: Tesseract provides handy but non-standard hOCR tags:
+        ocr_word
         """
         def __init__(self):
             HTMLParser.__init__(self)
@@ -230,7 +231,8 @@ class WordBoxBuilder(object):
                 for attr in attrs:
                     if attr[0] == 'title':
                         self.__char_positions = attr[1].split(" ")
-                self.__char_positions = self.__char_positions[1:] # strip x_bboxes
+                # strip x_bboxes
+                self.__char_positions = self.__char_positions[1:]
                 if self.__char_positions[-1] == "":
                     self.__char_positions[:-1]
                 try:
@@ -251,13 +253,17 @@ class WordBoxBuilder(object):
             for word in words:
                 if word == "":
                     continue
-                positions = self.__char_positions[0:4*len(word)]
-                self.__char_positions = self.__char_positions[4*len(word):]
+                positions = self.__char_positions[0:4 * len(word)]
+                self.__char_positions = self.__char_positions[4 * len(word):]
 
-                left_pos = min([int(positions[x]) for x in range(0, 4*len(word), 4)])
-                top_pos = min([int(positions[x]) for x in range(1, 4*len(word), 4)])
-                right_pos = max([int(positions[x]) for x in range(2, 4*len(word), 4)])
-                bottom_pos = max([int(positions[x]) for x in range(3, 4*len(word), 4)])
+                left_pos = min([int(positions[x])
+                                for x in range(0, 4 * len(word), 4)])
+                top_pos = min([int(positions[x])
+                               for x in range(1, 4 * len(word), 4)])
+                right_pos = max([int(positions[x])
+                                 for x in range(2, 4 * len(word), 4)])
+                bottom_pos = max([int(positions[x])
+                                  for x in range(3, 4 * len(word), 4)])
 
                 box_pos = ((left_pos, top_pos), (right_pos, bottom_pos))
                 box = Box(word, box_pos)
@@ -275,7 +281,7 @@ class WordBoxBuilder(object):
         Return:
             An array of Box.
         """
-        parsers = [ self.WordHTMLParser(), self.LineHTMLParser() ]
+        parsers = [self.WordHTMLParser(), self.LineHTMLParser()]
         html_str = file_descriptor.read()
 
         for p in parsers:
@@ -301,4 +307,3 @@ class WordBoxBuilder(object):
     @staticmethod
     def __str__():
         return "Word boxes"
-
