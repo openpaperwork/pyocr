@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 '''
 cuneiform.py is a wrapper for Cuneiform
 
