@@ -223,7 +223,8 @@ def image_to_string(image, lang=None, builder=None):
                                          configs=builder.tesseract_configs)
         if status:
             raise TesseractError(status, errors)
-        with codecs.open(output_file_name, 'r', encoding='utf-8') as file_desc:
+        with codecs.open(output_file_name, 'r', encoding='utf-8',
+                         errors='replace') as file_desc:
             results = builder.read_file(file_desc)
         return results
     finally:
