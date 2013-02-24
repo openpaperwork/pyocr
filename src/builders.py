@@ -308,7 +308,9 @@ class WordBoxBuilder(object):
         """
         file_descriptor.write(u"<body>\n")
         for box in boxes:
-            file_descriptor.write(box.get_xml_tag().toxml() + u"\n")
+            xml_str = box.get_xml_tag().toxml()
+            xml_utf = xml_str.decode('utf-8')
+            file_descriptor.write(xml_utf + u"\n")
         file_descriptor.write(u"</body>\n")
 
     @staticmethod
