@@ -51,6 +51,7 @@ import tesseract
 __all__ = [
     'get_available_tools',
     'TOOLS',
+    'VERSION',
 ]
 
 
@@ -59,6 +60,7 @@ TOOLS = [  # in preference order
     cuneiform,
 ]
 
+VERSION=(0, 1, 1)
 
 def get_available_tools():
     """
