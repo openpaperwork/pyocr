@@ -1,0 +1,19 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title></title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name='ocr-system' content='tesseract'/>
+</head>
+<body>
+<div class='ocr_page' id='page_1' title='image "../data/test-french.jpg"; bbox 0 0 200 200'>
+<div class='ocr_carea' id='block_1_1' title="bbox 21 36 182 96">
+<p class='ocr_par'>
+<span class='ocr_line' id='line_1_1' title="bbox 23 36 182 55"><span class='ocr_word' id='word_1_1' title="bbox 23 36 81 51"><span class='ocrx_word' id='xword_1_1' title="x_wconf -6">Phrase</span></span> <span class='ocr_word' id='word_1_2' title="bbox 87 41 108 51"><span class='ocrx_word' id='xword_1_2' title="x_wconf -2">en</span></span> <span class='ocr_word' id='word_1_3' title="bbox 115 37 182 55"><span class='ocrx_word' id='xword_1_3' title="x_wconf -3">français</span></span></span>
+<span class='ocr_line' id='line_1_2' title="bbox 21 57 174 78"><span class='ocr_word' id='word_1_4' title="bbox 21 58 63 78"><span class='ocrx_word' id='xword_1_4' title="x_wconf -11">flvec</span></span> <span class='ocr_word' id='word_1_5' title="bbox 70 57 99 72"><span class='ocrx_word' id='xword_1_5' title="x_wconf -4">des</span></span> <span class='ocr_word' id='word_1_6' title="bbox 106 60 174 73"><span class='ocrx_word' id='xword_1_6' title="x_wconf -3">accents.</span></span></span>
+<span class='ocr_line' id='line_1_3' title="bbox 23 78 112 96"><span class='ocr_word' id='word_1_7' title="bbox 23 78 112 96"><span class='ocrx_word' id='xword_1_7' title="x_wconf -3">Ephémère</span></span></span>
+</p>
+</div>
+</div>
+</body>
+</html>
