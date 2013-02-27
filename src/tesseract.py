@@ -33,6 +33,7 @@ TESSERACT_CMD = 'tesseract'
 TESSDATA_POSSIBLE_PATHS = [
     "/usr/local/share/tessdata",
     "/usr/share/tessdata",
+    "/usr/share/tesseract/tessdata",
     "/usr/local/share/tesseract-ocr/tessdata",
     "/usr/share/tesseract-ocr/tessdata",
 ]
