@@ -510,7 +510,7 @@ class LineBoxBuilder(object):
         for box in boxes:
             xml_str = box.get_xml_tag().toxml()
             xml_utf = xml_str.decode('utf-8')
-            file_descriptor.write(xml_utf + u"\n")
+            file_descriptor.write(xml_utf + u"<br/>\n")
         file_descriptor.write(u"</body>\n")
 
     @staticmethod
