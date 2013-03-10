@@ -23,9 +23,9 @@ class TestContext(unittest.TestCase):
                        "Tesseract not found. Is it installed ?")
 
     def test_version(self):
-        self.assertEqual(tesseract.get_version(), (3, 0, 1),
+        self.assertEqual(tesseract.get_version(), (3, 2, 1),
                          ("Tesseract does not have the expected version"
-                          " (3.01) ! Tests will fail !"))
+                          " (3.02.1) ! Tests will fail !"))
 
     def test_langs(self):
         langs = tesseract.get_available_languages()
