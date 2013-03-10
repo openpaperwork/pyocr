@@ -160,6 +160,9 @@ class LineBox(object):
                 (self.position[0][0], self.position[0][1],
                  self.position[1][0], self.position[1][1]))))
         for box in self.word_boxes:
+            space = xml.dom.minidom.Text()
+            space.data = " "
+            span_tag.appendChild(space)
             box_xml = box.get_xml_tag()
             span_tag.appendChild(box_xml)
         return span_tag
@@ -450,8 +453,8 @@ class WordBoxBuilder(object):
         file_descriptor.write(u"<body>\n")
         for box in boxes:
             xml_str = box.get_xml_tag().toxml()
-            xml_utf = xml_str.decode('utf-8')
-            file_descriptor.write(xml_utf + u"\n")
+            xml_utf = u" " + xml_str.decode('utf-8')
+            file_descriptor.write(xml_utf + u"<br/>\n")
         file_descriptor.write(u"</body>\n")
 
     @staticmethod
