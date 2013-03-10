@@ -50,7 +50,7 @@ class Box(object):
 
     def get_xml_tag(self):
         span_tag = xml.dom.minidom.Element("span")
-        span_tag.setAttribute("class", "ocr_word")
+        span_tag.setAttribute("class", "ocrx_word")
         span_tag.setAttribute("title", ("bbox %d %d %d %d" % (
                 (self.position[0][0], self.position[0][1],
                  self.position[1][0], self.position[1][1]))))
@@ -241,7 +241,7 @@ class TextBuilder(object):
 class _WordHTMLParser(HTMLParser):
     """
     Tesseract style: Tesseract provides handy but non-standard hOCR tags:
-    ocr_word
+    ocrx_word
     """
 
     def __init__(self):
@@ -278,13 +278,19 @@ class _WordHTMLParser(HTMLParser):
                 position = attr[1]
         if position is None or tag_type is None:
             return
-        self.__tag_types.append(tag_type)
-        if tag_type == 'ocr_word':
-            self.__current_box_position = self.__parse_position(position)
+        if tag_type == 'ocr_word' or tag_type == 'ocrx_word':
+            try:
+                position = self.__parse_position(position)
+                self.__current_box_position = position
+            except Exception, exc:
+                # invalid position --> old format --> we ignore this tag
+                self.__tag_types.append("ignore")
+                return
             self.__current_box_text = u""
         elif tag_type == 'ocr_line':
             self.__current_line_position = self.__parse_position(position)
             self.__current_line_content = []
+        self.__tag_types.append(tag_type)
 
     def handle_data(self, data):
         if self.__current_box_text == None:
@@ -295,7 +301,7 @@ class _WordHTMLParser(HTMLParser):
         if tag != 'span':
             return
         tag_type = self.__tag_types.pop()
-        if tag_type == 'ocr_word':
+        if tag_type == 'ocr_word' or tag_type == 'ocrx_word':
             if (self.__current_box_text == None):
                 return
             box_position = self.__current_box_position
@@ -304,7 +310,7 @@ class _WordHTMLParser(HTMLParser):
             self.__current_line_content.append(box)
             self.__current_box_text = None
             return
-        if tag_type == 'ocr_line':
+        elif tag_type == 'ocr_line':
             line = LineBox(self.__current_line_content,
                            self.__current_line_position)
             self.lines.append(line)

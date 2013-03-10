@@ -1,9 +1,25 @@
-<body>
-<span class="ocr_word" title="bbox 23 36 81 51">Phrase</span>
-<span class="ocr_word" title="bbox 87 41 108 51">en</span>
-<span class="ocr_word" title="bbox 115 37 182 55">français</span>
-<span class="ocr_word" title="bbox 21 58 63 78">flvec</span>
-<span class="ocr_word" title="bbox 70 57 99 72">des</span>
-<span class="ocr_word" title="bbox 106 60 174 73">accents.</span>
-<span class="ocr_word" title="bbox 23 78 112 96">Ephémère</span>
-</body>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+ <head>
+  <title></title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name='ocr-system' content='tesseract 3.02.01' />
+  <meta name='ocr-capabilities' content='ocr_page ocr_carea ocr_par ocr_line ocrx_word'/>
+ </head>
+ <body>
+  <div class='ocr_page' id='page_1' title='image "../data/test-french.jpg"; bbox 0 0 200 200; ppageno 0'>
+   <div class='ocr_carea' id='block_1_1' title="bbox 21 36 186 96">
+    <p class='ocr_par' dir='ltr' id='par_1' title="bbox 21 36 186 96">
+     <span class='ocr_line' id='line_1' title="bbox 23 36 186 55"><span class='ocrx_word' id='word_1' title="bbox 23 36 81 51"><strong>Phrase</strong></span> <span class='ocrx_word' id='word_2' title="bbox 87 41 108 51"><strong>en</strong></span> <span class='ocrx_word' id='word_3' title="bbox 115 37 186 55"><strong>français.</strong></span> 
+     </span>
+     <span class='ocr_line' id='line_2' title="bbox 21 57 174 78"><span class='ocrx_word' id='word_4' title="bbox 21 58 63 78"><strong>Avec</strong></span> <span class='ocrx_word' id='word_5' title="bbox 70 57 99 72"><strong>des</strong></span> <span class='ocrx_word' id='word_6' title="bbox 106 60 174 73"><strong>accents.</strong></span> 
+     </span>
+     <span class='ocr_line' id='line_3' title="bbox 23 78 112 96"><span class='ocrx_word' id='word_7' title="bbox 23 78 112 96"><strong>Ephémère</strong></span> 
+     </span>
+    </p>
+   </div>
+  </div>
+ </body>
+</html>

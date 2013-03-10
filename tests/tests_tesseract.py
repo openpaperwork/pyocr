@@ -157,6 +157,7 @@ class TestWordBox(unittest.TestCase):
                                           builder=self.builder)
         boxes.sort()
 
+        self.assertTrue(len(boxes) > 0)
         self.assertEqual(len(boxes), len(expected_boxes))
 
         for i in range(0, min(len(boxes), len(expected_boxes))):
