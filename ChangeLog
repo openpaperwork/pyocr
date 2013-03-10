@@ -1,0 +1,3 @@
+v0.1.1 --> v0.1.2:
+* Tesseract: Fix version parsing
+* Tesseract: Fix Tesseract 3.02.01's hOCR format support
