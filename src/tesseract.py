@@ -278,8 +278,14 @@ def get_version():
         raise TesseractError(ret, ver_string)
 
     try:
-        major = int(ver_string.split(" ")[1].split(".")[0])
-        minor = int(ver_string.split(" ")[1].split(".")[1])
+        els = ver_string.split(" ")[1].split(".")
+        els = [int(x) for x in els]
+        major = els[0]
+        minor = els[1]
+        upd = 0
+        if len(els) >= 3:
+            upd = els[2]
+        return (major, minor, upd)
     except IndexError:
         raise TesseractError(ret,
                 ("Unable to parse Tesseract version (spliting failed): [%s]"
@@ -289,8 +295,3 @@ def get_version():
                 ("Unable to parse Tesseract version (not a number): [%s]"
                  % (ver_string)))
 
-    # minor must also be splited
-    update = (minor % 10)
-    minor /= 10
-
-    return (major, minor, update)
