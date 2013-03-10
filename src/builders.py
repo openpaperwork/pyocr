@@ -15,6 +15,13 @@ __all__ = [
     'WordBoxBuilder',
 ]
 
+_XHTML_HEADER = unicode(
+    '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"'
+    ' "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">\n'
+    '<head>\n'
+    '\t<meta http-equiv="content-type" content="text/html; charset=utf-8" />\n'
+    '</head>\n'
+)
 
 class Box(object):
     """
@@ -438,6 +445,8 @@ class WordBoxBuilder(object):
         Warning:
             The file_descriptor must support UTF-8 ! (see module 'codecs')
         """
+        global _XHTML_HEADER
+        file_descriptor.write(_XHTML_HEADER)
         file_descriptor.write(u"<body>\n")
         for box in boxes:
             xml_str = box.get_xml_tag().toxml()
@@ -492,6 +501,8 @@ class LineBoxBuilder(object):
         Warning:
             The file_descriptor must support UTF-8 ! (see module 'codecs')
         """
+        global _XHTML_HEADER
+        file_descriptor.write(_XHTML_HEADER)
         file_descriptor.write(u"<body>\n")
         for box in boxes:
             xml_str = box.get_xml_tag().toxml()
