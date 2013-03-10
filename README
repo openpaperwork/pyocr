@@ -1,11 +1,10 @@
 Pyocr is an optical character recognition (OCR) tool wrapper for python.
-That is, it helps using OCR tools from Python.
+That is, it helps using OCR tools from a Python program.
 
 Pyocr can be used as a wrapper for google's Tesseract-OCR
 ( http://code.google.com/p/tesseract-ocr/ ) or Cuneiform. It can read all image
 types supported by the Python Imaging Library, including jpeg, png, gif, bmp, tiff,
-and others, whereas tesseract-ocr alone only supports tiff and bmp by default.
-It also support bounding box data.
+and others. It also support bounding box data.
 
 USAGE:
 import Image
