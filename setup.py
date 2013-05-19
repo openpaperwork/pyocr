@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from distutils.core import setup
+from setuptools import setup
 
 setup(name="pyocr",
       version="0.1.2-git",
@@ -11,5 +11,8 @@ setup(name="pyocr",
       package_dir={ 'pyocr': 'src' },
       data_files=[],
       scripts=[],
+      install_requires=[
+          "PIL"
+      ],
      )
 
