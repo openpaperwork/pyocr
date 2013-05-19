@@ -3,7 +3,7 @@
 cuneiform.py is a wrapper for Cuneiform
 
 USAGE:
- > import Image
+ > from PIL import Image
  > from cuneiform import image_to_string
  > print image_to_string(Image.open('test.png'))
  > print image_to_string(Image.open('test-european.jpg'), lang='fra')

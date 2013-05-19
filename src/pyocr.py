@@ -3,7 +3,7 @@
 Wrapper for various OCR tools.
 
 USAGE:
-import Image
+from PIL import Image
 import sys
 from pyocr import pyocr
 
