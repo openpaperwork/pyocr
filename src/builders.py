@@ -2,7 +2,8 @@
 Builders: Each builder specifies the expected output format
 
 raw text : TextBuilder
-word + boxes : WordBoxBuilder
+words + boxes : WordBoxBuilder
+lines + words + boxes : LineBoxBuilder
 """
 
 from HTMLParser import HTMLParser
@@ -13,6 +14,7 @@ __all__ = [
     'Box',
     'TextBuilder',
     'WordBoxBuilder',
+    'LineBoxBuilder',
 ]
 
 _XHTML_HEADER = unicode(
