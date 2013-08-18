@@ -24,7 +24,7 @@ if __name__ == '__main__':
         print("")
     print("")
 
-    print "OCR tool found:"
+    print("OCR tool found:")
     for tool in pyocr.get_available_tools():
         print("- %s" % tool.get_name())
     if tesseract.is_available():
