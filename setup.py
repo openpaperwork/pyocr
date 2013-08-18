@@ -3,7 +3,7 @@
 from setuptools import setup
 
 setup(name="pyocr",
-      version="0.1.2-git",
+      version="0.2.0",
       description="A Python wrapper for OCR engines (Tesseract, Cuneiform, etc)",
       keywords="tesseract cuneiform ocr",
       url="https://github.com/jflesch/pyocr",
