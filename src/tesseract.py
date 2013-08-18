@@ -18,9 +18,9 @@ https://github.com/jflesch/python-tesseract#readme
 
 import codecs
 import os
-import StringIO
 import subprocess
 import sys
+import tempfile
 import xml.dom.minidom
 
 import builders
@@ -166,16 +166,9 @@ def cleanup(filename):
         pass
 
 
-def tempnam():
-    ''' Returns a temporary file-name '''
-
-    # prevent os.tempnam from printing an error
-    stderr = sys.stderr
-    try:
-        sys.stderr = StringIO.StringIO()
-        return os.tempnam(None, 'tess_')
-    finally:
-        sys.stderr = stderr
+def temp_file(suffix):
+    ''' Returns a temporary file '''
+    return tempfile.NamedTemporaryFile(prefix='tess_', suffix=suffix)
 
 
 class TesseractError(Exception):
@@ -211,26 +204,26 @@ def image_to_string(image, lang=None, builder=None):
     if builder == None:
         builder = builders.TextBuilder()
 
-    input_file_name = '%s.bmp' % tempnam()
-    output_file_name_base = tempnam()
-    output_file_name = ('%s.%s' % (output_file_name_base,
-                                   builder.file_extension))
+    with temp_file(".bmp") as input_file:
+        with temp_file('')  as output_file:
+            output_file_name_base = output_file.name
+        output_file_name = ('%s.%s' % (output_file_name_base,
+                                       builder.file_extension))
 
-    try:
-        image.save(input_file_name)
-        (status, errors) = run_tesseract(input_file_name,
-                                         output_file_name_base,
-                                         lang=lang,
-                                         configs=builder.tesseract_configs)
-        if status:
-            raise TesseractError(status, errors)
-        with codecs.open(output_file_name, 'r', encoding='utf-8',
-                         errors='replace') as file_desc:
-            results = builder.read_file(file_desc)
-        return results
-    finally:
-        cleanup(input_file_name)
-        cleanup(output_file_name)
+        try:
+            image.save(input_file.name)
+            (status, errors) = run_tesseract(input_file.name,
+                                             output_file_name_base,
+                                             lang=lang,
+                                             configs=builder.tesseract_configs)
+            if status:
+                raise TesseractError(status, errors)
+            with codecs.open(output_file_name, 'r', encoding='utf-8',
+                             errors='replace') as file_desc:
+                results = builder.read_file(file_desc)
+            return results
+        finally:
+            cleanup(output_file_name)
 
 
 def is_available():
@@ -273,6 +266,8 @@ def get_version():
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT)
     ver_string = proc.stdout.read()
+    if hasattr(ver_string, 'decode'):
+        ver_string = ver_string.decode('utf-8')
     ret = proc.wait()
     if not ret in (0, 1):
         raise TesseractError(ret, ver_string)

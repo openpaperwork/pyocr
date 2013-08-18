@@ -1,5 +1,5 @@
 import codecs
-import Image
+from PIL import Image
 import os
 import sys
 sys.path = [ "src" ] + sys.path
@@ -29,7 +29,7 @@ class TestContext(unittest.TestCase):
 
     def test_langs(self):
         langs = cuneiform.get_available_languages()
-        self.assertTrue("eng" in langs, 
+        self.assertTrue("eng" in langs,
                         ("English training does not appear to be installed."
                          " (required for the tests)"))
         self.assertTrue("fra" in langs,
@@ -99,8 +99,14 @@ class TestWordBox(unittest.TestCase):
         self.assertEqual(len(boxes), len(expected_boxes))
 
         for i in range(0, min(len(boxes), len(expected_boxes))):
-            self.assertEqual(type(expected_boxes[i].content), unicode)
-            self.assertEqual(type(boxes[i].content), unicode)
+            try:
+                # Python 2.7
+                self.assertEqual(type(expected_boxes[i].content), unicode)
+                self.assertEqual(type(boxes[i].content), unicode)
+            except NameError:
+                # Python 3.x
+                self.assertEqual(type(expected_boxes[i].content), str)
+                self.assertEqual(type(boxes[i].content), str)
             self.assertEqual(boxes[i], expected_boxes[i])
 
     def test_basic(self):

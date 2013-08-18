@@ -6,7 +6,11 @@ words + boxes : WordBoxBuilder
 lines + words + boxes : LineBoxBuilder
 """
 
-from HTMLParser import HTMLParser
+try:
+    from HTMLParser import HTMLParser
+except ImportError:
+    from html.parser import HTMLParser
+
 import re
 import xml
 
@@ -17,13 +21,12 @@ __all__ = [
     'LineBoxBuilder',
 ]
 
-_XHTML_HEADER = unicode(
-    '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"'
-    ' "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">\n'
-    '<head>\n'
-    '\t<meta http-equiv="content-type" content="text/html; charset=utf-8" />\n'
-    '</head>\n'
-)
+_XHTML_HEADER = u"""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+ "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<head>
+\t<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+</head>
+"""
 
 class Box(object):
     """
@@ -40,7 +43,9 @@ class Box(object):
                 tuple of tuple:
                 ((width_pt_x, height_pt_x), (width_pt_y, height_pt_y))
         """
-        self.content = unicode(content)
+        if hasattr(content, 'decode'):
+            content = u"%s" % content
+        self.content = content
         self.position = position
 
     def get_unicode_string(self):
@@ -57,8 +62,8 @@ class Box(object):
             self.position[1][1],
         )
 
-    def get_xml_tag(self):
-        span_tag = xml.dom.minidom.Element("span")
+    def get_xml_tag(self, parent_doc):
+        span_tag = parent_doc.createElement("span")
         span_tag.setAttribute("class", "ocrx_word")
         span_tag.setAttribute("title", ("bbox %d %d %d %d" % (
                 (self.position[0][0], self.position[0][1],
@@ -77,12 +82,14 @@ class Box(object):
         """
         if other == None:
             return -1
-        for cmp_result in (cmp(self.position[0][1], other.position[0][1]),
-                           cmp(self.position[1][1], other.position[1][1]),
-                           cmp(self.position[0][0], other.position[0][0]),
-                           cmp(self.position[1][0], other.position[1][0])):
-            if cmp_result != 0:
-                return cmp_result
+        for (x, y) in ((self.position[0][1], other.position[0][1]),
+                           (self.position[1][1], other.position[1][1]),
+                           (self.position[0][0], other.position[0][0]),
+                           (self.position[1][0], other.position[1][0])):
+            if x < y:
+                return -1
+            elif x > y:
+                return 1
         return 0
 
     def __lt__(self, other):
@@ -155,8 +162,8 @@ class LineBox(object):
 
     content = property(__get_content)
 
-    def get_xml_tag(self):
-        span_tag = xml.dom.minidom.Element("span")
+    def get_xml_tag(self, parent_doc):
+        span_tag = parent_doc.createElement("span")
         span_tag.setAttribute("class", "ocr_line")
         span_tag.setAttribute("title", ("bbox %d %d %d %d" % (
                 (self.position[0][0], self.position[0][1],
@@ -165,7 +172,7 @@ class LineBox(object):
             space = xml.dom.minidom.Text()
             space.data = " "
             span_tag.appendChild(space)
-            box_xml = box.get_xml_tag()
+            box_xml = box.get_xml_tag(parent_doc)
             span_tag.appendChild(box_xml)
         return span_tag
 
@@ -178,12 +185,14 @@ class LineBox(object):
         """
         if other == None:
             return -1
-        for cmp_result in (cmp(self.position[0][1], other.position[0][1]),
-                           cmp(self.position[1][1], other.position[1][1]),
-                           cmp(self.position[0][0], other.position[0][0]),
-                           cmp(self.position[1][0], other.position[1][0])):
-            if cmp_result != 0:
-                return cmp_result
+        for (x, y) in ((self.position[0][1], other.position[0][1]),
+                       (self.position[1][1], other.position[1][1]),
+                       (self.position[0][0], other.position[0][0]),
+                       (self.position[1][0], other.position[1][0])):
+            if (x < y):
+                return -1
+            elif (x > y):
+                return 1
         return 0
 
     def __lt__(self, other):
@@ -294,7 +303,7 @@ class _WordHTMLParser(HTMLParser):
             try:
                 position = self.__parse_position(position)
                 self.__current_box_position = position
-            except Exception, exc:
+            except Exception:
                 # invalid position --> old format --> we ignore this tag
                 self.__tag_types.append("ignore")
                 return
@@ -307,7 +316,8 @@ class _WordHTMLParser(HTMLParser):
     def handle_data(self, data):
         if self.__current_box_text == None:
             return
-        self.__current_box_text += unicode(data)
+        data = u"%s" % data
+        self.__current_box_text += data
 
     def handle_endtag(self, tag):
         if tag != 'span':
@@ -451,12 +461,15 @@ class WordBoxBuilder(object):
             The file_descriptor must support UTF-8 ! (see module 'codecs')
         """
         global _XHTML_HEADER
+
+        impl = xml.dom.minidom.getDOMImplementation()
+        newdoc = impl.createDocument(None, "root", None)
+
         file_descriptor.write(_XHTML_HEADER)
         file_descriptor.write(u"<body>\n")
         for box in boxes:
-            xml_str = box.get_xml_tag().toxml()
-            xml_utf = u" " + xml_str.decode('utf-8')
-            file_descriptor.write(xml_utf + u"<br/>\n")
+            xml_str = u"%s" % box.get_xml_tag(newdoc).toxml()
+            file_descriptor.write(xml_str + u"<br/>\n")
         file_descriptor.write(u"</body>\n")
 
     @staticmethod
@@ -507,12 +520,17 @@ class LineBoxBuilder(object):
             The file_descriptor must support UTF-8 ! (see module 'codecs')
         """
         global _XHTML_HEADER
+
+        impl = xml.dom.minidom.getDOMImplementation()
+        newdoc = impl.createDocument(None, "root", None)
+
         file_descriptor.write(_XHTML_HEADER)
         file_descriptor.write(u"<body>\n")
         for box in boxes:
-            xml_str = box.get_xml_tag().toxml()
-            xml_utf = xml_str.decode('utf-8')
-            file_descriptor.write(xml_utf + u"<br/>\n")
+            xml_str = box.get_xml_tag(newdoc).toxml()
+            if hasattr(xml_str, 'decode'):
+                xml_str = xml_str.decode('utf-8')
+            file_descriptor.write(xml_str + u"<br/>\n")
         file_descriptor.write(u"</body>\n")
 
     @staticmethod

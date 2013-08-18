@@ -5,8 +5,8 @@ cuneiform.py is a wrapper for Cuneiform
 USAGE:
  > from PIL import Image
  > from cuneiform import image_to_string
- > print(image_to_string(Image.open('test.png')))
- > print(image_to_string(Image.open('test-european.jpg'), lang='fra'))
+ > print image_to_string(Image.open('test.png'))
+ > print image_to_string(Image.open('test-european.jpg'), lang='fra')
 
 COPYRIGHT:
 Pyocr is released under the GPL v3.
@@ -16,11 +16,12 @@ https://github.com/jflesch/python-tesseract#readme
 '''
 
 import codecs
+from io import BytesIO
 import os
 import re
-import StringIO
 import subprocess
 import sys
+import tempfile
 
 import builders
 import util
@@ -68,15 +69,9 @@ class CuneiformError(Exception):
         self.args = (status, message)
 
 
-def tempnam():
-    ''' Returns a temporary file-name '''
-    # prevent os.tempnam from printing an error
-    stderr = sys.stderr
-    try:
-        sys.stderr = StringIO.StringIO()
-        return os.tempnam(None, 'cuneiform_')
-    finally:
-        sys.stderr = stderr
+def temp_file(suffix):
+    ''' Returns a temporary file '''
+    return tempfile.NamedTemporaryFile(prefix='cuneiform_', suffix=suffix)
 
 
 def cleanup(filename):
@@ -91,19 +86,15 @@ def image_to_string(image, lang=None, builder=None):
     if builder == None:
         builder = builders.TextBuilder()
 
-    output_file_name_base = tempnam()
-    output_file_name = ('%s.%s' % (output_file_name_base,
-                                   builder.file_extension))
+    with temp_file(builder.file_extension) as output_file:
+        cmd = [CUNEIFORM_CMD]
+        if lang != None:
+            cmd += ["-l", lang]
+        cmd += builder.cuneiform_args
+        cmd += ["-o", output_file.name]
+        cmd += ["-"]  # stdin
 
-    cmd = [CUNEIFORM_CMD]
-    if lang != None:
-        cmd += ["-l", lang]
-    cmd += builder.cuneiform_args
-    cmd += ["-o", output_file_name]
-    cmd += ["-"]  # stdin
-
-    try:
-        img_data = StringIO.StringIO()
+        img_data = BytesIO()
         image.save(img_data, format="png")
 
         proc = subprocess.Popen(cmd,
@@ -112,16 +103,14 @@ def image_to_string(image, lang=None, builder=None):
                                 stderr=subprocess.STDOUT)
         proc.stdin.write(img_data.getvalue())
         proc.stdin.close()
-        output = proc.stdout.read()
+        output = proc.stdout.read().decode('utf-8')
         retcode = proc.wait()
         if retcode:
             raise CuneiformError(retcode, output)
-        with codecs.open(output_file_name, 'r', encoding='utf-8',
+        with codecs.open(output_file.name, 'r', encoding='utf-8',
                          errors='replace') as file_desc:
             results = builder.read_file(file_desc)
         return results
-    finally:
-        cleanup(output_file_name)
 
 
 def is_available():
@@ -131,7 +120,7 @@ def is_available():
 def get_available_languages():
     proc = subprocess.Popen([CUNEIFORM_CMD, "-l"], stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT)
-    output = proc.stdout.read()
+    output = proc.stdout.read().decode('utf-8')
     proc.wait()
     languages = []
     for line in output.split("\n"):
@@ -148,7 +137,7 @@ def get_available_languages():
 def get_version():
     proc = subprocess.Popen([CUNEIFORM_CMD], stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT)
-    output = proc.stdout.read()
+    output = proc.stdout.read().decode('utf-8')
     proc.wait()
     for line in output.split("\n"):
         m = VERSION_LINE_RE.match(line)

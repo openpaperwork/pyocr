@@ -19,8 +19,7 @@ if __name__ == '__main__':
         if available:
             print("  get_version(): %s" % (str(tool.get_version())))
             print("  get_available_languages(): ")
-            for lang in tool.get_available_languages():
-                print("%s, " % (lang))
+            print("    " + ", ".join(tool.get_available_languages()))
         print("")
     print("")
 
