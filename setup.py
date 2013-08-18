@@ -28,7 +28,8 @@ setup(name="pyocr",
       package_dir={ 'pyocr': 'src' },
       data_files=[],
       scripts=[],
-      # pyocr can use Pillow or PIL objects
-      install_requires=[],
+      install_requires=[
+          "Pillow",
+      ],
      )
 
