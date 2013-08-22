@@ -74,10 +74,14 @@ the first tests verifie that you're using the expected version.
 ## Copyright
 
 Pyocr is released under the GPL v3+.
+
 tesseract.py:
-  Copyright (c) Samuel Hoffstaetter, 2009
-  Copyright (c) Jerome Flesch, 2011-2013
+
+* Copyright (c) Samuel Hoffstaetter, 2009
+* Copyright (c) Jerome Flesch, 2011-2013
+
 other files:
-  Copyright (c) Jerome Flesch, 2011-2013
+
+* Copyright (c) Jerome Flesch, 2011-2013
 
 https://github.com/jflesch/pyocr
