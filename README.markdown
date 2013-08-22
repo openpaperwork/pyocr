@@ -21,7 +21,7 @@ bmp, tiff, and others. It also support bounding box data.
     from pyocr import pyocr
 	import pyocr.builders
 
-    tools = pyocr.get_available_tools()[:]
+    tools = pyocr.get_available_tools()
     if len(tools) == 0:
         print("No OCR tool found")
         sys.exit(1)
@@ -29,6 +29,12 @@ bmp, tiff, and others. It also support bounding box data.
     txt = tools[0].image_to_string(Image.open('test.png'),
 	                               lang='fra',
                                    builder=pyocr.builders.TextBuilder())
+    word_boxes = tools[0].image_to_string(Image.open('test.png'),
+	                               lang='fra',
+                                   builder=pyocr.builders.WordBoxBuilder())
+    line_and_word_boxes = tools[0].image_to_string(Image.open('test.png'),
+	                               lang='fra',
+                                   builder=pyocr.builders.LineBoxBuilder())
 
 
 ## Dependencies
