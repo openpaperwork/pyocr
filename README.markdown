@@ -18,7 +18,7 @@ bmp, tiff, and others. It also support bounding box data.
     from PIL import Image
     import sys
 
-    from pyocr import pyocr
+    import pyocr
     import pyocr.builders
 
     tools = pyocr.get_available_tools()
