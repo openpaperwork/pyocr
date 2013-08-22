@@ -1,3 +1,5 @@
+# PyOCR
+
 Pyocr is an optical character recognition (OCR) tool wrapper for python.
 That is, it helps using OCR tools from a Python program.
 
@@ -11,7 +13,7 @@ It can read all image types supported by
 bmp, tiff, and others. It also support bounding box data.
 
 
-# Usage
+## Usage
 
     from PIL import Image
     import sys
@@ -29,7 +31,7 @@ bmp, tiff, and others. It also support bounding box data.
                                    builder=pyocr.builders.TextBuilder())
 
 
-# Dependencies
+## Dependencies
 
 * Pyocr requires python 2.7 or later.
 * You will need [Pillow](https://github.com/python-imaging/Pillow)
@@ -43,18 +45,18 @@ bmp, tiff, and others. It also support bounding box data.
   * or cuneiform
 
 
-# Installation
+## Installation
 
     $ sudo python ./setup.py install
 
 
-# Tests
+## Tests
 
 Tests are made to be run with the latest versions of Tesseract and Cuneiform.
 the first tests verifie that you're using the expected version.
 
 
-# Copyright
+## Copyright
 
 Pyocr is released under the GPL v3+.
 tesseract.py:
