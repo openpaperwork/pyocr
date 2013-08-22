@@ -4,11 +4,11 @@ from setuptools import setup
 
 setup(name="pyocr",
       # Don't forget to update src/pyocr.py:VERSION as well
-      version="0.2.0-git",
+      version="0.2.1",
       description="A Python wrapper for OCR engines (Tesseract, Cuneiform, etc)",
       keywords="tesseract cuneiform ocr",
       url="https://github.com/jflesch/pyocr",
-      download_url="https://github.com/jflesch/pyocr/archive/v0.2.zip",
+      download_url="https://github.com/jflesch/pyocr/archive/v0.2.1.zip",
       classifiers=[
           "Development Status :: 5 - Production/Stable",
           "Intended Audience :: Developers",

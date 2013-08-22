@@ -1,11 +1,17 @@
-v0.1.2 --> 0.2:
+0.2.0 --> 0.2.1:
+* Make it possible to use 'import pyocr' instead of 'from pyocr import pyocr'.
+  'from pyocr import pyocr' still works.
+* Fix dependency list: depends on Pillow (it's untested with PIL)
+* Fix pyocr.VERSION
+
+0.1.2 --> 0.2.0:
 * Python 3.x support
 
-v0.1.1 --> v0.1.2:
+0.1.1 --> 0.1.2:
 * Tesseract: Fix version parsing
 * Tesseract: Fix Tesseract 3.02.01's hOCR format support
 
-v0.1 --> v0.1.1:
+0.1 --> 0.1.1:
 * hOCR: Parse lines as well as words
 * tesseract.get_available_languages() : Fix fedora support
 * Fix UTF-8 support
