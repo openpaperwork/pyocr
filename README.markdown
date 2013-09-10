@@ -68,7 +68,12 @@ bmp, tiff, and others. It also support bounding box data.
 ## Tests
 
 Tests are made to be run with the latest versions of Tesseract and Cuneiform.
-the first tests verifie that you're using the expected version.
+the first tests verify that you're using the expected version.
+
+To run the tests, you will need the following lang support:
+- English (tesseract-ocr-eng)
+- French (tesseract-ocr-fra)
+- Japanese (tesseract-ocr-jpn)
 
 
 ## Copyright

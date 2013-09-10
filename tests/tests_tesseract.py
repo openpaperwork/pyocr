@@ -29,12 +29,16 @@ class TestContext(unittest.TestCase):
 
     def test_langs(self):
         langs = tesseract.get_available_languages()
-        self.assertTrue("eng" in langs, 
+        self.assertTrue("eng" in langs,
                         ("English training does not appear to be installed."
                          " (required for the tests)"))
         self.assertTrue("fra" in langs,
                         ("French training does not appear to be installed."
                          " (required for the tests)"))
+        self.assertTrue("jpn" in langs,
+                        ("Japanese training does not appear to be installed."
+                         " (required for the tests)"))
+
 
     def tearDown(self):
         pass
@@ -73,6 +77,9 @@ class TestTxt(unittest.TestCase):
     def test_french(self):
         self.__test_txt('test-french.jpg', 'test-french.txt', 'fra')
 
+    def test_japanese(self):
+        self.__test_txt('test-japanese.jpg', 'test-japanese.txt', 'jpn')
+
     def tearDown(self):
         pass
 
@@ -110,6 +117,9 @@ class TestCharBox(unittest.TestCase):
 
     def test_french(self):
         self.__test_txt('test-french.jpg', 'test-french.box', 'fra')
+
+    def test_japanese(self):
+        self.__test_txt('test-japanese.jpg', 'test-japanese.box', 'jpn')
 
     def test_write_read(self):
         original_boxes = tesseract.image_to_string(
@@ -180,6 +190,9 @@ class TestWordBox(unittest.TestCase):
     def test_french(self):
         self.__test_txt('test-french.jpg', 'test-french.words', 'fra')
 
+    def test_japanese(self):
+        self.__test_txt('test-japanese.jpg', 'test-japanese.words', 'jpn')
+
     def test_write_read(self):
         original_boxes = tesseract.image_to_string(
             Image.open("tests/data/test.png"), builder=self.builder)
@@ -243,6 +256,9 @@ class TestLineBox(unittest.TestCase):
     def test_french(self):
         self.__test_txt('test-french.jpg', 'test-french.lines', 'fra')
 
+    def test_japanese(self):
+        self.__test_txt('test-japanese.jpg', 'test-japanese.lines', 'jpn')
+
     def test_write_read(self):
         original_boxes = tesseract.image_to_string(
             Image.open("tests/data/test.png"), builder=self.builder)
@@ -291,6 +307,7 @@ def get_all_tests():
         'test_basic',
         'test_european',
         'test_french',
+        'test_japanese',
         'test_write_read',
     ]
     tests = unittest.TestSuite(map(TestCharBox, test_names))
