@@ -67,6 +67,8 @@ bmp, tiff, and others. It also support bounding box data.
 
 ## Tests
 
+    $ python ./run_tests.py
+
 Tests are made to be run with the latest versions of Tesseract and Cuneiform.
 the first tests verify that you're using the expected version.
 
