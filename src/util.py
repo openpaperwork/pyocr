@@ -3,6 +3,12 @@
 import os
 
 
+def to_unicode(string):
+    if hasattr(string, 'decode'):
+        return string.decode('utf-8')
+    return string
+
+
 def is_on_path(exec_name):
     """
     Indicates if the command 'exec_name' appears to be installed.

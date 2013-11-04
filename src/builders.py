@@ -14,6 +14,8 @@ except ImportError:
 import re
 import xml
 
+from util import to_unicode
+
 __all__ = [
     'Box',
     'TextBuilder',
@@ -21,12 +23,12 @@ __all__ = [
     'LineBoxBuilder',
 ]
 
-_XHTML_HEADER = u"""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+_XHTML_HEADER = to_unicode("""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <head>
 \t<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 </head>
-"""
+""")
 
 class Box(object):
     """
@@ -44,7 +46,7 @@ class Box(object):
                 ((width_pt_x, height_pt_x), (width_pt_y, height_pt_y))
         """
         if hasattr(content, 'decode'):
-            content = u"%s" % content
+            content = to_unicode("%s") % content
         self.content = content
         self.position = position
 
@@ -54,7 +56,7 @@ class Box(object):
         This string can be stored in a file as-is (see write_box_file())
         and reread using read_box_file().
         """
-        return u"%s %d %d %d %d" % (
+        return to_unicode("%s %d %d %d %d") % (
             self.content,
             self.position[0][0],
             self.position[0][1],
@@ -142,10 +144,10 @@ class LineBox(object):
         This string can be stored in a file as-is (see write_box_file())
         and reread using read_box_file().
         """
-        txt = u"[\n"
+        txt = to_unicode("[\n")
         for box in self.word_boxes:
-            txt += u"  %s\n" % box.get_unicode_string()
-        return u"%s] %d %d %d %d" % (
+            txt += to_unicode("  %s\n") % box.get_unicode_string()
+        return to_unicode("%s] %d %d %d %d") % (
             txt,
             self.position[0][0],
             self.position[0][1],
@@ -154,9 +156,9 @@ class LineBox(object):
         )
 
     def __get_content(self):
-        txt = u""
+        txt = to_unicode("")
         for box in self.word_boxes:
-            txt += box.content + u" "
+            txt += box.content + to_unicode(" ")
         txt = txt.strip()
         return txt
 
@@ -307,7 +309,7 @@ class _WordHTMLParser(HTMLParser):
                 # invalid position --> old format --> we ignore this tag
                 self.__tag_types.append("ignore")
                 return
-            self.__current_box_text = u""
+            self.__current_box_text = to_unicode("")
         elif tag_type == 'ocr_line':
             self.__current_line_position = self.__parse_position(position)
             self.__current_line_content = []
@@ -316,7 +318,7 @@ class _WordHTMLParser(HTMLParser):
     def handle_data(self, data):
         if self.__current_box_text == None:
             return
-        data = u"%s" % data
+        data = to_unicode("%s") % data
         self.__current_box_text += data
 
     def handle_endtag(self, tag):
@@ -371,7 +373,7 @@ class _LineHTMLParser(HTMLParser):
                     tag_type = TAG_TYPE_POSITIONS
 
         if tag_type == TAG_TYPE_CONTENT:
-            self.__line_text = u""
+            self.__line_text = to_unicode("")
             self.__char_positions = []
             return
         elif tag_type == TAG_TYPE_POSITIONS:
@@ -466,11 +468,11 @@ class WordBoxBuilder(object):
         newdoc = impl.createDocument(None, "root", None)
 
         file_descriptor.write(_XHTML_HEADER)
-        file_descriptor.write(u"<body>\n")
+        file_descriptor.write(to_unicode("<body>\n"))
         for box in boxes:
-            xml_str = u"%s" % box.get_xml_tag(newdoc).toxml()
-            file_descriptor.write(xml_str + u"<br/>\n")
-        file_descriptor.write(u"</body>\n")
+            xml_str = to_unicode("%s") % box.get_xml_tag(newdoc).toxml()
+            file_descriptor.write(xml_str + to_unicode("<br/>\n"))
+        file_descriptor.write(to_unicode("</body>\n"))
 
     @staticmethod
     def __str__():
@@ -525,13 +527,13 @@ class LineBoxBuilder(object):
         newdoc = impl.createDocument(None, "root", None)
 
         file_descriptor.write(_XHTML_HEADER)
-        file_descriptor.write(u"<body>\n")
+        file_descriptor.write(to_unicode("<body>\n"))
         for box in boxes:
             xml_str = box.get_xml_tag(newdoc).toxml()
             if hasattr(xml_str, 'decode'):
                 xml_str = xml_str.decode('utf-8')
-            file_descriptor.write(xml_str + u"<br/>\n")
-        file_descriptor.write(u"</body>\n")
+            file_descriptor.write(xml_str + to_unicode("<br/>\n"))
+        file_descriptor.write(to_unicode("</body>\n"))
 
     @staticmethod
     def __str__():
