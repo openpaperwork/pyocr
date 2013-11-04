@@ -14,7 +14,7 @@ except ImportError:
 import re
 import xml
 
-from util import to_unicode
+from .util import to_unicode
 
 __all__ = [
     'Box',

@@ -7,8 +7,8 @@ import tempfile
 
 import unittest
 
-import builders
-import cuneiform
+from pyocr import builders
+from pyocr import cuneiform
 
 
 class TestContext(unittest.TestCase):

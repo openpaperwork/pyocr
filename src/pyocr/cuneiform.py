@@ -23,8 +23,8 @@ import subprocess
 import sys
 import tempfile
 
-import builders
-import util
+from . import builders
+from . import util
 
 
 # CHANGE THIS IF CUNEIFORM IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY

@@ -4,9 +4,9 @@ import sys
 sys.path = [ "src" ] + sys.path
 import unittest
 
-import cuneiform
-import pyocr
-import tesseract
+from pyocr import cuneiform
+from pyocr import pyocr
+from pyocr import tesseract
 
 from tests import tests_cuneiform
 from tests import tests_tesseract

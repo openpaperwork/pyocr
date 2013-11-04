@@ -23,8 +23,8 @@ import sys
 import tempfile
 import xml.dom.minidom
 
-import builders
-import util
+from . import builders
+from . import util
 
 
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY

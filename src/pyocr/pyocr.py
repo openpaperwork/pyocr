@@ -45,8 +45,8 @@ WEBSITE:
 https://github.com/jflesch/python-tesseract#readme
 """
 
-import cuneiform
-import tesseract
+from . import cuneiform
+from . import tesseract
 
 __all__ = [
     'get_available_tools',

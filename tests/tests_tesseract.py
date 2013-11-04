@@ -7,8 +7,8 @@ import tempfile
 
 import unittest
 
-import builders
-import tesseract
+from pyocr import builders
+from pyocr import tesseract
 
 
 class TestContext(unittest.TestCase):
