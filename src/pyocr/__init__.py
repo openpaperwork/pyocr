@@ -1,1 +1,1 @@
-from pyocr import *
+from .pyocr import *
