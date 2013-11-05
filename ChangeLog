@@ -1,6 +1,10 @@
+0.2.1 --> 0.2.2:
+* Fix Python 3 support
+* Add support for Tesseract on Heroku
+
 0.2.0 --> 0.2.1:
 * Make it possible to use 'import pyocr' instead of 'from pyocr import pyocr'.
-  'from pyocr import pyocr' still works.
+  'from pyocr import pyocr' still works but is obsolete.
 * Fix dependency list: depends on Pillow (it's untested with PIL)
 * Fix pyocr.VERSION
 
