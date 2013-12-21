@@ -212,6 +212,7 @@ def image_to_string(image, lang=None, builder=None):
                                        builder.file_extension))
 
         try:
+            image = image.convert("RGB")
             image.save(input_file.name)
             (status, errors) = run_tesseract(input_file.name,
                                              output_file_name_base,
