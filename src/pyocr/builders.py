@@ -282,12 +282,15 @@ class _WordHTMLParser(HTMLParser):
 
     @staticmethod
     def __parse_position(title):
-        title = title.split("; ")
-        title = title[-1]
-        title = title.split(" ")
-        position = ((int(title[1]), int(title[2])),
-                    (int(title[3]), int(title[4])))
-        return position
+        for piece in title.split("; "):
+            piece = piece.strip()
+            if not piece.startswith("bbox"):
+                continue
+            piece = piece.split(" ")
+            position = ((int(piece[1]), int(piece[2])),
+                        (int(piece[3]), int(piece[4])))
+            return position
+        raise Exception("Invalid hocr position: %s" % title)
 
     def handle_starttag(self, tag, attrs):
         if (tag != "span"):
