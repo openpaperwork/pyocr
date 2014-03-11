@@ -86,7 +86,7 @@ def image_to_string(image, lang=None, builder=None):
     if builder == None:
         builder = builders.TextBuilder()
 
-    with temp_file(builder.file_extension) as output_file:
+    with temp_file(builder.file_extensions[0]) as output_file:
         cmd = [CUNEIFORM_CMD]
         if lang != None:
             cmd += ["-l", lang]

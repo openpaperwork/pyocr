@@ -60,7 +60,7 @@ class CharBoxBuilder(object):
     Box. Each box correspond to a character recognized in the image.
     """
 
-    file_extension = "box"
+    file_extensions = ["box"]
     tesseract_configs = ['batch.nochop', 'makebox']
 
     def __init__(self):
@@ -208,23 +208,32 @@ def image_to_string(image, lang=None, builder=None):
     with temp_file(".bmp") as input_file:
         with temp_file('')  as output_file:
             output_file_name_base = output_file.name
-        output_file_name = ('%s.%s' % (output_file_name_base,
-                                       builder.file_extension))
 
-        try:
-            image.save(input_file.name)
-            (status, errors) = run_tesseract(input_file.name,
-                                             output_file_name_base,
-                                             lang=lang,
-                                             configs=builder.tesseract_configs)
-            if status:
-                raise TesseractError(status, errors)
-            with codecs.open(output_file_name, 'r', encoding='utf-8',
-                             errors='replace') as file_desc:
-                results = builder.read_file(file_desc)
-            return results
-        finally:
-            cleanup(output_file_name)
+        image.save(input_file.name)
+        (status, errors) = run_tesseract(input_file.name,
+                                         output_file_name_base,
+                                         lang=lang,
+                                         configs=builder.tesseract_configs)
+        if status:
+            raise TesseractError(status, errors)
+
+        output_file_name = "ERROR"
+        for file_extension in builder.file_extensions:
+            output_file_name = ('%s.%s' % (output_file_name_base,
+                                           file_extension))
+            if not os.access(output_file_name, os.F_OK):
+                continue
+
+            try:
+                with codecs.open(output_file_name, 'r', encoding='utf-8',
+                                 errors='replace') as file_desc:
+                    results = builder.read_file(file_desc)
+                return results
+            finally:
+                cleanup(output_file_name)
+            break
+        raise TesseractError(-1, "Unable to find output file"
+                             " last name tried: %s" % output_file_name)
 
 
 def is_available():

@@ -235,7 +235,7 @@ class TextBuilder(object):
         The returned string is encoded in UTF-8
     """
 
-    file_extension = "txt"
+    file_extensions = ["txt"]
     tesseract_configs = []
     cuneiform_args = ["-f", "text"]
 
@@ -430,7 +430,7 @@ class WordBoxBuilder(object):
     Box. Each box contains a word recognized in the image.
     """
 
-    file_extension = "html"
+    file_extensions = ["html", "hocr"]
     tesseract_configs = ['hocr']
     cuneiform_args = ["-f", "hocr"]
 
@@ -485,7 +485,7 @@ class LineBoxBuilder(object):
     LineBox. Each box contains a word recognized in the image.
     """
 
-    file_extension = "html"
+    file_extensions = ["html", "hocr"]
     tesseract_configs = ['hocr']
     cuneiform_args = ["-f", "hocr"]
 
