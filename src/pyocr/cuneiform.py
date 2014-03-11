@@ -95,6 +95,7 @@ def image_to_string(image, lang=None, builder=None):
         cmd += ["-"]  # stdin
 
         img_data = BytesIO()
+        image = image.convert("RGB")
         image.save(img_data, format="png")
 
         proc = subprocess.Popen(cmd,

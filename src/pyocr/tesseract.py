@@ -209,6 +209,7 @@ def image_to_string(image, lang=None, builder=None):
         with temp_file('')  as output_file:
             output_file_name_base = output_file.name
 
+        image = image.convert("RGB")
         image.save(input_file.name)
         (status, errors) = run_tesseract(input_file.name,
                                          output_file_name_base,
