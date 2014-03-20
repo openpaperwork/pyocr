@@ -1,3 +1,10 @@
+0.2.2 --> 0.2.3:
+* Strip the alpha channel from images before running the OCR. It's basically
+  useless and can prevent the tool from working correctly.
+* Make hOCR parsing more resistant (handle extra data around box positions)
+* Fix: Take into account that new versions of Tesseract uses the file
+  extension .hocr instead of .html
+
 0.2.1 --> 0.2.2:
 * Fix Python 3 support
 * Add support for Tesseract on Heroku
