@@ -46,7 +46,7 @@ __all__ = [
     'CharBoxBuilder',
     'get_available_builders',
     'get_available_languages',
-    'get_name'
+    'get_name',
     'get_version',
     'image_to_string',
     'is_available',

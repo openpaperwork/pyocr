@@ -22,6 +22,8 @@ class TestContext(unittest.TestCase):
         self.assertTrue(tesseract.is_available(),
                        "Tesseract not found. Is it installed ?")
 
+    @unittest.skipIf(tesseract.get_version() != (3, 2, 1),
+                     "This test only works with Tesseract 3.02.1")
     def test_version(self):
         self.assertEqual(tesseract.get_version(), (3, 2, 1),
                          ("Tesseract does not have the expected version"
@@ -71,9 +73,13 @@ class TestTxt(unittest.TestCase):
     def test_basic(self):
         self.__test_txt('test.png', 'test.txt')
 
+    @unittest.skipIf(tesseract.get_version() != (3, 2, 1),
+                     "This test only works with Tesseract 3.02.1")
     def test_european(self):
         self.__test_txt('test-european.jpg', 'test-european.txt')
 
+    @unittest.skipIf(tesseract.get_version() != (3, 2, 1),
+                     "This test only works with Tesseract 3.02.1")
     def test_french(self):
         self.__test_txt('test-french.jpg', 'test-french.txt', 'fra')
 
@@ -118,6 +124,8 @@ class TestCharBox(unittest.TestCase):
     def test_french(self):
         self.__test_txt('test-french.jpg', 'test-french.box', 'fra')
 
+    @unittest.skipIf(tesseract.get_version() != (3, 2, 1),
+                     "This test requires Tesseract 3.02.1")
     def test_japanese(self):
         self.__test_txt('test-japanese.jpg', 'test-japanese.box', 'jpn')
 
@@ -190,6 +198,8 @@ class TestWordBox(unittest.TestCase):
     def test_french(self):
         self.__test_txt('test-french.jpg', 'test-french.words', 'fra')
 
+    @unittest.skipIf(tesseract.get_version() != (3, 2, 1),
+                     "This test requires Tesseract 3.02.1")
     def test_japanese(self):
         self.__test_txt('test-japanese.jpg', 'test-japanese.words', 'jpn')
 
@@ -256,6 +266,8 @@ class TestLineBox(unittest.TestCase):
     def test_french(self):
         self.__test_txt('test-french.jpg', 'test-french.lines', 'fra')
 
+    @unittest.skipIf(tesseract.get_version() != (3, 2, 1),
+                     "This test requires Tesseract 3.02.1")
     def test_japanese(self):
         self.__test_txt('test-japanese.jpg', 'test-japanese.lines', 'jpn')
 
