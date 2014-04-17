@@ -239,7 +239,8 @@ class TextBuilder(object):
     tesseract_configs = []
     cuneiform_args = ["-f", "text"]
 
-    def __init__(self):
+    def __init__(self, tesseract_layout=3):
+        self.tesseract_configs = ["-psm", str(tesseract_layout)]
         pass
 
     @staticmethod
