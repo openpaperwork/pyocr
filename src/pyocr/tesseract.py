@@ -44,6 +44,7 @@ TESSDATA_EXTENSION = ".traineddata"
 
 __all__ = [
     'CharBoxBuilder',
+    'DigitBuilder'
     'get_available_builders',
     'get_available_languages',
     'get_name',
@@ -103,6 +104,21 @@ class CharBoxBuilder(object):
     @staticmethod
     def __str__():
         return "Character boxes"
+
+
+class DigitBuilder(builders.TextBuilder):
+    """
+    If passed to image_to_string(), image_to_string() will return a string with only digits.
+    Characters recognition will consider text as if it will only composed by digits
+    """
+
+    @staticmethod
+    def __str__():
+        return "Digits only"
+
+    def __init__(self, tesseract_layout=3):
+        super(DigitBuilder, self).__init__(tesseract_layout)
+        self.tesseract_configs.append("digits")
 
 
 def get_name():

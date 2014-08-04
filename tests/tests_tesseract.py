@@ -155,6 +155,32 @@ class TestCharBox(unittest.TestCase):
         pass
 
 
+class TestDigits(unittest.TestCase):
+    """
+    These tests make sure that Tesseract digits handling works fine.
+    """
+    def setUp(self):
+        self.builder = tesseract.DigitBuilder()
+
+    def __test_text(self, image_file, expected_output_file, lang='eng'):
+        image_file = "tests/data/" + image_file
+        expected_output_file = "tests/tesseract/" + expected_output_file
+
+        expected_output = ""
+        with codecs.open(expected_output_file, 'r', encoding='utf-8') \
+                as file_descriptor:
+            for line in file_descriptor:
+                expected_output += line
+        expected_output = expected_output.strip()
+
+        output = tesseract.image_to_string(Image.open(image_file), lang=lang, builder=self.builder)
+
+        self.assertEqual(output, expected_output)
+
+    def test_digits(self):
+        self.__test_text('test-digits.png', 'test-digits.txt')
+
+
 class TestWordBox(unittest.TestCase):
     """
     These tests make sure that Tesseract box handling works fine.
@@ -296,6 +322,7 @@ class TestLineBox(unittest.TestCase):
     def tearDown(self):
         pass
 
+
 def get_all_tests():
     all_tests = unittest.TestSuite()
 
@@ -327,6 +354,12 @@ def get_all_tests():
     tests = unittest.TestSuite(map(TestWordBox, test_names))
     all_tests.addTest(tests)
     tests = unittest.TestSuite(map(TestLineBox, test_names))
+    all_tests.addTest(tests)
+
+    test_names = [
+        'test_digits'
+    ]
+    tests = unittest.TestSuite(map(TestDigits, test_names))
     all_tests.addTest(tests)
 
     return all_tests
