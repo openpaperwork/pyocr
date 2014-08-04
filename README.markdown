@@ -44,11 +44,16 @@ bmp, tiff, and others. It also support bounding box data.
     line_and_word_boxes = tool.image_to_string(
             Image.open('test.png'), lang=lang,
             builder=pyocr.builders.LineBoxBuilder())
+            
+    # Digits - Only Tesseract
+    digits = tool.image_to_string(Image.open('test-digits.png'),
+                                  lang=lang,
+                                  builder=pyocr.tesseract.DigitBuilder())    
 
 
 ## Dependencies
 
-* Pyocr requires python 2.7 or later.
+* Pyocr requires python 2.6 or later.
 * You will need [Pillow](https://github.com/python-imaging/Pillow)
   or Python Imaging Library (PIL). Under Debian/Ubuntu, PIL is in
   the package "python-imaging".
