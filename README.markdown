@@ -53,7 +53,7 @@ bmp, tiff, and others. It also support bounding box data.
 
 ## Dependencies
 
-* Pyocr requires python 2.6 or later.
+* Pyocr requires python 2.7 or later.
 * You will need [Pillow](https://github.com/python-imaging/Pillow)
   or Python Imaging Library (PIL). Under Debian/Ubuntu, PIL is in
   the package "python-imaging".
