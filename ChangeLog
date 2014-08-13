@@ -1,3 +1,7 @@
+0.2.3 --> 0.2.4:
+* Tesseract : add digit-only support
+* Tesseract : add support for Tesseract subsets of layout analysis (-psm)
+
 0.2.2 --> 0.2.3:
 * Strip the alpha channel from images before running the OCR. It's basically
   useless and can prevent the tool from working correctly.
