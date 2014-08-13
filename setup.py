@@ -5,7 +5,7 @@ from setuptools import setup
 setup(
     name="pyocr",
     # Don't forget to update src/pyocr/pyocr.py:VERSION as well
-    version="0.2.4",
+    version="0.2.4-git",
     description=("A Python wrapper for OCR engines (Tesseract, Cuneiform,"
                  " etc)"),
     keywords="tesseract cuneiform ocr",
