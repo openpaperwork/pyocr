@@ -37,6 +37,7 @@ TESSDATA_POSSIBLE_PATHS = [
     "/usr/local/share/tesseract-ocr/tessdata",
     "/usr/share/tesseract-ocr/tessdata",
     "/app/vendor/tesseract-ocr/tessdata",  # Heroku
+    "/opt/local/share/tessdata",  # OSX MacPorts
 ]
 
 TESSDATA_EXTENSION = ".traineddata"
