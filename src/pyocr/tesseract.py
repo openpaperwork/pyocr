@@ -19,9 +19,7 @@ https://github.com/jflesch/python-tesseract#readme
 import codecs
 import os
 import subprocess
-import sys
 import tempfile
-import xml.dom.minidom
 
 from . import builders
 from . import util
@@ -109,8 +107,9 @@ class CharBoxBuilder(object):
 
 class DigitBuilder(builders.TextBuilder):
     """
-    If passed to image_to_string(), image_to_string() will return a string with only digits.
-    Characters recognition will consider text as if it will only composed by digits
+    If passed to image_to_string(), image_to_string() will return a string with
+    only digits. Characters recognition will consider text as if it will only
+    composed by digits.
     """
 
     @staticmethod
@@ -161,12 +160,12 @@ def run_tesseract(input_filename, output_filename_base, lang=None,
     if lang is not None:
         command += ['-l', lang]
 
-    if configs != None:
+    if configs is not None:
         command += configs
 
     proc = subprocess.Popen(command,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT)
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT)
     # Beware that in some cases, tesseract may print more on stderr than
     # allowed by the buffer of subprocess.Popen.stderr. So we must read stderr
     # asap or Tesseract will remain stuck when trying to write again on stderr.
@@ -219,11 +218,11 @@ def image_to_string(image, lang=None, builder=None):
         string.
     '''
 
-    if builder == None:
+    if builder is None:
         builder = builders.TextBuilder()
 
     with temp_file(".bmp") as input_file:
-        with temp_file('')  as output_file:
+        with temp_file('') as output_file:
             output_file_name_base = output_file.name
 
         image = image.convert("RGB")
@@ -291,13 +290,13 @@ def get_version():
     command = [TESSERACT_CMD, "-v"]
 
     proc = subprocess.Popen(command,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT)
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT)
     ver_string = proc.stdout.read()
     if hasattr(ver_string, 'decode'):
         ver_string = ver_string.decode('utf-8')
     ret = proc.wait()
-    if not ret in (0, 1):
+    if ret not in (0, 1):
         raise TesseractError(ret, ver_string)
 
     try:
@@ -310,11 +309,10 @@ def get_version():
             upd = els[2]
         return (major, minor, upd)
     except IndexError:
-        raise TesseractError(ret,
-                ("Unable to parse Tesseract version (spliting failed): [%s]"
-                 % (ver_string)))
+        raise TesseractError(
+            ret, ("Unable to parse Tesseract version (spliting failed): [%s]"
+                  % (ver_string)))
     except ValueError:
-        raise TesseractError(ret,
-                ("Unable to parse Tesseract version (not a number): [%s]"
-                 % (ver_string)))
-
+        raise TesseractError(
+            ret, ("Unable to parse Tesseract version (not a number): [%s]"
+                  % (ver_string)))

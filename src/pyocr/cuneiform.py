@@ -20,7 +20,6 @@ from io import BytesIO
 import os
 import re
 import subprocess
-import sys
 import tempfile
 
 from . import builders
@@ -83,12 +82,12 @@ def cleanup(filename):
 
 
 def image_to_string(image, lang=None, builder=None):
-    if builder == None:
+    if builder is None:
         builder = builders.TextBuilder()
 
     with temp_file(builder.file_extensions[0]) as output_file:
         cmd = [CUNEIFORM_CMD]
-        if lang != None:
+        if lang is not None:
             cmd += ["-l", lang]
         cmd += builder.cuneiform_args
         cmd += ["-o", output_file.name]
@@ -143,7 +142,7 @@ def get_version():
     for line in output.split("\n"):
         m = VERSION_LINE_RE.match(line)
         g = m.groups()
-        if m != None:
+        if m is not None:
             ver = (int(g[0]), int(g[1]), int(g[2]))
             return ver
     return None

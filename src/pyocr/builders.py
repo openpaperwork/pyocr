@@ -11,7 +11,6 @@ try:
 except ImportError:
     from html.parser import HTMLParser
 
-import re
 import xml
 
 from .util import to_unicode
@@ -29,6 +28,7 @@ _XHTML_HEADER = to_unicode("""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 \t<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 </head>
 """)
+
 
 class Box(object):
     """
@@ -68,8 +68,8 @@ class Box(object):
         span_tag = parent_doc.createElement("span")
         span_tag.setAttribute("class", "ocrx_word")
         span_tag.setAttribute("title", ("bbox %d %d %d %d" % (
-                (self.position[0][0], self.position[0][1],
-                 self.position[1][0], self.position[1][1]))))
+            (self.position[0][0], self.position[0][1],
+             self.position[1][0], self.position[1][1]))))
         txt = xml.dom.minidom.Text()
         txt.data = self.content.encode('utf-8')
         span_tag.appendChild(txt)
@@ -82,12 +82,12 @@ class Box(object):
         """
         Comparison function.
         """
-        if other == None:
+        if other is None:
             return -1
         for (x, y) in ((self.position[0][1], other.position[0][1]),
-                           (self.position[1][1], other.position[1][1]),
-                           (self.position[0][0], other.position[0][0]),
-                           (self.position[1][0], other.position[1][0])):
+                       (self.position[1][1], other.position[1][1]),
+                       (self.position[0][0], other.position[0][0]),
+                       (self.position[1][0], other.position[1][0])):
             if x < y:
                 return -1
             elif x > y:
@@ -168,8 +168,8 @@ class LineBox(object):
         span_tag = parent_doc.createElement("span")
         span_tag.setAttribute("class", "ocr_line")
         span_tag.setAttribute("title", ("bbox %d %d %d %d" % (
-                (self.position[0][0], self.position[0][1],
-                 self.position[1][0], self.position[1][1]))))
+            (self.position[0][0], self.position[0][1],
+             self.position[1][0], self.position[1][1]))))
         for box in self.word_boxes:
             space = xml.dom.minidom.Text()
             space.data = " "
@@ -185,7 +185,7 @@ class LineBox(object):
         """
         Comparison function.
         """
-        if other == None:
+        if other is None:
             return -1
         for (x, y) in ((self.position[0][1], other.position[0][1]),
                        (self.position[1][1], other.position[1][1]),
@@ -320,7 +320,7 @@ class _WordHTMLParser(HTMLParser):
         self.__tag_types.append(tag_type)
 
     def handle_data(self, data):
-        if self.__current_box_text == None:
+        if self.__current_box_text is None:
             return
         data = to_unicode("%s") % data
         self.__current_box_text += data
@@ -330,7 +330,7 @@ class _WordHTMLParser(HTMLParser):
             return
         tag_type = self.__tag_types.pop()
         if tag_type == 'ocr_word' or tag_type == 'ocrx_word':
-            if (self.__current_box_text == None):
+            if self.__current_box_text is None:
                 return
             box_position = self.__current_box_position
             box = Box(self.__current_box_text, box_position)
@@ -395,12 +395,12 @@ class _LineHTMLParser(HTMLParser):
                 pass
 
     def handle_data(self, data):
-        if self.__line_text == None:
+        if self.__line_text is None:
             return
         self.__line_text += data
 
     def handle_endtag(self, tag):
-        if self.__line_text == None or self.__char_positions == []:
+        if self.__line_text is None or self.__char_positions == []:
             return
         words = self.__line_text.split(" ")
         for word in words:
