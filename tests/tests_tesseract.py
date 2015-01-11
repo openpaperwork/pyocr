@@ -2,7 +2,7 @@ import codecs
 from PIL import Image
 import os
 import sys
-sys.path = [ "src" ] + sys.path
+sys.path = ["src"] + sys.path
 import tempfile
 
 import unittest
@@ -20,7 +20,7 @@ class TestContext(unittest.TestCase):
 
     def test_available(self):
         self.assertTrue(tesseract.is_available(),
-                       "Tesseract not found. Is it installed ?")
+                        "Tesseract not found. Is it installed ?")
 
     def test_version(self):
         self.assertTrue(tesseract.get_version() in (
@@ -40,7 +40,6 @@ class TestContext(unittest.TestCase):
         self.assertTrue("jpn" in langs,
                         ("Japanese training does not appear to be installed."
                          " (required for the tests)"))
-
 
     def tearDown(self):
         pass
@@ -68,7 +67,6 @@ class TestTxt(unittest.TestCase):
         output = tesseract.image_to_string(Image.open(image_file), lang=lang)
 
         self.assertEqual(output, expected_output)
-
 
     def test_basic(self):
         self.__test_txt('test.png', 'test.txt')
@@ -145,11 +143,11 @@ class TestCharBox(unittest.TestCase):
             # we must open the file with codecs.open() for utf-8 support
             os.close(file_descriptor)
 
-            with codecs.open(tmp_path, 'w', encoding='utf-8') as file_descriptor:
-                self.builder.write_file(file_descriptor, original_boxes)
+            with codecs.open(tmp_path, 'w', encoding='utf-8') as fdescriptor:
+                self.builder.write_file(fdescriptor, original_boxes)
 
-            with codecs.open(tmp_path, 'r', encoding='utf-8') as file_descriptor:
-                new_boxes = self.builder.read_file(file_descriptor)
+            with codecs.open(tmp_path, 'r', encoding='utf-8') as fdescriptor:
+                new_boxes = self.builder.read_file(fdescriptor)
 
             self.assertEqual(len(new_boxes), len(original_boxes))
             for i in range(0, len(original_boxes)):
@@ -179,7 +177,8 @@ class TestDigits(unittest.TestCase):
                 expected_output += line
         expected_output = expected_output.strip()
 
-        output = tesseract.image_to_string(Image.open(image_file), lang=lang, builder=self.builder)
+        output = tesseract.image_to_string(Image.open(image_file), lang=lang,
+                                           builder=self.builder)
 
         self.assertEqual(output, expected_output)
 
@@ -247,11 +246,11 @@ class TestWordBox(unittest.TestCase):
             # we must open the file with codecs.open() for utf-8 support
             os.close(file_descriptor)
 
-            with codecs.open(tmp_path, 'w', encoding='utf-8') as file_descriptor:
-                self.builder.write_file(file_descriptor, original_boxes)
+            with codecs.open(tmp_path, 'w', encoding='utf-8') as fdescriptor:
+                self.builder.write_file(fdescriptor, original_boxes)
 
-            with codecs.open(tmp_path, 'r', encoding='utf-8') as file_descriptor:
-                new_boxes = self.builder.read_file(file_descriptor)
+            with codecs.open(tmp_path, 'r', encoding='utf-8') as fdescriptor:
+                new_boxes = self.builder.read_file(fdescriptor)
 
             self.assertEqual(len(new_boxes), len(original_boxes))
             for i in range(0, len(original_boxes)):
@@ -317,11 +316,11 @@ class TestLineBox(unittest.TestCase):
             # we must open the file with codecs.open() for utf-8 support
             os.close(file_descriptor)
 
-            with codecs.open(tmp_path, 'w', encoding='utf-8') as file_descriptor:
-                self.builder.write_file(file_descriptor, original_boxes)
+            with codecs.open(tmp_path, 'w', encoding='utf-8') as fdescriptor:
+                self.builder.write_file(fdescriptor, original_boxes)
 
-            with codecs.open(tmp_path, 'r', encoding='utf-8') as file_descriptor:
-                new_boxes = self.builder.read_file(file_descriptor)
+            with codecs.open(tmp_path, 'r', encoding='utf-8') as fdescriptor:
+                new_boxes = self.builder.read_file(fdescriptor)
 
             self.assertEqual(len(new_boxes), len(original_boxes))
             for i in range(0, len(original_boxes)):
