@@ -11,7 +11,7 @@ try:
 except ImportError:
     from html.parser import HTMLParser
 
-import xml
+import xml.dom.minidom
 
 from .util import to_unicode
 
