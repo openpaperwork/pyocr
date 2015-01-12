@@ -338,6 +338,21 @@ class TestLineBox(unittest.TestCase):
         pass
 
 
+class TestOrientation(unittest.TestCase):
+    def test_can_detect_orientation(self):
+        self.assertTrue(tesseract.can_detect_orientation())
+
+    def test_orientation_0(self):
+        img = Image.open('tests/data/test.png')
+        result = tesseract.detect_orientation(img, lang='eng')
+        self.assertEqual(result['angle'], 0)
+
+    def test_orientation_90(self):
+        img = Image.open('tests/data/test-90.png')
+        result = tesseract.detect_orientation(img, lang='eng')
+        self.assertEqual(result['angle'], 90)
+
+
 def get_all_tests():
     all_tests = unittest.TestSuite()
 
@@ -375,6 +390,14 @@ def get_all_tests():
         'test_digits'
     ]
     tests = unittest.TestSuite(map(TestDigits, test_names))
+    all_tests.addTest(tests)
+
+    test_names = [
+        'test_can_detect_orientation',
+        'test_orientation_0',
+        'test_orientation_90',
+    ]
+    tests = unittest.TestSuite(map(TestOrientation, test_names))
     all_tests.addTest(tests)
 
     return all_tests

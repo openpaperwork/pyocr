@@ -43,7 +43,9 @@ TESSDATA_EXTENSION = ".traineddata"
 
 __all__ = [
     'CharBoxBuilder',
-    'DigitBuilder'
+    'DigitBuilder',
+    'can_detect_orientation',
+    'detect_orientation',
     'get_available_builders',
     'get_available_languages',
     'get_name',
@@ -119,6 +121,59 @@ class DigitBuilder(builders.TextBuilder):
     def __init__(self, tesseract_layout=3):
         super(DigitBuilder, self).__init__(tesseract_layout)
         self.tesseract_configs.append("digits")
+
+
+def can_detect_orientation():
+    version = get_version()
+    return (
+        version[0] > 3
+        or (version[0] == 3 and version[1] >= 3)
+    )
+
+
+def detect_orientation(image, lang=None):
+    """
+    Arguments:
+        image --- Pillow image to analyze
+        lang --- lang to specify to tesseract
+
+    Returns:
+        {
+            'angle': 90,
+            'confidence': 23.73,
+        }
+
+    Raises:
+        TesseractError --- if no script detected on the image
+    """
+    command = [TESSERACT_CMD, 'stdin', 'stdout', "-psm", "0"]
+    if lang is not None:
+        command += ['-l', lang]
+
+    image = image.convert("RGB")
+
+    proc = subprocess.Popen(command, stdin=subprocess.PIPE,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT)
+    image.save(proc.stdin, format='png')
+    proc.stdin.close()
+    output = proc.stdout.read()
+    proc.wait()
+
+    try:
+        output = output.strip()
+        output = output.split("\n")
+        output = [line.split(": ") for line in output]
+        output = {x: y for (x, y) in output}
+        angle = int(output['Orientation in degrees'])
+        # Tesseract reports the angle in the opposite direction the one we want
+        angle = (360 - angle) % 360
+        return {
+            'angle': angle,
+            'confidence': float(output['Orientation confidence']),
+        }
+    except:
+        raise TesseractError("No script found in image")
 
 
 def get_name():

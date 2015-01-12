@@ -39,6 +39,7 @@ LANGUAGES_SPLIT_RE = re.compile("[^a-z]")
 VERSION_LINE_RE = re.compile("Cuneiform for \w+ (\d+).(\d+).(\d+)")
 
 __all__ = [
+    'can_detect_orientation',
     'get_available_builders',
     'get_available_languages',
     'get_name',
@@ -47,6 +48,10 @@ __all__ = [
     'is_available',
     'CuneiformError',
 ]
+
+
+def can_detect_orientation():
+    return False
 
 
 def get_name():
