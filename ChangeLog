@@ -1,3 +1,7 @@
+0.2.4 --> 0.3.0:
+* New API: pyocr.<tool>.can_detect_orientation() and
+  pyocr.<tool>.detect_orientation()
+
 0.2.3 --> 0.2.4:
 * Tesseract : add digit-only support
 * Tesseract : add support for Tesseract subsets of layout analysis (-psm)
