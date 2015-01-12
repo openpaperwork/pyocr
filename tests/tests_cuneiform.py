@@ -144,6 +144,11 @@ class TestWordBox(unittest.TestCase):
         pass
 
 
+class TestOrientation(unittest.TestCase):
+    def test_can_detect_orientation(self):
+        self.assertFalse(cuneiform.can_detect_orientation())
+
+
 def get_all_tests():
     all_tests = unittest.TestSuite()
 
@@ -170,6 +175,12 @@ def get_all_tests():
         'test_write_read',
     ]
     tests = unittest.TestSuite(map(TestWordBox, test_names))
+    all_tests.addTest(tests)
+
+    test_names = [
+        'test_can_detect_orientation',
+    ]
+    tests = unittest.TestSuite(map(TestOrientation, test_names))
     all_tests.addTest(tests)
 
     return all_tests
