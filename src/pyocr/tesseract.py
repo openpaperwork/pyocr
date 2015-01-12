@@ -161,6 +161,7 @@ def detect_orientation(image, lang=None):
     proc.wait()
 
     try:
+        output = output.decode("utf-8")
         output = output.strip()
         output = output.split("\n")
         output = [line.split(": ") for line in output]
@@ -173,7 +174,7 @@ def detect_orientation(image, lang=None):
             'confidence': float(output['Orientation confidence']),
         }
     except:
-        raise TesseractError("No script found in image")
+        raise TesseractError(-1, "No script found in image")
 
 
 def get_name():
