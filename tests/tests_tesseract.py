@@ -26,8 +26,9 @@ class TestContext(unittest.TestCase):
         self.assertTrue(tesseract.get_version() in (
             (3, 2, 1),
             (3, 2, 2),
+            (3, 3, 0),
         ), ("Tesseract does not have the expected version"
-            " (3.02.1) ! Some tests will be skipped !"))
+            " (3.3.0) ! Some tests will be skipped !"))
 
     def test_langs(self):
         langs = tesseract.get_available_languages()
@@ -74,6 +75,7 @@ class TestTxt(unittest.TestCase):
     @unittest.skipIf(tesseract.get_version() not in (
         (3, 2, 1),
         (3, 2, 2),
+        (3, 3, 0),
     ), "This test only works with Tesseract 3.02.1")
     def test_european(self):
         self.__test_txt('test-european.jpg', 'test-european.txt')
@@ -81,6 +83,7 @@ class TestTxt(unittest.TestCase):
     @unittest.skipIf(tesseract.get_version() not in (
         (3, 2, 1),
         (3, 2, 2),
+        (3, 3, 0),
     ), "This test only works with Tesseract 3.02.1")
     def test_french(self):
         self.__test_txt('test-french.jpg', 'test-french.txt', 'fra')
@@ -129,6 +132,7 @@ class TestCharBox(unittest.TestCase):
     @unittest.skipIf(tesseract.get_version() not in (
         (3, 2, 1),
         (3, 2, 2),
+        (3, 3, 0),
     ), "This test requires Tesseract 3.02.1")
     def test_japanese(self):
         self.__test_txt('test-japanese.jpg', 'test-japanese.box', 'jpn')
@@ -232,6 +236,7 @@ class TestWordBox(unittest.TestCase):
     @unittest.skipIf(tesseract.get_version() not in (
         (3, 2, 1),
         (3, 2, 2),
+        (3, 3, 0),
     ), "This test requires Tesseract 3.02.1")
     def test_japanese(self):
         self.__test_txt('test-japanese.jpg', 'test-japanese.words', 'jpn')
@@ -302,6 +307,7 @@ class TestLineBox(unittest.TestCase):
     @unittest.skipIf(tesseract.get_version() not in (
         (3, 2, 1),
         (3, 2, 2),
+        (3, 3, 0),
     ), "This test requires Tesseract 3.02.1")
     def test_japanese(self):
         self.__test_txt('test-japanese.jpg', 'test-japanese.lines', 'jpn')
