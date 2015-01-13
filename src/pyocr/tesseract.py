@@ -10,7 +10,7 @@ USAGE:
  > print(image_to_string(Image.open('test-european.jpg'), lang='fra'))
 
 COPYRIGHT:
-Pyocr is released under the GPL v3.
+PyOCR is released under the GPL v3.
 Copyright (c) Samuel Hoffstaetter, 2009
 Copyright (c) Jerome Flesch, 2011-2012
 https://github.com/jflesch/python-tesseract#readme
