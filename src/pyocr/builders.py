@@ -239,8 +239,17 @@ class TextBuilder(object):
     tesseract_configs = []
     cuneiform_args = ["-f", "text"]
 
-    def __init__(self, tesseract_layout=3):
+    def __init__(self, tesseract_layout=3, cuneiform_dotmatrix=False,
+                 cuneiform_fax=False, cuneiform_singlecolumn=False):
+                     
         self.tesseract_configs = ["-psm", str(tesseract_layout)]
+        # Add custom cuneiform parameters if needed
+        if cuneiform_dotmatrix:
+            self.cuneiform_args.append("--dotmatrix")
+        if cuneiform_fax:
+            self.cuneiform_args.append("--fax")
+        if cuneiform_singlecolumn:
+            self.cuneiform_args.append("--singlecolumn")
         pass
 
     @staticmethod
