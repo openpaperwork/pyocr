@@ -164,7 +164,7 @@ def detect_orientation(image, lang=None):
         output = output.decode("utf-8")
         output = output.strip()
         output = output.split("\n")
-        output = [line.split(": ") for line in output]
+        output = [line.split(": ") for line in output if (": " in line)]
         output = {x: y for (x, y) in output}
         angle = int(output['Orientation in degrees'])
         # Tesseract reports the angle in the opposite direction the one we want
