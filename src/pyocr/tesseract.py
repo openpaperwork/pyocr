@@ -150,12 +150,13 @@ def detect_orientation(image, lang=None):
     if lang is not None:
         command += ['-l', lang]
 
-    image = image.convert("RGB")
+    if image.mode != "RGB":
+        image = image.convert("RGB")
 
     proc = subprocess.Popen(command, stdin=subprocess.PIPE,
                             stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT)
-    image.save(proc.stdin, format='png')
+    image.save(proc.stdin, format=image.format)
     proc.stdin.close()
     output = proc.stdout.read()
     proc.wait()
