@@ -98,9 +98,11 @@ def image_to_string(image, lang=None, builder=None):
         cmd += ["-o", output_file.name]
         cmd += ["-"]  # stdin
 
+        if image.mode != "RGB":
+            image = image.convert("RGB")
+
         img_data = BytesIO()
-        image = image.convert("RGB")
-        image.save(img_data, format="png")
+        image.save(img_data, format=image.format)
 
         proc = subprocess.Popen(cmd,
                                 stdin=subprocess.PIPE,
