@@ -6,7 +6,7 @@ setup(
     name="pyocr",
     # Don't forget to update src/pyocr/pyocr.py:VERSION as well
     # and download_url
-    version="0.3.1",
+    version="0.3.1-git",
     description=("A Python wrapper for OCR engines (Tesseract, Cuneiform,"
                  " etc)"),
     keywords="tesseract cuneiform ocr",
