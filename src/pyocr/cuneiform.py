@@ -102,7 +102,7 @@ def image_to_string(image, lang=None, builder=None):
             image = image.convert("RGB")
 
         img_data = BytesIO()
-        image.save(img_data, format=image.format)
+        image.save(img_data, format="BMP")
 
         proc = subprocess.Popen(cmd,
                                 stdin=subprocess.PIPE,
