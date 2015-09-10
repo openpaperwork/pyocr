@@ -146,36 +146,38 @@ def detect_orientation(image, lang=None):
     Raises:
         TesseractError --- if no script detected on the image
     """
-    command = [TESSERACT_CMD, 'stdin', 'stdout', "-psm", "0"]
-    if lang is not None:
-        command += ['-l', lang]
+    with temp_file(".bmp") as input_file:
+        command = [TESSERACT_CMD, input_file.name, 'stdout', "-psm", "0"]
+        if lang is not None:
+            command += ['-l', lang]
 
-    if image.mode != "RGB":
-        image = image.convert("RGB")
+        if image.mode != "RGB":
+            image = image.convert("RGB")
+        image.save(input_file.name)
 
-    proc = subprocess.Popen(command, stdin=subprocess.PIPE,
-                            stdout=subprocess.PIPE,
-                            stderr=subprocess.STDOUT)
-    image.save(proc.stdin, format=image.format)
-    proc.stdin.close()
-    output = proc.stdout.read()
-    proc.wait()
+        proc = subprocess.Popen(command, stdin=subprocess.PIPE,
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.STDOUT)
+        proc.stdin.close()
+        original_output = proc.stdout.read()
+        proc.wait()
 
-    try:
-        output = output.decode("utf-8")
-        output = output.strip()
-        output = output.split("\n")
-        output = [line.split(": ") for line in output if (": " in line)]
-        output = {x: y for (x, y) in output}
-        angle = int(output['Orientation in degrees'])
-        # Tesseract reports the angle in the opposite direction the one we want
-        angle = (360 - angle) % 360
-        return {
-            'angle': angle,
-            'confidence': float(output['Orientation confidence']),
-        }
-    except:
-        raise TesseractError(-1, "No script found in image")
+        original_output = original_output.decode("utf-8")
+        original_output = original_output.strip()
+        try:
+            output = original_output.split("\n")
+            output = [line.split(": ") for line in output if (": " in line)]
+            output = {x: y for (x, y) in output}
+            angle = int(output['Orientation in degrees'])
+            # Tesseract reports the angle in the opposite direction the one we want
+            angle = (360 - angle) % 360
+            return {
+                'angle': angle,
+                'confidence': float(output['Orientation confidence']),
+            }
+        except:
+            raise TesseractError(-1, "No script found in image (%s)"
+                                 % original_output)
 
 
 def get_name():
@@ -282,7 +284,8 @@ def image_to_string(image, lang=None, builder=None):
         with temp_file('') as output_file:
             output_file_name_base = output_file.name
 
-        image = image.convert("RGB")
+        if image.mode != "RGB":
+            image = image.convert("RGB")
         image.save(input_file.name)
         (status, errors) = run_tesseract(input_file.name,
                                          output_file_name_base,
