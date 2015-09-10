@@ -1,3 +1,13 @@
+0.3.0 --> 0.3.1:
+* tesseract.detect_orientation(): Use a temporary file instead of stdin
+  to transmit the image to Tesseract. Tesseract 3.04 doesn't support
+  stdin + "-psm 0" (regression ?)
+* tesseract.detect_orientation(): Improve output parsing reliability
+* optim: Avoid unnecessary convert to RGB and allow using image formats
+  different from PNG
+* TextBuilder + Cuneiform: add extra settings for Cuneiform
+  (cuneiform_dotmatrix, cuneiform_fax=False, cuneiform_singlecolumn)
+
 0.2.4 --> 0.3.0:
 * New API: pyocr.<tool>.can_detect_orientation() and
   pyocr.<tool>.detect_orientation()

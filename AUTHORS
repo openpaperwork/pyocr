@@ -1,0 +1,12 @@
+$ git shortlog -sne >| AUTHORS
+
+   145	Jerome Flesch <jflesch@gmail.com>
+    12	Samuel Hoffstaetter <samuel@hoffstaetter.com>
+     6	Paulo Miguel Almeida <paulo.ubuntu@gmail.com>
+     3	hoffstaetter <samuel@hoffstaetter.com>
+     2	Ross Vandegrift <ross@kallisti.us>
+     1	Bernard Cafarelli <bernard.cafarelli@gmail.com>
+     1	Gian Luca Dalla Torre <gianluca@gestionaleauto.com>
+     1	Jon Debonis <jon@trov.com>
+     1	Pedro-Juan Ferrer <vehrka@gmail.com>
+     1	jbochi <jbochi@gmail.com>
