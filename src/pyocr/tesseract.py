@@ -244,8 +244,31 @@ def cleanup(filename):
         pass
 
 
+class ReOpenableTempfile(object):
+    """
+    On Windows, `tempfile.NamedTemporaryFile` occur Permission denied Error
+    when file is still open.
+    It returns `tempfile.NamedTemporaryFile` compatible object.
+    """
+    def __init__(self, suffix):
+        self.name = None
+        with tempfile.NamedTemporaryFile(prefix='tess_', suffix=suffix,
+                                         delete=False) as fp:
+            self.name = fp.name
+    def __enter__(self):
+        return self
+    def __exit__(self, type, value, traceback):
+        self.close()
+    def close(self):
+        if self.name is not None:
+            os.remove(self.name)
+            self.name = None
+
+
 def temp_file(suffix):
     ''' Returns a temporary file '''
+    if os.name == 'nt':  # Windows
+        return ReOpenableTempfile(suffix)
     return tempfile.NamedTemporaryFile(prefix='tess_', suffix=suffix)
 
 
