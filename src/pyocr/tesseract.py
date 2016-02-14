@@ -26,7 +26,7 @@ from . import util
 
 
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
-TESSERACT_CMD = 'tesseract'
+TESSERACT_CMD = 'tesseract.exe' if os.name == 'nt' else 'tesseract'
 
 TESSDATA_POSSIBLE_PATHS = [
     "/usr/local/share/tessdata",
@@ -36,6 +36,8 @@ TESSDATA_POSSIBLE_PATHS = [
     "/usr/share/tesseract-ocr/tessdata",
     "/app/vendor/tesseract-ocr/tessdata",  # Heroku
     "/opt/local/share/tessdata",  # OSX MacPorts
+    r"C:\Program Files (x86)\Tesseract-OCR\tessdata",  # Windows port
+    r"C:\Program Files\Tesseract-OCR\tessdata",  # Windows port
 ]
 
 TESSDATA_EXTENSION = ".traineddata"
@@ -242,8 +244,31 @@ def cleanup(filename):
         pass
 
 
+class ReOpenableTempfile(object):
+    """
+    On Windows, `tempfile.NamedTemporaryFile` occur Permission denied Error
+    when file is still open.
+    It returns `tempfile.NamedTemporaryFile` compatible object.
+    """
+    def __init__(self, suffix):
+        self.name = None
+        with tempfile.NamedTemporaryFile(prefix='tess_', suffix=suffix,
+                                         delete=False) as fp:
+            self.name = fp.name
+    def __enter__(self):
+        return self
+    def __exit__(self, type, value, traceback):
+        self.close()
+    def close(self):
+        if self.name is not None:
+            os.remove(self.name)
+            self.name = None
+
+
 def temp_file(suffix):
     ''' Returns a temporary file '''
+    if os.name == 'nt':  # Windows
+        return ReOpenableTempfile(suffix)
     return tempfile.NamedTemporaryFile(prefix='tess_', suffix=suffix)
 
 
