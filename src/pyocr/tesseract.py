@@ -26,7 +26,7 @@ from . import util
 
 
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
-TESSERACT_CMD = 'tesseract'
+TESSERACT_CMD = 'tesseract.exe' if os.name == 'nt' else 'tesseract'
 
 TESSDATA_POSSIBLE_PATHS = [
     "/usr/local/share/tessdata",
@@ -36,6 +36,8 @@ TESSDATA_POSSIBLE_PATHS = [
     "/usr/share/tesseract-ocr/tessdata",
     "/app/vendor/tesseract-ocr/tessdata",  # Heroku
     "/opt/local/share/tessdata",  # OSX MacPorts
+    r"C:\Program Files (x86)\Tesseract-OCR\tessdata",  # Windows port
+    r"C:\Program Files\Tesseract-OCR\tessdata",  # Windows port
 ]
 
 TESSDATA_EXTENSION = ".traineddata"
