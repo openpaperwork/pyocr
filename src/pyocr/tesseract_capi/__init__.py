@@ -14,11 +14,12 @@ PyOCR is released under the GPL v3.
 Copyright (c) Jerome Flesch, 2011-2012
 https://github.com/jflesch/pyocr#readme
 '''
+import sys
 
 from .. import builders
 
-import tesseract_raw
-import leptonica_raw
+from . import tesseract_raw
+from . import leptonica_raw
 
 
 __all__ = [
@@ -64,6 +65,7 @@ def get_available_builders():
         builders.WordBoxBuilder,
     ]
 
+
 def image_to_string(image, lang=None, builder=None):
     if builder is None:
         builder = builders.TextBuilder()
@@ -72,6 +74,11 @@ def image_to_string(image, lang=None, builder=None):
 
 
 def is_available():
+    # We limit to Python 3. Supporting both Python 2.7 and Python 3.x
+    # would be too hard
+    python_ver = (sys.version_info[0], sys.version_info[1])
+    if python_ver < (3, 0):
+        return False
     return tesseract_raw.is_available() and leptonica_raw.is_available()
 
 
@@ -82,4 +89,11 @@ def get_available_languages():
 
 def get_version():
     version = tesseract_raw.get_version()
-    return version
+    version = version.split(" ", 1)[0]
+    version = version.split(".")
+    major = int(version[0])
+    minor = int(version[1])
+    upd = 0
+    if len(version) >= 3:
+        upd = int(version[2])
+    return (major, minor, upd)
