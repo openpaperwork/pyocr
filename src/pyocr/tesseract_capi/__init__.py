@@ -35,17 +35,6 @@ __all__ = [
 ]
 
 
-class TesseractError(Exception):
-    """
-    Exception raised when Tesseract fails.
-    """
-    def __init__(self, status, message):
-        Exception.__init__(self, message)
-        self.status = status
-        self.message = message
-        self.args = (status, message)
-
-
 def can_detect_orientation():
     return True
 
@@ -53,30 +42,21 @@ def can_detect_orientation():
 def detect_orientation(image, lang=None):
     handle = tesseract_raw.init(lang=lang)
     try:
-        #tesseract_raw.set_page_seg_mode(
-        #    handle, tesseract_raw.PageSegMode.OSD_ONLY
-        #)
+        tesseract_raw.set_page_seg_mode(
+            handle, tesseract_raw.PageSegMode.OSD_ONLY
+        )
         tesseract_raw.set_image(handle, image)
-        tesseract_raw.recognize(handle)
-        page_iterator = tesseract_raw.analyse_layout(handle)
-        if page_iterator is None:
-            raise TesseractError(
-                "failed", "Orientation detection failed. No script ?"
-            )
-        try:
-            orientation = tesseract_raw.page_iterator_orientation(page_iterator)
-            angle = {
-                tesseract_raw.Orientation.PAGE_UP: 0,
-                tesseract_raw.Orientation.PAGE_RIGHT: 90,
-                tesseract_raw.Orientation.PAGE_DOWN: 180,
-                tesseract_raw.Orientation.PAGE_LEFT: 270
-            }[orientation['orientation']]
-            return {
-                "angle": angle,
-                # TODO: confidence
-            }
-        finally:
-            tesseract_raw.page_iterator_delete(page_iterator)
+        os = tesseract_raw.detect_os(handle)
+        orientation = {
+            tesseract_raw.Orientation.PAGE_UP: 0,
+            tesseract_raw.Orientation.PAGE_RIGHT: 90,
+            tesseract_raw.Orientation.PAGE_DOWN: 180,
+            tesseract_raw.Orientation.PAGE_LEFT: 270,
+        }[os['orientation']]
+        return {
+            'angle': orientation,
+            'confidence': os['confidence']
+        }
     finally:
         tesseract_raw.cleanup(handle)
 

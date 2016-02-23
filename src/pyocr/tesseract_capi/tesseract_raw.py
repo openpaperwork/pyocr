@@ -2,6 +2,7 @@ import ctypes
 import os
 import sys
 
+
 TESSDATA_PREFIX = os.getenv('TESSDATA_PREFIX', None)
 
 if sys.platform[:3] == "win":
@@ -24,6 +25,56 @@ for libname in libnames:
         g_libtesseract = ctypes.cdll.LoadLibrary(libname)
     except OSError:
         pass
+
+
+class TesseractError(Exception):
+    """
+    Exception raised when Tesseract fails.
+    """
+    def __init__(self, status, message):
+        Exception.__init__(self, message)
+        self.status = status
+        self.message = message
+        self.args = (status, message)
+
+
+class PageSegMode(object):
+    OSD_ONLY = 0
+    AUTO_OSD = 1
+    AUTO_ONLY = 2
+    AUTO = 3
+    SINGLE_COLUMN = 4
+    SINGLE_BLOCK_VERT_TEXT = 5
+    SINGLE_BLOCK = 6
+    SINGLE_LINE = 7
+    SINGLE_WORD = 8
+    CIRCLE_WORD = 9
+    SINGLE_CHAR = 10
+    SPARSE_TEXT = 11
+    SPARSE_TEXT_OSD = 12
+    COUNT = 13
+
+
+class Orientation(object):
+    PAGE_UP = 0
+    PAGE_RIGHT = 1
+    PAGE_DOWN = 2
+    PAGE_LEFT = 3
+
+
+class OSResults(ctypes.Structure):
+    _fields_ = [
+        ("orientations", ctypes.c_float * 4),
+        ("scripts_na", ctypes.c_float * 4 * (116 + 1 + 2 + 1)),
+        ("unicharset", ctypes.c_void_p),
+        ("best_orientation_id", ctypes.c_int),
+        ("best_script_id", ctypes.c_int),
+        ("best_sconfidence", ctypes.c_float),
+        ("best_oconfidence", ctypes.c_float),
+        # extra padding in case the structure is extended later
+        ("padding", ctypes.c_char * 512),
+    ]
+
 
 if g_libtesseract:
     g_libtesseract.TessVersion.argtypes = []
@@ -101,29 +152,11 @@ if g_libtesseract:
     ]
     g_libtesseract.TessPageIteratorOrientation.restype = None
 
-
-class PageSegMode(object):
-    OSD_ONLY = 0
-    AUTO_OSD = 1
-    AUTO_ONLY = 2
-    AUTO = 3
-    SINGLE_COLUMN = 4
-    SINGLE_BLOCK_VERT_TEXT = 5
-    SINGLE_BLOCK = 6
-    SINGLE_LINE = 7
-    SINGLE_WORD = 8
-    CIRCLE_WORD = 9
-    SINGLE_CHAR = 10
-    SPARSE_TEXT = 11
-    SPARSE_TEXT_OSD = 12
-    COUNT = 13
-
-
-class Orientation(object):
-    PAGE_UP = 0
-    PAGE_RIGHT = 1
-    PAGE_DOWN = 2
-    PAGE_LEFT = 3
+    g_libtesseract.TessBaseAPIDetectOS.argstype = [
+        ctypes.c_void_p,  # TessBaseAPI*
+        ctypes.POINTER(OSResults),
+    ]
+    g_libtesseract.TessBaseAPIDetectOS.restype = ctypes.c_bool
 
 
 def init(lang=None):
@@ -261,4 +294,18 @@ def page_iterator_orientation(iterator):
         "writing_direction": writing_direction.value,
         "textline_order": textline_order.value,
         "deskew_angle": deskew_angle.value,
+    }
+
+
+def detect_os(handle):
+    global g_libtesseract
+    assert(g_libtesseract)
+
+    results = OSResults()
+    r = g_libtesseract.TessBaseAPIDetectOS(handle, ctypes.pointer(results))
+    if not r:
+        raise TesseractError("TessBaseAPIDetectOS() failed")
+    return {
+        "orientation": results.best_orientation_id,
+        "confidence": results.best_oconfidence,
     }
