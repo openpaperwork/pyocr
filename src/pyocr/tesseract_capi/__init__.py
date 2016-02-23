@@ -51,8 +51,34 @@ def can_detect_orientation():
 
 
 def detect_orientation(image, lang=None):
-    # TODO
-    pass
+    handle = tesseract_raw.init(lang=lang)
+    try:
+        tesseract_raw.set_page_seg_mode(
+            handle, tesseract_raw.PageSegMode.OSD_ONLY
+        )
+        tesseract_raw.set_image(handle, image)
+        tesseract_raw.recognize(handle)
+        page_iterator = tesseract_raw.analyse_layout(handle)
+        if page_iterator is None:
+            raise TesseractError(
+                "failed", "Orientation detection failed. No script ?"
+            )
+        try:
+            orientation = page_iterator_orientation(page_iterator)
+            angle = {
+                tesseract_raw.Orientation.PAGE_UP: 0,
+                tesseract_raw.Orientation.PAGE_RIGHT: 90,
+                tesseract_raw.Orientation.PAGE_DOWN: 180,
+                tesseract_raw.Orientation.PAGE_LEFT: 270
+            }[orientation['orientation']]
+            return {
+                "angle": angle,
+                # TODO: confidence
+            }
+        finally:
+            tesseract_raw.page_iterator_delete(page_iterator)
+    finally:
+        tesseract_raw.cleanup(handle)
 
 
 def get_name():
@@ -83,7 +109,11 @@ def is_available():
 
 
 def get_available_languages():
-    return tesseract_raw.get_available_languages()
+    handle = tesseract_raw.init()
+    try:
+        return tesseract_raw.get_available_languages(handle)
+    finally:
+        tesseract_raw.cleanup(handle)
 
 
 def get_version():

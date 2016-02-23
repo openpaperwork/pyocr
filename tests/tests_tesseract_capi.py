@@ -264,8 +264,8 @@ def get_all_tests():
         'test_european',
         'test_french',
     ]
-    tests = unittest.TestSuite(map(TestTxt, test_names))
-    all_tests.addTest(tests)
+    #tests = unittest.TestSuite(map(TestTxt, test_names))
+    #all_tests.addTest(tests)
 
     test_names = [
         'test_basic',
@@ -274,10 +274,10 @@ def get_all_tests():
         'test_japanese',
         'test_write_read',
     ]
-    tests = unittest.TestSuite(map(TestWordBox, test_names))
-    all_tests.addTest(tests)
-    tests = unittest.TestSuite(map(TestLineBox, test_names))
-    all_tests.addTest(tests)
+    #tests = unittest.TestSuite(map(TestWordBox, test_names))
+    #all_tests.addTest(tests)
+    #tests = unittest.TestSuite(map(TestLineBox, test_names))
+    #all_tests.addTest(tests)
 
     test_names = [
         'test_can_detect_orientation',
