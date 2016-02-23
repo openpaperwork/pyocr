@@ -53,9 +53,9 @@ def can_detect_orientation():
 def detect_orientation(image, lang=None):
     handle = tesseract_raw.init(lang=lang)
     try:
-        tesseract_raw.set_page_seg_mode(
-            handle, tesseract_raw.PageSegMode.OSD_ONLY
-        )
+        #tesseract_raw.set_page_seg_mode(
+        #    handle, tesseract_raw.PageSegMode.OSD_ONLY
+        #)
         tesseract_raw.set_image(handle, image)
         tesseract_raw.recognize(handle)
         page_iterator = tesseract_raw.analyse_layout(handle)
@@ -64,7 +64,7 @@ def detect_orientation(image, lang=None):
                 "failed", "Orientation detection failed. No script ?"
             )
         try:
-            orientation = page_iterator_orientation(page_iterator)
+            orientation = tesseract_raw.page_iterator_orientation(page_iterator)
             angle = {
                 tesseract_raw.Orientation.PAGE_UP: 0,
                 tesseract_raw.Orientation.PAGE_RIGHT: 90,

@@ -200,7 +200,7 @@ def set_image(handle, image):
 
     image = image.convert("RGB")
     image.load()
-    imgdata = image.tobytes()
+    imgdata = image.tobytes("raw", "RGB")
 
     imgsize = image.size
 
@@ -250,10 +250,10 @@ def page_iterator_orientation(iterator):
 
     g_libtesseract.TessPageIteratorOrientation(
         iterator,
-        ctypes.POINTER(orientation),
-        ctypes.POINTER(writing_direction),
-        ctypes.POINTER(textline_order),
-        ctypes.POINTER(deskew_angle)
+        ctypes.pointer(orientation),
+        ctypes.pointer(writing_direction),
+        ctypes.pointer(textline_order),
+        ctypes.pointer(deskew_angle)
     )
 
     return {
