@@ -55,7 +55,7 @@ def can_detect_orientation():
 
 
 def get_name():
-    return "Cuneiform"
+    return "Cuneiform (sh)"
 
 
 def get_available_builders():

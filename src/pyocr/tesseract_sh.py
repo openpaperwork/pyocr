@@ -183,7 +183,7 @@ def detect_orientation(image, lang=None):
 
 
 def get_name():
-    return "Tesseract"
+    return "Tesseract (sh)"
 
 
 def get_available_builders():
