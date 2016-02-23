@@ -188,9 +188,11 @@ def get_name():
 
 def get_available_builders():
     return [
+        builders.LineBoxBuilder,
         builders.TextBuilder,
         builders.WordBoxBuilder,
         CharBoxBuilder,
+        DigitBuilder,
     ]
 
 
