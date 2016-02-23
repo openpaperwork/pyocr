@@ -83,8 +83,7 @@ def is_available():
 
 
 def get_available_languages():
-    # TODO
-    return []
+    return tesseract_raw.get_available_languages()
 
 
 def get_version():
