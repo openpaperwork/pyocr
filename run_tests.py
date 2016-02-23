@@ -6,7 +6,7 @@ import unittest
 
 from pyocr import cuneiform
 from pyocr import pyocr
-from pyocr import tesseract
+from pyocr import tesseract_sh
 
 from tests import tests_cuneiform
 from tests import tests_tesseract
@@ -26,7 +26,7 @@ if __name__ == '__main__':
     print("OCR tool found:")
     for tool in pyocr.get_available_tools():
         print("- %s" % tool.get_name())
-    if tesseract.is_available():
+    if tesseract_sh.is_available():
         print("---")
         print("Tesseract:")
         unittest.TextTestRunner().run(tests_tesseract.get_all_tests())

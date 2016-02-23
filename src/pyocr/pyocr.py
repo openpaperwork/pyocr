@@ -46,7 +46,7 @@ https://github.com/jflesch/python-tesseract#readme
 """
 
 from . import cuneiform
-from . import tesseract
+from . import tesseract_sh
 
 __all__ = [
     'get_available_tools',
@@ -56,7 +56,7 @@ __all__ = [
 
 
 TOOLS = [  # in preference order
-    tesseract,
+    tesseract_sh,
     cuneiform,
 ]
 
