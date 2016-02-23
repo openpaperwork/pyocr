@@ -45,7 +45,7 @@ WEBSITE:
 https://github.com/jflesch/python-tesseract#readme
 """
 
-from . import cuneiform
+from . import cuneiform_sh
 from . import tesseract_sh
 
 __all__ = [
@@ -57,7 +57,7 @@ __all__ = [
 
 TOOLS = [  # in preference order
     tesseract_sh,
-    cuneiform,
+    cuneiform_sh,
 ]
 
 VERSION = (0, 3, 1)

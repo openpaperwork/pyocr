@@ -4,7 +4,7 @@ import sys
 sys.path = [ "src" ] + sys.path
 import unittest
 
-from pyocr import cuneiform
+from pyocr import cuneiform_sh
 from pyocr import pyocr
 from pyocr import tesseract_sh
 
@@ -30,7 +30,7 @@ if __name__ == '__main__':
         print("---")
         print("Tesseract:")
         unittest.TextTestRunner().run(tests_tesseract.get_all_tests())
-    if cuneiform.is_available():
+    if cuneiform_sh.is_available():
         print("---")
         print("Cuneiform:")
         unittest.TextTestRunner().run(tests_cuneiform.get_all_tests())
