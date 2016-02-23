@@ -1,15 +1,17 @@
 #!/usr/bin/env python
 
 import sys
-sys.path = [ "src" ] + sys.path
+sys.path = ["src"] + sys.path
 import unittest
 
 from pyocr import cuneiform_sh
 from pyocr import pyocr
+from pyocr import tesseract_capi
 from pyocr import tesseract_sh
 
 from tests import tests_cuneiform
 from tests import tests_tesseract
+from tests import tests_tesseract_capi
 
 if __name__ == '__main__':
     for tool in pyocr.TOOLS:
@@ -26,12 +28,15 @@ if __name__ == '__main__':
     print("OCR tool found:")
     for tool in pyocr.get_available_tools():
         print("- %s" % tool.get_name())
+    if tesseract_capi.is_available():
+        print("---")
+        print("Tesseract C-API:")
+        unittest.TextTestRunner().run(tests_tesseract_capi.get_all_tests())
     if tesseract_sh.is_available():
         print("---")
-        print("Tesseract:")
+        print("Tesseract SH:")
         unittest.TextTestRunner().run(tests_tesseract.get_all_tests())
     if cuneiform_sh.is_available():
         print("---")
-        print("Cuneiform:")
+        print("Cuneiform SH:")
         unittest.TextTestRunner().run(tests_cuneiform.get_all_tests())
-

@@ -29,8 +29,14 @@ setup(
     license="GPLv3+",
     author="Jerome Flesch",
     author_email="jflesch@gmail.com",
-    packages=['pyocr'],
-    package_dir={'pyocr': 'src/pyocr'},
+    packages=[
+        'pyocr',
+        'pyocr.tesseract_capi',
+    ],
+    package_dir={
+        'pyocr': 'src/pyocr',
+        'pyocr.tesseract_capi': 'src/pyocr/tesseract_capi',
+    },
     data_files=[],
     scripts=[],
     install_requires=[
