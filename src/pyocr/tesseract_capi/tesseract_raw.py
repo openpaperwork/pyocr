@@ -62,6 +62,31 @@ class Orientation(object):
     PAGE_LEFT = 3
 
 
+class PageIteratorLevel(object):
+    BLOCK = 0
+    PARA = 1
+    TEXTLINE = 2
+    WORD = 3
+    SYMBOL = 4
+
+
+class PolyBlockType(object):
+    UNKNOWN = 0
+    FLOWING_TEXT = 1
+    HEADING_TEXT = 2
+    PULLOUT_TEXT = 3
+    TABLE = 4
+    VERTICAL_TEXT = 5
+    CAPTION_TEXT = 6
+    FLOWING_IMAGE = 7
+    HEADING_IMAGE = 8
+    PULLOUT_IMAGE = 9
+    HORZ_LINE = 10
+    VERT_LINE = 11
+    NOISE = 12
+    COUNT = 13
+
+
 class OSResults(ctypes.Structure):
     _fields_ = [
         ("orientations", ctypes.c_float * 4),
@@ -121,29 +146,35 @@ if g_libtesseract:
     ]
     g_libtesseract.TessBaseAPISetImage.restype = None
 
-    g_libtesseract.TessBaseAPIRecognize.argstypes = [
+    g_libtesseract.TessBaseAPIRecognize.argtypes = [
         ctypes.c_void_p,  # TessBaseAPI*
         ctypes.c_void_p,  # ETEXT_DESC*
     ]
     g_libtesseract.TessBaseAPIRecognize.restype = ctypes.c_int
 
-    g_libtesseract.TessBaseAPIAnalyseLayout.argstypes = [
+    g_libtesseract.TessBaseAPIGetIterator.argtypes = [
+        ctypes.c_void_p,  # TessBaseAPI*
+    ]
+    g_libtesseract.TessBaseAPIGetIterator.restype = \
+        ctypes.c_void_p  # TessResultIterator
+
+    g_libtesseract.TessBaseAPIAnalyseLayout.argtypes = [
         ctypes.c_void_p,  # TessBaseAPI*
     ]
     g_libtesseract.TessBaseAPIAnalyseLayout.restype = \
         ctypes.c_void_p  # TessPageIterator*
 
-    g_libtesseract.TessBaseAPIGetUTF8Text.argstype = [
+    g_libtesseract.TessBaseAPIGetUTF8Text.argtypes = [
         ctypes.c_void_p,  # TessBaseAPI*
     ]
     g_libtesseract.TessBaseAPIGetUTF8Text.restype = ctypes.c_char_p
 
-    g_libtesseract.TessPageIteratorDelete.argstypes = [
+    g_libtesseract.TessPageIteratorDelete.argtypes = [
         ctypes.c_void_p,  # TessPageIterator*
     ]
     g_libtesseract.TessPageIteratorDelete.restype = None
 
-    g_libtesseract.TessPageIteratorOrientation.argstype = [
+    g_libtesseract.TessPageIteratorOrientation.argtypes = [
         ctypes.c_void_p,  # TessPageIterator*
         ctypes.POINTER(ctypes.c_int),  # TessOrientation*
         ctypes.POINTER(ctypes.c_int),  # TessWritingDirection*
@@ -152,7 +183,60 @@ if g_libtesseract:
     ]
     g_libtesseract.TessPageIteratorOrientation.restype = None
 
-    g_libtesseract.TessBaseAPIDetectOS.argstype = [
+    g_libtesseract.TessPageIteratorNext.argtypes = [
+        ctypes.c_void_p,  # TessPageIterator*
+        ctypes.c_int,  # TessPageIteratorLevel
+    ]
+    g_libtesseract.TessPageIteratorNext.restype = ctypes.c_bool
+
+    g_libtesseract.TessPageIteratorIsAtBeginningOf.argtypes = [
+        ctypes.c_void_p,  # TessPageIterator*
+        ctypes.c_int,  # TessPageIteratorLevel
+    ]
+    g_libtesseract.TessPageIteratorIsAtBeginningOf.restype = ctypes.c_bool
+
+    g_libtesseract.TessPageIteratorIsAtFinalElement.argtypes = [
+        ctypes.c_void_p,  # TessPageIterator*
+        ctypes.c_int,  # TessPageIteratorLevel (level)
+        ctypes.c_int,  # TessPageIteratorLevel (element)
+    ]
+    g_libtesseract.TessPageIteratorIsAtFinalElement.restype = ctypes.c_bool
+
+    g_libtesseract.TessPageIteratorBlockType.argtypes = [
+        ctypes.c_void_p,  # TessPageIterator*
+    ]
+    g_libtesseract.TessPageIteratorBlockType.restype = \
+        ctypes.c_int  # PolyBlockType
+
+    g_libtesseract.TessPageIteratorBoundingBox.args = [
+        ctypes.c_void_p,  # TessPageIterator*
+        ctypes.c_int,  # TessPageIteratorLevel (level)
+        ctypes.POINTER(ctypes.c_int),  # left
+        ctypes.POINTER(ctypes.c_int),  # top
+        ctypes.POINTER(ctypes.c_int),  # right
+        ctypes.POINTER(ctypes.c_int),  # bottom
+    ]
+    g_libtesseract.TessPageIteratorBoundingBox.restype = ctypes.c_bool
+
+    g_libtesseract.TessResultIteratorGetPageIterator.argtypes = [
+        ctypes.c_void_p,  # TessResultIterator*
+    ]
+    g_libtesseract.TessResultIteratorGetPageIterator.restype = \
+        ctypes.c_void_p  # TessPageIterator*
+
+    g_libtesseract.TessResultIteratorGetUTF8Text.argtypes = [
+        ctypes.c_void_p,  # TessResultIterator*
+        ctypes.c_int,  # TessPageIteratorLevel (level)
+    ]
+    g_libtesseract.TessResultIteratorGetUTF8Text.restype = \
+        ctypes.c_char_p  # TessPageIterator*
+
+    g_libtesseract.TessDeleteText.argtypes = [
+        ctypes.c_char_p
+    ]
+    g_libtesseract.TessDeleteText.restype = None
+
+    g_libtesseract.TessBaseAPIDetectOS.argtypes = [
         ctypes.c_void_p,  # TessBaseAPI*
         ctypes.POINTER(OSResults),
     ]
@@ -262,7 +346,10 @@ def analyse_layout(handle):
 
 
 def get_utf8_text(handle):
-    return g_libtesseract.TessBaseAPIGetUTF8Text(handle).decode("utf-8")
+    txt = g_libtesseract.TessBaseAPIGetUTF8Text(handle)
+    val = txt.value.decode("utf-8")
+    g_libtesseract.TessBaseAPIDeleteText(val)
+    return val
 
 
 def page_iterator_delete(iterator):
@@ -270,6 +357,60 @@ def page_iterator_delete(iterator):
     assert(g_libtesseract)
 
     return g_libtesseract.TessPageIteratorDelete(iterator)
+
+
+def page_iterator_next(iterator, level):
+    global g_libtesseract
+    assert(g_libtesseract)
+
+    return g_libtesseract.TessPageIteratorNext(iterator, level)
+
+
+def page_iterator_is_at_beginning_of(iterator, level):
+    global g_libtesseract
+    assert(g_libtesseract)
+
+    return g_libtesseract.TessPageIteratorIsAtBeginningOf(iterator, level)
+
+
+def page_iterator_is_at_final_element(iterator, level, element):
+    global g_libtesseract
+    assert(g_libtesseract)
+
+    return g_libtesseract.TessPageIteratorIsAtFinalElement(
+        iterator, level, element
+    )
+
+
+def page_iterator_block_type(iterator):
+    global g_libtesseract
+    assert(g_libtesseract)
+
+    return g_libtesseract.TessPageIteratorBlockType(
+        iterator
+    )
+
+
+def page_iterator_bounding_box(iterator, level):
+    global g_libtesseract
+    assert(g_libtesseract)
+
+    left = ctypes.c_int(0)
+    top = ctypes.c_int(0)
+    right = ctypes.c_int(0)
+    bottom = ctypes.c_int(0)
+
+    r = g_libtesseract.TessPageIteratorBoundingBox(
+        iterator,
+        level,
+        ctypes.pointer(left),
+        ctypes.pointer(top),
+        ctypes.pointer(right),
+        ctypes.pointer(bottom)
+    )
+    if not r:
+        return (False, (0, 0, 0, 0))
+    return (True, (left.value, top.value, right.value, bottom.value))
 
 
 def page_iterator_orientation(iterator):
@@ -295,6 +436,27 @@ def page_iterator_orientation(iterator):
         "textline_order": textline_order.value,
         "deskew_angle": deskew_angle.value,
     }
+
+
+def get_iterator(handle):
+    global g_libtesseract
+    assert(g_libtesseract)
+
+    return g_libtesseract.TessBaseAPIGetIterator(handle)
+
+
+def result_iterator_get_page_iterator(res_iterator):
+    global g_libtesseract
+    assert(g_libtesseract)
+
+    return g_libtesseract.TessResultIteratorGetPageIterator(res_iterator)
+
+
+def result_iterator_get_utf8_text(iterator, level):
+    txt = g_libtesseract.TessBaseAPIResultIteratorGetUTF8Text(iterator, level)
+    val = txt.value.decode("utf-8")
+    g_libtesseract.TessBaseAPIDeleteText(val)
+    return val
 
 
 def detect_os(handle):

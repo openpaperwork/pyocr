@@ -47,6 +47,10 @@ def detect_orientation(image, lang=None):
         )
         tesseract_raw.set_image(handle, image)
         os = tesseract_raw.detect_os(handle)
+        if os['confidence'] <= 0:
+            raise tesseract_raw.TesseractError(
+                "no script", "no script detected"
+            )
         orientation = {
             tesseract_raw.Orientation.PAGE_UP: 0,
             tesseract_raw.Orientation.PAGE_RIGHT: 90,
@@ -75,8 +79,46 @@ def get_available_builders():
 def image_to_string(image, lang=None, builder=None):
     if builder is None:
         builder = builders.TextBuilder()
-    # TODO
-    pass
+    handle = tesseract_raw.init(lang=lang)
+
+    lvl_line = tesseract_raw.PageIteratorLevel.TEXTLINE
+    lvl_word = tesseract_raw.PageIteratorLevel.WORD
+
+    try:
+        tesseract_raw.set_image(handle, image)
+
+        # XXX(JFlesch): PageIterator and ResultIterator are actually the
+        # very same thing. If it changes, we are screwed.
+        tesseract_raw.recognize(handle)
+        res_iterator = tesseract_raw.get_iterator(handle)
+        if res_iterator is None:
+            raise tesseract_raw.TesseractError(
+                "no script", "no script detected"
+            )
+        page_iterator = tesseract_raw.result_iterator_get_page_iterator(
+            res_iterator
+        )
+
+        while tesseract_raw.page_iterator_next(page_iterator, lvl_line):
+            (r, box) = tesseract_raw.page_iterator_bounding_box(
+                page_iterator, lvl_line
+            )
+            assert(r)
+            builder.start_line(box)
+            while tesseract_raw.page_iterator_next(page_iterator, lvl_word):
+                word = tesseract_raw.result_iterator_get_utf8_text(
+                    res_iterator, lvl_word
+                )
+                (r, box) = tesseract_raw.page_iterator_bounding_box(
+                    page_iterator, lvl_word
+                )
+                assert(r)
+                builder.add_word(box, word)
+            builder.end_line()
+    finally:
+        tesseract_raw.cleanup(handle)
+
+    return builder.get_output()
 
 
 def is_available():

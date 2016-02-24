@@ -241,7 +241,6 @@ class TextBuilder(object):
 
     def __init__(self, tesseract_layout=3, cuneiform_dotmatrix=False,
                  cuneiform_fax=False, cuneiform_singlecolumn=False):
-                     
         self.tesseract_configs = ["-psm", str(tesseract_layout)]
         # Add custom cuneiform parameters if needed
         if cuneiform_dotmatrix:
@@ -250,7 +249,7 @@ class TextBuilder(object):
             self.cuneiform_args.append("--fax")
         if cuneiform_singlecolumn:
             self.cuneiform_args.append("--singlecolumn")
-        pass
+        self.built_text = []
 
     @staticmethod
     def read_file(file_descriptor):
@@ -265,6 +264,18 @@ class TextBuilder(object):
         Write a string in a file
         """
         file_descriptor.write(text)
+
+    def start_line(self, box):
+        self.built_text.append(u"")
+
+    def add_word(self, box, word):
+        self.built_text[-1] += u" " + word
+
+    def end_line(self):
+        self.built_text[-1] = self.built_text[-1].strip()
+
+    def get_output(self):
+        return u"\n".join(self.built_text)
 
     @staticmethod
     def __str__():
@@ -448,7 +459,7 @@ class WordBoxBuilder(object):
     cuneiform_args = ["-f", "hocr"]
 
     def __init__(self):
-        pass
+        self.word_boxes = []
 
     def read_file(self, file_descriptor):
         """
@@ -487,6 +498,18 @@ class WordBoxBuilder(object):
             file_descriptor.write(xml_str + to_unicode("<br/>\n"))
         file_descriptor.write(to_unicode("</body>\n"))
 
+    def start_line(self, box):
+        pass
+
+    def add_word(self, box, word):
+        self.word_boxes.append(Box(word, box))
+
+    def end_line(self):
+        pass
+
+    def get_output(self):
+        return self.word_boxes
+
     @staticmethod
     def __str__():
         return "Word boxes"
@@ -503,7 +526,8 @@ class LineBoxBuilder(object):
     cuneiform_args = ["-f", "hocr"]
 
     def __init__(self):
-        pass
+        self.current_line = None
+        self.lines = []
 
     def read_file(self, file_descriptor):
         """
@@ -547,6 +571,19 @@ class LineBoxBuilder(object):
                 xml_str = xml_str.decode('utf-8')
             file_descriptor.write(xml_str + to_unicode("<br/>\n"))
         file_descriptor.write(to_unicode("</body>\n"))
+
+    def start_line(self, box):
+        self.current_line = LineBox([], box)
+        self.lines.append(self.current_line)
+
+    def add_word(self, box, word):
+        self.current_line.word_boxes.append(Box(word, box))
+
+    def end_line(self):
+        pass
+
+    def get_output(self):
+        return self.lines
 
     @staticmethod
     def __str__():
