@@ -112,27 +112,32 @@ def image_to_string(image, lang=None, builder=None):
         )
 
         while True:
-            (r, box) = tesseract_raw.page_iterator_bounding_box(
-                page_iterator, lvl_line
-            )
-            assert(r)
-            box = _tess_box_to_pyocr_box(box)
-            builder.start_line(box)
-            while True:
-                word = tesseract_raw.result_iterator_get_utf8_text(
-                    res_iterator, lvl_word
-                )
+            if tesseract_raw.page_iterator_is_at_beginning_of(
+                    page_iterator, lvl_line):
                 (r, box) = tesseract_raw.page_iterator_bounding_box(
-                    page_iterator, lvl_word
+                    page_iterator, lvl_line
                 )
                 assert(r)
                 box = _tess_box_to_pyocr_box(box)
-                builder.add_word(word, box)
-                if not tesseract_raw.page_iterator_next(page_iterator, lvl_word):
-                    break
-            builder.end_line()
-            if not tesseract_raw.page_iterator_next(page_iterator, lvl_line):
+                builder.start_line(box)
+
+            word = tesseract_raw.result_iterator_get_utf8_text(
+                res_iterator, lvl_word
+            )
+            (r, box) = tesseract_raw.page_iterator_bounding_box(
+                page_iterator, lvl_word
+            )
+            assert(r)
+            box = _tess_box_to_pyocr_box(box)
+            builder.add_word(word, box)
+
+            if tesseract_raw.page_iterator_is_at_final_element(
+                    page_iterator, lvl_line, lvl_word):
+                builder.end_line()
+
+            if not tesseract_raw.page_iterator_next(page_iterator, lvl_word):
                 break
+
     finally:
         tesseract_raw.cleanup(handle)
 
