@@ -19,7 +19,6 @@ import sys
 from .. import builders
 
 from . import tesseract_raw
-from . import leptonica_raw
 
 
 __all__ = [
@@ -150,7 +149,7 @@ def is_available():
     python_ver = (sys.version_info[0], sys.version_info[1])
     if python_ver < (3, 0):
         return False
-    return tesseract_raw.is_available() and leptonica_raw.is_available()
+    return tesseract_raw.is_available()
 
 
 def get_available_languages():
