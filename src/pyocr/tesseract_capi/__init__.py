@@ -76,6 +76,13 @@ def get_available_builders():
     ]
 
 
+def _tess_box_to_pyocr_box(box):
+    return (
+        (box[0], box[1]),
+        (box[2], box[3]),
+    )
+
+
 def image_to_string(image, lang=None, builder=None):
     if builder is None:
         builder = builders.TextBuilder()
@@ -99,13 +106,14 @@ def image_to_string(image, lang=None, builder=None):
             res_iterator
         )
 
-        while tesseract_raw.page_iterator_next(page_iterator, lvl_line):
+        while True:
             (r, box) = tesseract_raw.page_iterator_bounding_box(
                 page_iterator, lvl_line
             )
             assert(r)
+            box = _tess_box_to_pyocr_box(box)
             builder.start_line(box)
-            while tesseract_raw.page_iterator_next(page_iterator, lvl_word):
+            while True:
                 word = tesseract_raw.result_iterator_get_utf8_text(
                     res_iterator, lvl_word
                 )
@@ -113,8 +121,13 @@ def image_to_string(image, lang=None, builder=None):
                     page_iterator, lvl_word
                 )
                 assert(r)
-                builder.add_word(box, word)
+                box = _tess_box_to_pyocr_box(box)
+                builder.add_word(word, box)
+                if not tesseract_raw.page_iterator_next(page_iterator, lvl_word):
+                    break
             builder.end_line()
+            if not tesseract_raw.page_iterator_next(page_iterator, lvl_line):
+                break
     finally:
         tesseract_raw.cleanup(handle)
 

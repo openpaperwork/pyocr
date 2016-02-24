@@ -167,7 +167,7 @@ if g_libtesseract:
     g_libtesseract.TessBaseAPIGetUTF8Text.argtypes = [
         ctypes.c_void_p,  # TessBaseAPI*
     ]
-    g_libtesseract.TessBaseAPIGetUTF8Text.restype = ctypes.c_char_p
+    g_libtesseract.TessBaseAPIGetUTF8Text.restype = ctypes.c_void_p
 
     g_libtesseract.TessPageIteratorDelete.argtypes = [
         ctypes.c_void_p,  # TessPageIterator*
@@ -229,10 +229,10 @@ if g_libtesseract:
         ctypes.c_int,  # TessPageIteratorLevel (level)
     ]
     g_libtesseract.TessResultIteratorGetUTF8Text.restype = \
-        ctypes.c_char_p  # TessPageIterator*
+        ctypes.c_void_p
 
     g_libtesseract.TessDeleteText.argtypes = [
-        ctypes.c_char_p
+        ctypes.c_void_p
     ]
     g_libtesseract.TessDeleteText.restype = None
 
@@ -346,9 +346,9 @@ def analyse_layout(handle):
 
 
 def get_utf8_text(handle):
-    txt = g_libtesseract.TessBaseAPIGetUTF8Text(handle)
-    val = txt.value.decode("utf-8")
-    g_libtesseract.TessBaseAPIDeleteText(val)
+    ptr = g_libtesseract.TessBaseAPIGetUTF8Text(handle)
+    val = ctypes.cast(ptr, ctypes.c_char_p).value.decode("utf-8")[:]
+    g_libtesseract.TessDeleteText(ptr)
     return val
 
 
@@ -453,9 +453,9 @@ def result_iterator_get_page_iterator(res_iterator):
 
 
 def result_iterator_get_utf8_text(iterator, level):
-    txt = g_libtesseract.TessBaseAPIResultIteratorGetUTF8Text(iterator, level)
-    val = txt.value.decode("utf-8")
-    g_libtesseract.TessBaseAPIDeleteText(val)
+    ptr = g_libtesseract.TessResultIteratorGetUTF8Text(iterator, level)
+    val = ctypes.cast(ptr, ctypes.c_char_p).value.decode("utf-8")[:]
+    g_libtesseract.TessDeleteText(ptr)
     return val
 
 

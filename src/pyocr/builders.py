@@ -130,7 +130,7 @@ class LineBox(object):
     def __init__(self, word_boxes, position):
         """
         Arguments:
-            word_boxes --- a single string
+            word_boxes --- a  list of Box objects
             position --- the position of the box on the image. Given as a
                 tuple of tuple:
                 ((width_pt_x, height_pt_x), (width_pt_y, height_pt_y))
@@ -268,7 +268,7 @@ class TextBuilder(object):
     def start_line(self, box):
         self.built_text.append(u"")
 
-    def add_word(self, box, word):
+    def add_word(self, word, box):
         self.built_text[-1] += u" " + word
 
     def end_line(self):
@@ -501,7 +501,7 @@ class WordBoxBuilder(object):
     def start_line(self, box):
         pass
 
-    def add_word(self, box, word):
+    def add_word(self, word, box):
         self.word_boxes.append(Box(word, box))
 
     def end_line(self):
@@ -576,7 +576,7 @@ class LineBoxBuilder(object):
         self.current_line = LineBox([], box)
         self.lines.append(self.current_line)
 
-    def add_word(self, box, word):
+    def add_word(self, word, box):
         self.current_line.word_boxes.append(Box(word, box))
 
     def end_line(self):
