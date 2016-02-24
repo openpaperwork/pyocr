@@ -242,6 +242,7 @@ class TextBuilder(object):
     def __init__(self, tesseract_layout=3, cuneiform_dotmatrix=False,
                  cuneiform_fax=False, cuneiform_singlecolumn=False):
         self.tesseract_configs = ["-psm", str(tesseract_layout)]
+        self.tesseract_layout = tesseract_layout
         # Add custom cuneiform parameters if needed
         if cuneiform_dotmatrix:
             self.cuneiform_args.append("--dotmatrix")
@@ -460,6 +461,7 @@ class WordBoxBuilder(object):
 
     def __init__(self):
         self.word_boxes = []
+        self.tesseract_layout = 3
 
     def read_file(self, file_descriptor):
         """
@@ -528,6 +530,7 @@ class LineBoxBuilder(object):
     def __init__(self):
         self.current_line = None
         self.lines = []
+        self.tesseract_layout = 3
 
     def read_file(self, file_descriptor):
         """

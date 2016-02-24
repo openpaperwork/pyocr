@@ -92,6 +92,11 @@ def image_to_string(image, lang=None, builder=None):
     lvl_word = tesseract_raw.PageIteratorLevel.WORD
 
     try:
+        if builder.tesseract_layout != tesseract_raw.PageSegMode.AUTO:
+            tesseract_raw.set_page_seg_mode(
+                handle, builder.tesseract_layout
+            )
+
         tesseract_raw.set_image(handle, image)
 
         # XXX(JFlesch): PageIterator and ResultIterator are actually the
