@@ -71,7 +71,7 @@ class Box(object):
             (self.position[0][0], self.position[0][1],
              self.position[1][0], self.position[1][1]))))
         txt = xml.dom.minidom.Text()
-        txt.data = self.content.encode('utf-8')
+        txt.data = self.content
         span_tag.appendChild(txt)
         return span_tag
 
@@ -241,7 +241,7 @@ class TextBuilder(object):
 
     def __init__(self, tesseract_layout=3, cuneiform_dotmatrix=False,
                  cuneiform_fax=False, cuneiform_singlecolumn=False):
-        self.tesseract_configs = ["-psm", str(tesseract_layout)]
+        self.tesseract_configs += ["-psm", str(tesseract_layout)]
         self.tesseract_layout = tesseract_layout
         # Add custom cuneiform parameters if needed
         if cuneiform_dotmatrix:
@@ -270,10 +270,12 @@ class TextBuilder(object):
         self.built_text.append(u"")
 
     def add_word(self, word, box):
-        self.built_text[-1] += u" " + word
+        if self.built_text[-1] != u"":
+            self.built_text[-1] += u" "
+        self.built_text[-1] += word
 
     def end_line(self):
-        self.built_text[-1] = self.built_text[-1].strip()
+        pass
 
     def get_output(self):
         return u"\n".join(self.built_text)
@@ -459,9 +461,10 @@ class WordBoxBuilder(object):
     tesseract_configs = ['hocr']
     cuneiform_args = ["-f", "hocr"]
 
-    def __init__(self):
+    def __init__(self, tesseract_layout=1):
         self.word_boxes = []
-        self.tesseract_layout = 3
+        self.tesseract_layout = tesseract_layout
+        self.tesseract_configs += ["-psm", str(tesseract_layout)]
 
     def read_file(self, file_descriptor):
         """
@@ -527,10 +530,11 @@ class LineBoxBuilder(object):
     tesseract_configs = ['hocr']
     cuneiform_args = ["-f", "hocr"]
 
-    def __init__(self):
+    def __init__(self, tesseract_layout=1):
         self.current_line = None
         self.lines = []
-        self.tesseract_layout = 3
+        self.tesseract_layout = tesseract_layout
+        self.tesseract_configs += ["-psm", str(tesseract_layout)]
 
     def read_file(self, file_descriptor):
         """

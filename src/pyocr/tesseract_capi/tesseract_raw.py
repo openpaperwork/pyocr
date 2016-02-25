@@ -112,12 +112,29 @@ if g_libtesseract:
     ]
     g_libtesseract.TessBaseAPIDelete.argtypes = None
 
+    g_libtesseract.TessBaseAPIInit1.argtypes = [
+        ctypes.c_void_p,  # TessBaseAPI*
+        ctypes.c_char_p,  # datapath
+        ctypes.c_char_p,  # language
+        ctypes.c_int,  # TessOcrEngineMode
+        ctypes.POINTER(ctypes.c_char_p),  # configs
+        ctypes.c_int,  # configs_size
+    ]
+    g_libtesseract.TessBaseAPIInit1.restypes = ctypes.c_int
+
     g_libtesseract.TessBaseAPIInit3.argtypes = [
         ctypes.c_void_p,  # TessBaseAPI*
         ctypes.c_char_p,  # datapath
         ctypes.c_char_p,  # language
     ]
     g_libtesseract.TessBaseAPIInit3.restype = ctypes.c_int
+
+    g_libtesseract.TessBaseAPISetVariable.argtypes = [
+        ctypes.c_void_p,  # TessBaseAPI*
+        ctypes.c_char_p,  # name
+        ctypes.c_char_p,  # value
+    ]
+    g_libtesseract.TessBaseAPISetVariable.restype = ctypes.c_bool
 
     g_libtesseract.TessBaseAPIGetAvailableLanguagesAsVector.argtypes = [
         ctypes.c_void_p  # TessBaseAPI*
@@ -256,6 +273,11 @@ def init(lang=None):
             handle,
             ctypes.c_char_p(prefix),
             ctypes.c_char_p(lang)
+        )
+        g_libtesseract.TessBaseAPISetVariable(
+            handle,
+            b"tessedit_zero_rejection",
+            b"F"
         )
     except:
         g_libtesseract.TessBaseAPIDelete(handle)
