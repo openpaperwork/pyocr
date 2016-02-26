@@ -25,9 +25,10 @@ tools = pyocr.get_available_tools()
 if len(tools) == 0:
     print("No OCR tool found")
     sys.exit(1)
+# The tools are returned in the recommended order of usage
 tool = tools[0]
 print("Will use tool '%s'" % (tool.get_name()))
-# Ex: Will use tool 'tesseract'
+# Ex: Will use tool 'libtesseract'
 
 langs = tool.get_available_languages()
 print("Available languages: %s" % ", ".join(langs))
@@ -50,7 +51,7 @@ line_and_word_boxes = tool.image_to_string(
     builder=pyocr.builders.LineBoxBuilder()
 )
 
-# Digits - Only Tesseract
+# Digits - Only Tesseract (not 'libtesseract' yet !)
 digits = tool.image_to_string(
     Image.open('test-digits.png'),
     lang=lang,
@@ -60,15 +61,17 @@ digits = tool.image_to_string(
 ```
 ## Dependencies
 
-* PyOCR requires python 2.7 or later.
+* PyOCR requires python 2.7 or later. Python 3 is supported.
 * You will need [Pillow](https://github.com/python-imaging/Pillow)
   or Python Imaging Library (PIL). Under Debian/Ubuntu, PIL is in
   the package "python-imaging".
 * Install an OCR:
-  * tesseract-ocr from http://code.google.com/p/tesseract-ocr/
+  * [libtesseract](http://code.google.com/p/tesseract-ocr/)
+    ('libtesseract3' + 'tesseract-ocr-&lt;lang&gt;' in Debian).
+  * or [tesseract-ocr](http://code.google.com/p/tesseract-ocr/)
     ('tesseract-ocr' + 'tesseract-ocr-&lt;lang&gt;' in Debian).
     You must be able to invoke the tesseract command as "tesseract".
-    Python-tesseract is tested with Tesseract >= 3.01 only.
+    PyOCR is tested with Tesseract >= 3.01 only.
   * or cuneiform
 
 
@@ -84,7 +87,7 @@ digits = tool.image_to_string(
 Tests are made to be run with the latest versions of Tesseract and Cuneiform.
 the first tests verify that you're using the expected version.
 
-To run the tests, you will need the following lang support:
+To run the tesseract tests, you will need the following lang data files:
 - English (tesseract-ocr-eng)
 - French (tesseract-ocr-fra)
 - Japanese (tesseract-ocr-jpn)
@@ -97,10 +100,10 @@ PyOCR is released under the GPL v3+.
 tesseract.py:
 
 * Copyright (c) Samuel Hoffstaetter, 2009
-* Copyright (c) Jerome Flesch, 2011-2013
+* Copyright (c) Jerome Flesch, 2011-2016
 
 other files:
 
-* Copyright (c) Jerome Flesch, 2011-2013
+* Copyright (c) Jerome Flesch, 2011-2016
 
 https://github.com/jflesch/pyocr
