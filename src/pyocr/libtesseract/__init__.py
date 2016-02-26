@@ -5,7 +5,7 @@ libtesseract/ is a wrapper for google's Tesseract-OCR C API
 
 USAGE:
  > from PIL import Image
- > from pyocr.tesseract_api import image_to_string
+ > from pyocr.libtesseract import image_to_string
  > print(image_to_string(Image.open('test.png')))
  > print(image_to_string(Image.open('test-european.jpg'), lang='fra'))
 
