@@ -8,7 +8,7 @@ import tempfile
 import unittest
 
 from pyocr import builders
-from pyocr import tesseract_capi
+from pyocr import libtesseract
 
 
 class TestContext(unittest.TestCase):
@@ -20,13 +20,13 @@ class TestContext(unittest.TestCase):
 
     def test_available(self):
         self.assertTrue(
-            tesseract_capi.is_available(),
+            libtesseract.is_available(),
             "Tesseract not found."
             " Are libtesseract and libleptonica installed ? "
         )
 
     def test_version(self):
-        self.assertTrue(tesseract_capi.get_version() in (
+        self.assertTrue(libtesseract.get_version() in (
             (3, 2, 1),
             (3, 2, 2),
             (3, 3, 0),
@@ -35,7 +35,7 @@ class TestContext(unittest.TestCase):
             " (3.4.0) ! Some tests will be skipped !"))
 
     def test_langs(self):
-        langs = tesseract_capi.get_available_languages()
+        langs = libtesseract.get_available_languages()
         self.assertTrue("eng" in langs,
                         ("English training does not appear to be installed."
                          " (required for the tests)"))
@@ -60,7 +60,7 @@ class TestTxt(unittest.TestCase):
 
     def __test_txt(self, image_file, expected_output_file, lang='eng'):
         image_file = "tests/data/" + image_file
-        expected_output_file = "tests/tesseract_capi/" + expected_output_file
+        expected_output_file = "tests/libtesseract/" + expected_output_file
 
         expected_output = ""
         with codecs.open(expected_output_file, 'r', encoding='utf-8') \
@@ -69,7 +69,7 @@ class TestTxt(unittest.TestCase):
                 expected_output += line
         expected_output = expected_output.strip()
 
-        output = tesseract_capi.image_to_string(
+        output = libtesseract.image_to_string(
             Image.open(image_file), lang=lang
         )
 
@@ -100,14 +100,14 @@ class TestWordBox(unittest.TestCase):
 
     def __test_txt(self, image_file, expected_box_file, lang='eng'):
         image_file = "tests/data/" + image_file
-        expected_box_file = "tests/tesseract_capi/" + expected_box_file
+        expected_box_file = "tests/libtesseract/" + expected_box_file
 
         with codecs.open(expected_box_file, 'r', encoding='utf-8') \
                 as file_descriptor:
             expected_boxes = self.builder.read_file(file_descriptor)
         expected_boxes.sort()
 
-        boxes = tesseract_capi.image_to_string(
+        boxes = libtesseract.image_to_string(
             Image.open(image_file), lang=lang, builder=self.builder
         )
         boxes.sort()
@@ -139,7 +139,7 @@ class TestWordBox(unittest.TestCase):
         self.__test_txt('test-japanese.jpg', 'test-japanese.words', 'jpn')
 
     def test_write_read(self):
-        original_boxes = tesseract_capi.image_to_string(
+        original_boxes = libtesseract.image_to_string(
             Image.open("tests/data/test.png"), builder=self.builder
         )
         self.assertTrue(len(original_boxes) > 0)
@@ -174,9 +174,9 @@ class TestLineBox(unittest.TestCase):
 
     def __test_txt(self, image_file, expected_box_file, lang='eng'):
         image_file = "tests/data/" + image_file
-        expected_box_file = "tests/tesseract_capi/" + expected_box_file
+        expected_box_file = "tests/libtesseract/" + expected_box_file
 
-        boxes = tesseract_capi.image_to_string(
+        boxes = libtesseract.image_to_string(
             Image.open(image_file), lang=lang,
             builder=self.builder
         )
@@ -208,7 +208,7 @@ class TestLineBox(unittest.TestCase):
         self.__test_txt('test-japanese.jpg', 'test-japanese.lines', 'jpn')
 
     def test_write_read(self):
-        original_boxes = tesseract_capi.image_to_string(
+        original_boxes = libtesseract.image_to_string(
             Image.open("tests/data/test.png"), builder=self.builder)
         self.assertTrue(len(original_boxes) > 0)
 
@@ -235,16 +235,16 @@ class TestLineBox(unittest.TestCase):
 
 class TestOrientation(unittest.TestCase):
     def test_can_detect_orientation(self):
-        self.assertTrue(tesseract_capi.can_detect_orientation())
+        self.assertTrue(libtesseract.can_detect_orientation())
 
     def test_orientation_0(self):
         img = Image.open('tests/data/test.png')
-        result = tesseract_capi.detect_orientation(img, lang='eng')
+        result = libtesseract.detect_orientation(img, lang='eng')
         self.assertEqual(result['angle'], 0)
 
     def test_orientation_90(self):
         img = Image.open('tests/data/test-90.png')
-        result = tesseract_capi.detect_orientation(img, lang='eng')
+        result = libtesseract.detect_orientation(img, lang='eng')
         self.assertEqual(result['angle'], 90)
 
 

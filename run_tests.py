@@ -6,12 +6,12 @@ import unittest
 
 from pyocr import cuneiform_sh
 from pyocr import pyocr
-from pyocr import tesseract_capi
+from pyocr import libtesseract
 from pyocr import tesseract_sh
 
 from tests import tests_cuneiform
 from tests import tests_tesseract
-from tests import tests_tesseract_capi
+from tests import tests_libtesseract
 
 if __name__ == '__main__':
     for tool in pyocr.TOOLS:
@@ -28,10 +28,10 @@ if __name__ == '__main__':
     print("OCR tool found:")
     for tool in pyocr.get_available_tools():
         print("- %s" % tool.get_name())
-    if tesseract_capi.is_available():
+    if libtesseract.is_available():
         print("---")
         print("Tesseract C-API:")
-        unittest.TextTestRunner().run(tests_tesseract_capi.get_all_tests())
+        unittest.TextTestRunner().run(tests_libtesseract.get_all_tests())
     if tesseract_sh.is_available():
         print("---")
         print("Tesseract SH:")

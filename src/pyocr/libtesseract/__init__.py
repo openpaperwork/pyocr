@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 '''
-tesseract_capi/ is a wrapper for google's Tesseract-OCR C API
+libtesseract/ is a wrapper for google's Tesseract-OCR C API
 ( http://code.google.com/p/tesseract-ocr/ ).
 
 USAGE:
@@ -14,8 +14,6 @@ PyOCR is released under the GPL v3.
 Copyright (c) Jerome Flesch, 2011-2012
 https://github.com/jflesch/pyocr#readme
 '''
-import sys
-
 from .. import builders
 
 from . import tesseract_raw
@@ -120,7 +118,8 @@ def image_to_string(image, lang=None, builder=None):
                 builder.start_line(box)
 
             last_word_in_line = tesseract_raw.page_iterator_is_at_final_element(
-                    page_iterator, lvl_line, lvl_word)
+                page_iterator, lvl_line, lvl_word
+            )
 
             word = tesseract_raw.result_iterator_get_utf8_text(
                 res_iterator, lvl_word

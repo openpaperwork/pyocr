@@ -41,13 +41,13 @@ run_tess_capi()
 
 cat << EOF | python3
 from PIL import Image
-from pyocr import tesseract_capi
+from pyocr import libtesseract
 from pyocr import builders
 
 img = Image.open("${img}")
 builder = builders.${builder}()
 
-out = tesseract_capi.image_to_string(img, lang="${lang}", builder=builder)
+out = libtesseract.image_to_string(img, lang="${lang}", builder=builder)
 
 with open("${out}", "w") as fd:
     builder.write_file(fd, out)
@@ -86,18 +86,18 @@ cp tesseract/test-japanese.words tesseract/test-japanese.lines
 
 echo "=== Tesseract C-api ==="
 
-run_tess_capi data/test.png tesseract_capi/test.txt eng TextBuilder
-run_tess_capi data/test.png tesseract_capi/test.words eng WordBoxBuilder
-run_tess_capi data/test.png tesseract_capi/test.lines eng LineBoxBuilder
+run_tess_capi data/test.png libtesseract/test.txt eng TextBuilder
+run_tess_capi data/test.png libtesseract/test.words eng WordBoxBuilder
+run_tess_capi data/test.png libtesseract/test.lines eng LineBoxBuilder
 
-run_tess_capi data/test-european.jpg tesseract_capi/test-european.txt eng TextBuilder
-run_tess_capi data/test-european.jpg tesseract_capi/test-european.words eng WordBoxBuilder
-run_tess_capi data/test-european.jpg tesseract_capi/test-european.lines eng LineBoxBuilder
+run_tess_capi data/test-european.jpg libtesseract/test-european.txt eng TextBuilder
+run_tess_capi data/test-european.jpg libtesseract/test-european.words eng WordBoxBuilder
+run_tess_capi data/test-european.jpg libtesseract/test-european.lines eng LineBoxBuilder
 
-run_tess_capi data/test-french.jpg tesseract_capi/test-french.txt fra TextBuilder
-run_tess_capi data/test-french.jpg tesseract_capi/test-french.words fra WordBoxBuilder
-run_tess_capi data/test-french.jpg tesseract_capi/test-french.lines fra LineBoxBuilder
+run_tess_capi data/test-french.jpg libtesseract/test-french.txt fra TextBuilder
+run_tess_capi data/test-french.jpg libtesseract/test-french.words fra WordBoxBuilder
+run_tess_capi data/test-french.jpg libtesseract/test-french.lines fra LineBoxBuilder
 
-run_tess_capi data/test-japanese.jpg tesseract_capi/test-japanese.txt jpn TextBuilder
-run_tess_capi data/test-japanese.jpg tesseract_capi/test-japanese.words jpn WordBoxBuilder
-run_tess_capi data/test-japanese.jpg tesseract_capi/test-japanese.lines jpn LineBoxBuilder
+run_tess_capi data/test-japanese.jpg libtesseract/test-japanese.txt jpn TextBuilder
+run_tess_capi data/test-japanese.jpg libtesseract/test-japanese.words jpn WordBoxBuilder
+run_tess_capi data/test-japanese.jpg libtesseract/test-japanese.lines jpn LineBoxBuilder
