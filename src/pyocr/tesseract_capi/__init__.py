@@ -109,35 +109,33 @@ def image_to_string(image, lang=None, builder=None):
             res_iterator
         )
 
-        was_empty = False
-
         while True:
             if tesseract_raw.page_iterator_is_at_beginning_of(
-                    page_iterator, lvl_line) and not was_empty:
+                    page_iterator, lvl_line):
                 (r, box) = tesseract_raw.page_iterator_bounding_box(
                     page_iterator, lvl_line
                 )
                 assert(r)
                 box = _tess_box_to_pyocr_box(box)
                 builder.start_line(box)
-                was_empty = True
+
+            last_word_in_line = tesseract_raw.page_iterator_is_at_final_element(
+                    page_iterator, lvl_line, lvl_word)
 
             word = tesseract_raw.result_iterator_get_utf8_text(
                 res_iterator, lvl_word
             )
 
-            if word.strip() != "":
+            if word is not None and word != "":
                 (r, box) = tesseract_raw.page_iterator_bounding_box(
                     page_iterator, lvl_word
                 )
                 assert(r)
                 box = _tess_box_to_pyocr_box(box)
                 builder.add_word(word, box)
-                was_empty = False
 
-            if tesseract_raw.page_iterator_is_at_final_element(
-                    page_iterator, lvl_line, lvl_word) and not was_empty:
-                builder.end_line()
+                if last_word_in_line:
+                    builder.end_line()
 
             if not tesseract_raw.page_iterator_next(page_iterator, lvl_word):
                 break
