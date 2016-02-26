@@ -369,7 +369,7 @@ def analyse_layout(handle):
 
 def get_utf8_text(handle):
     ptr = g_libtesseract.TessBaseAPIGetUTF8Text(handle)
-    val = ctypes.cast(ptr, ctypes.c_char_p).value.decode("utf-8")[:]
+    val = ctypes.cast(ptr, ctypes.c_char_p).value.decode("utf-8")
     g_libtesseract.TessDeleteText(ptr)
     return val
 
@@ -478,7 +478,7 @@ def result_iterator_get_utf8_text(iterator, level):
     ptr = g_libtesseract.TessResultIteratorGetUTF8Text(iterator, level)
     if ptr is None:
         return None
-    val = ctypes.cast(ptr, ctypes.c_char_p).value.decode("utf-8")[:]
+    val = ctypes.cast(ptr, ctypes.c_char_p).value.decode("utf-8")
     g_libtesseract.TessDeleteText(ptr)
     return val
 
