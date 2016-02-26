@@ -479,6 +479,10 @@ class WordBoxBuilder(object):
         for p in parsers:
             p.feed(html_str)
             if len(p.boxes) > 0:
+                last_box = p.boxes[-1]
+                if last_box.content == to_unicode(""):
+                    # some parser leave an empty box at the end
+                    p.boxes.pop(-1)
                 return p.boxes
         return []
 
@@ -552,6 +556,10 @@ class LineBoxBuilder(object):
         for (parser, convertion) in parsers:
             parser.feed(html_str)
             if len(parser.boxes) > 0:
+                last_box = parser.boxes[-1]
+                if last_box.content == to_unicode(""):
+                    # some parser leave an empty box at the end
+                    parser.boxes.pop(-1)
                 return convertion(parser)
         return []
 
@@ -579,6 +587,9 @@ class LineBoxBuilder(object):
         file_descriptor.write(to_unicode("</body>\n"))
 
     def start_line(self, box):
+        # no empty line
+        if len(self.lines) > 0 and self.lines[-1].content == to_unicode(""):
+            return
         self.lines.append(LineBox([], box))
 
     def add_word(self, word, box):
