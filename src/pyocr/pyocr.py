@@ -38,7 +38,7 @@ Each module wrapping an OCR tool provides the following functions:
 
 COPYRIGHT:
 Pyocr is released under the GPL v3.
-Copyright (c) Jerome Flesch, 2011
+Copyright (c) Jerome Flesch, 2011-2016
 Tesseract module: Copyright (c) Samuel Hoffstaetter, 2009
 
 WEBSITE:

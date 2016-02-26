@@ -11,7 +11,7 @@ USAGE:
 
 COPYRIGHT:
 PyOCR is released under the GPL v3.
-Copyright (c) Jerome Flesch, 2011-2012
+Copyright (c) Jerome Flesch, 2011-2016
 https://github.com/jflesch/pyocr#readme
 '''
 from .. import builders
