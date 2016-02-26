@@ -8,7 +8,7 @@ import tempfile
 import unittest
 
 from pyocr import builders
-from pyocr import cuneiform_sh
+from pyocr import cuneiform
 
 
 class TestContext(unittest.TestCase):
@@ -19,16 +19,16 @@ class TestContext(unittest.TestCase):
         pass
 
     def test_available(self):
-        self.assertTrue(cuneiform_sh.is_available(),
+        self.assertTrue(cuneiform.is_available(),
                        "cuneiform not found. Is it installed ?")
 
     def test_version(self):
-        self.assertEqual(cuneiform_sh.get_version(), (1, 1, 0),
+        self.assertEqual(cuneiform.get_version(), (1, 1, 0),
                          ("cuneiform does not have the expected version"
                           " (1.1.0) ! Tests will fail !"))
 
     def test_langs(self):
-        langs = cuneiform_sh.get_available_languages()
+        langs = cuneiform.get_available_languages()
         self.assertTrue("eng" in langs,
                         ("English training does not appear to be installed."
                          " (required for the tests)"))
@@ -59,7 +59,7 @@ class TestTxt(unittest.TestCase):
                 expected_output += line
         expected_output = expected_output.strip()
 
-        output = cuneiform_sh.image_to_string(Image.open(image_file), lang=lang)
+        output = cuneiform.image_to_string(Image.open(image_file), lang=lang)
 
         self.assertEqual(output, expected_output)
 
@@ -92,7 +92,7 @@ class TestWordBox(unittest.TestCase):
             expected_boxes = self.builder.read_file(file_descriptor)
         expected_boxes.sort()
 
-        boxes = cuneiform_sh.image_to_string(Image.open(image_file), lang=lang,
+        boxes = cuneiform.image_to_string(Image.open(image_file), lang=lang,
                                           builder=self.builder)
         boxes.sort()
 
@@ -119,7 +119,7 @@ class TestWordBox(unittest.TestCase):
         self.__test_txt('test-french.jpg', 'test-french.words', 'fra')
 
     def test_write_read(self):
-        original_boxes = cuneiform_sh.image_to_string(
+        original_boxes = cuneiform.image_to_string(
             Image.open("tests/data/test.png"), builder=self.builder)
         self.assertTrue(len(original_boxes) > 0)
 
@@ -146,7 +146,7 @@ class TestWordBox(unittest.TestCase):
 
 class TestOrientation(unittest.TestCase):
     def test_can_detect_orientation(self):
-        self.assertFalse(cuneiform_sh.can_detect_orientation())
+        self.assertFalse(cuneiform.can_detect_orientation())
 
 
 def get_all_tests():

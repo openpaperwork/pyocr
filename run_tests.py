@@ -4,10 +4,10 @@ import sys
 sys.path = ["src"] + sys.path
 import unittest
 
-from pyocr import cuneiform_sh
+from pyocr import cuneiform
 from pyocr import pyocr
 from pyocr import libtesseract
-from pyocr import tesseract_sh
+from pyocr import tesseract
 
 from tests import tests_cuneiform
 from tests import tests_tesseract
@@ -32,11 +32,11 @@ if __name__ == '__main__':
         print("---")
         print("Tesseract C-API:")
         unittest.TextTestRunner().run(tests_libtesseract.get_all_tests())
-    if tesseract_sh.is_available():
+    if tesseract.is_available():
         print("---")
         print("Tesseract SH:")
         unittest.TextTestRunner().run(tests_tesseract.get_all_tests())
-    if cuneiform_sh.is_available():
+    if cuneiform.is_available():
         print("---")
         print("Cuneiform SH:")
         unittest.TextTestRunner().run(tests_cuneiform.get_all_tests())

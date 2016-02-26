@@ -5,7 +5,7 @@ tesseract.py is a wrapper for google's Tesseract-OCR
 
 USAGE:
  > from PIL import Image
- > from pyocr.tesseract_sh import image_to_string
+ > from pyocr.tesseract import image_to_string
  > print(image_to_string(Image.open('test.png')))
  > print(image_to_string(Image.open('test-european.jpg'), lang='fra'))
 

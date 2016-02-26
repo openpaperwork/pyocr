@@ -8,7 +8,7 @@ import tempfile
 import unittest
 
 from pyocr import builders
-from pyocr import tesseract_sh
+from pyocr import tesseract
 
 
 class TestContext(unittest.TestCase):
@@ -19,11 +19,11 @@ class TestContext(unittest.TestCase):
         pass
 
     def test_available(self):
-        self.assertTrue(tesseract_sh.is_available(),
+        self.assertTrue(tesseract.is_available(),
                         "Tesseract not found. Is it installed ?")
 
     def test_version(self):
-        self.assertTrue(tesseract_sh.get_version() in (
+        self.assertTrue(tesseract.get_version() in (
             (3, 2, 1),
             (3, 2, 2),
             (3, 3, 0),
@@ -32,7 +32,7 @@ class TestContext(unittest.TestCase):
             " (3.4.0) ! Some tests will be skipped !"))
 
     def test_langs(self):
-        langs = tesseract_sh.get_available_languages()
+        langs = tesseract.get_available_languages()
         self.assertTrue("eng" in langs,
                         ("English training does not appear to be installed."
                          " (required for the tests)"))
@@ -66,7 +66,7 @@ class TestTxt(unittest.TestCase):
                 expected_output += line
         expected_output = expected_output.strip()
 
-        output = tesseract_sh.image_to_string(Image.open(image_file), lang=lang)
+        output = tesseract.image_to_string(Image.open(image_file), lang=lang)
 
         self.assertEqual(output, expected_output)
 
@@ -91,7 +91,7 @@ class TestCharBox(unittest.TestCase):
     These tests make sure that Tesseract box handling works fine.
     """
     def setUp(self):
-        self.builder = tesseract_sh.CharBoxBuilder()
+        self.builder = tesseract.CharBoxBuilder()
 
     def __test_txt(self, image_file, expected_box_file, lang='eng'):
         image_file = "tests/data/" + image_file
@@ -102,7 +102,7 @@ class TestCharBox(unittest.TestCase):
             expected_boxes = self.builder.read_file(file_descriptor)
         expected_boxes.sort()
 
-        boxes = tesseract_sh.image_to_string(Image.open(image_file), lang=lang,
+        boxes = tesseract.image_to_string(Image.open(image_file), lang=lang,
                                              builder=self.builder)
         boxes.sort()
 
@@ -124,7 +124,7 @@ class TestCharBox(unittest.TestCase):
         self.__test_txt('test-japanese.jpg', 'test-japanese.box', 'jpn')
 
     def test_write_read(self):
-        original_boxes = tesseract_sh.image_to_string(
+        original_boxes = tesseract.image_to_string(
             Image.open("tests/data/test.png"), builder=self.builder)
         self.assertTrue(len(original_boxes) > 0)
 
@@ -154,7 +154,7 @@ class TestDigits(unittest.TestCase):
     These tests make sure that Tesseract digits handling works fine.
     """
     def setUp(self):
-        self.builder = tesseract_sh.DigitBuilder()
+        self.builder = tesseract.DigitBuilder()
 
     def __test_text(self, image_file, expected_output_file, lang='eng'):
         image_file = "tests/data/" + image_file
@@ -167,7 +167,7 @@ class TestDigits(unittest.TestCase):
                 expected_output += line
         expected_output = expected_output.strip()
 
-        output = tesseract_sh.image_to_string(Image.open(image_file), lang=lang,
+        output = tesseract.image_to_string(Image.open(image_file), lang=lang,
                                               builder=self.builder)
 
         self.assertEqual(output, expected_output)
@@ -192,7 +192,7 @@ class TestWordBox(unittest.TestCase):
             expected_boxes = self.builder.read_file(file_descriptor)
         expected_boxes.sort()
 
-        boxes = tesseract_sh.image_to_string(Image.open(image_file), lang=lang,
+        boxes = tesseract.image_to_string(Image.open(image_file), lang=lang,
                                              builder=self.builder)
         boxes.sort()
 
@@ -223,7 +223,7 @@ class TestWordBox(unittest.TestCase):
         self.__test_txt('test-japanese.jpg', 'test-japanese.words', 'jpn')
 
     def test_write_read(self):
-        original_boxes = tesseract_sh.image_to_string(
+        original_boxes = tesseract.image_to_string(
             Image.open("tests/data/test.png"), builder=self.builder)
         self.assertTrue(len(original_boxes) > 0)
 
@@ -259,7 +259,7 @@ class TestLineBox(unittest.TestCase):
         image_file = "tests/data/" + image_file
         expected_box_file = "tests/tesseract/" + expected_box_file
 
-        boxes = tesseract_sh.image_to_string(Image.open(image_file), lang=lang,
+        boxes = tesseract.image_to_string(Image.open(image_file), lang=lang,
                                              builder=self.builder)
         boxes.sort()
 
@@ -289,7 +289,7 @@ class TestLineBox(unittest.TestCase):
         self.__test_txt('test-japanese.jpg', 'test-japanese.lines', 'jpn')
 
     def test_write_read(self):
-        original_boxes = tesseract_sh.image_to_string(
+        original_boxes = tesseract.image_to_string(
             Image.open("tests/data/test.png"), builder=self.builder)
         self.assertTrue(len(original_boxes) > 0)
 
@@ -316,16 +316,16 @@ class TestLineBox(unittest.TestCase):
 
 class TestOrientation(unittest.TestCase):
     def test_can_detect_orientation(self):
-        self.assertTrue(tesseract_sh.can_detect_orientation())
+        self.assertTrue(tesseract.can_detect_orientation())
 
     def test_orientation_0(self):
         img = Image.open('tests/data/test.png')
-        result = tesseract_sh.detect_orientation(img, lang='eng')
+        result = tesseract.detect_orientation(img, lang='eng')
         self.assertEqual(result['angle'], 0)
 
     def test_orientation_90(self):
         img = Image.open('tests/data/test-90.png')
-        result = tesseract_sh.detect_orientation(img, lang='eng')
+        result = tesseract.detect_orientation(img, lang='eng')
         self.assertEqual(result['angle'], 90)
 
 
