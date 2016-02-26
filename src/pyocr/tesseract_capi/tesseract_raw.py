@@ -476,6 +476,8 @@ def result_iterator_get_page_iterator(res_iterator):
 
 def result_iterator_get_utf8_text(iterator, level):
     ptr = g_libtesseract.TessResultIteratorGetUTF8Text(iterator, level)
+    if ptr is None:
+        return None
     val = ctypes.cast(ptr, ctypes.c_char_p).value.decode("utf-8")[:]
     g_libtesseract.TessDeleteText(ptr)
     return val
