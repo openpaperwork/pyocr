@@ -531,7 +531,6 @@ class LineBoxBuilder(object):
     cuneiform_args = ["-f", "hocr"]
 
     def __init__(self, tesseract_layout=1):
-        self.current_line = None
         self.lines = []
         self.tesseract_layout = tesseract_layout
         self.tesseract_configs += ["-psm", str(tesseract_layout)]
@@ -580,11 +579,10 @@ class LineBoxBuilder(object):
         file_descriptor.write(to_unicode("</body>\n"))
 
     def start_line(self, box):
-        self.current_line = LineBox([], box)
-        self.lines.append(self.current_line)
+        self.lines.append(LineBox([], box))
 
     def add_word(self, word, box):
-        self.current_line.word_boxes.append(Box(word, box))
+        self.lines[-1].word_boxes.append(Box(word, box))
 
     def end_line(self):
         pass
