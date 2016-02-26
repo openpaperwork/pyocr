@@ -1,4 +1,15 @@
-0.3.0 --> 0.3.1:
+0.4.0:
+* New module: 'libtesseract'. Use the C API of Tesseract for OCR.
+  This module is more efficient and cleaner than the old 'tesseract' module
+  (no more fork + exec + sh, less image manipulation, etc).
+  Note that with this module the images are just loaded and uncompressed
+  by Pillow. With 'tesseract', they were loaded, uncompressed, re-compressed
+  and saved by Pillow, then be reloaded by Leptonica. So the results may
+  vary slightly.
+* Tesseract: Add support for Win32
+
+
+0.3.1:
 * tesseract.detect_orientation(): Use a temporary file instead of stdin
   to transmit the image to Tesseract. Tesseract 3.04 doesn't support
   stdin + "-psm 0" (regression ?)
@@ -8,39 +19,47 @@
 * TextBuilder + Cuneiform: add extra settings for Cuneiform
   (cuneiform_dotmatrix, cuneiform_fax=False, cuneiform_singlecolumn)
 
-0.2.4 --> 0.3.0:
+
+0.3.0:
 * New API: pyocr.<tool>.can_detect_orientation() and
   pyocr.<tool>.detect_orientation()
 
-0.2.3 --> 0.2.4:
+
+0.2.4:
 * Tesseract : add digit-only support
 * Tesseract : add support for Tesseract subsets of layout analysis (-psm)
 
-0.2.2 --> 0.2.3:
+
+0.2.3:
 * Strip the alpha channel from images before running the OCR. It's basically
   useless and can prevent the tool from working correctly.
 * Make hOCR parsing more resistant (handle extra data around box positions)
 * Fix: Take into account that new versions of Tesseract uses the file
   extension .hocr instead of .html
 
-0.2.1 --> 0.2.2:
+
+0.2.2:
 * Fix Python 3 support
 * Add support for Tesseract on Heroku
 
-0.2.0 --> 0.2.1:
+
+0.2.1:
 * Make it possible to use 'import pyocr' instead of 'from pyocr import pyocr'.
   'from pyocr import pyocr' still works but is obsolete.
 * Fix dependency list: depends on Pillow (it's untested with PIL)
 * Fix pyocr.VERSION
 
-0.1.2 --> 0.2.0:
+
+0.2.0:
 * Python 3.x support
 
-0.1.1 --> 0.1.2:
+
+0.1.2:
 * Tesseract: Fix version parsing
 * Tesseract: Fix Tesseract 3.02.01's hOCR format support
 
-0.1 --> 0.1.1:
+
+0.1.1:
 * hOCR: Parse lines as well as words
 * tesseract.get_available_languages() : Fix fedora support
 * Fix UTF-8 support
