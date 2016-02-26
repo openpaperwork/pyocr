@@ -60,7 +60,7 @@ class TestTxt(unittest.TestCase):
 
     def __test_txt(self, image_file, expected_output_file, lang='eng'):
         image_file = "tests/data/" + image_file
-        expected_output_file = "tests/tesseract/" + expected_output_file
+        expected_output_file = "tests/tesseract_capi/" + expected_output_file
 
         expected_output = ""
         with codecs.open(expected_output_file, 'r', encoding='utf-8') \
@@ -100,7 +100,7 @@ class TestWordBox(unittest.TestCase):
 
     def __test_txt(self, image_file, expected_box_file, lang='eng'):
         image_file = "tests/data/" + image_file
-        expected_box_file = "tests/tesseract/" + expected_box_file
+        expected_box_file = "tests/tesseract_capi/" + expected_box_file
 
         with codecs.open(expected_box_file, 'r', encoding='utf-8') \
                 as file_descriptor:
@@ -174,7 +174,7 @@ class TestLineBox(unittest.TestCase):
 
     def __test_txt(self, image_file, expected_box_file, lang='eng'):
         image_file = "tests/data/" + image_file
-        expected_box_file = "tests/tesseract/" + expected_box_file
+        expected_box_file = "tests/tesseract_capi/" + expected_box_file
 
         boxes = tesseract_capi.image_to_string(
             Image.open(image_file), lang=lang,
