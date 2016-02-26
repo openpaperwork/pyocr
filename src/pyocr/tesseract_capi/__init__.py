@@ -147,11 +147,6 @@ def image_to_string(image, lang=None, builder=None):
 
 
 def is_available():
-    # We limit to Python 3. Supporting both Python 2.7 and Python 3.x
-    # would be too hard
-    python_ver = (sys.version_info[0], sys.version_info[1])
-    if python_ver < (3, 0):
-        return False
     return tesseract_raw.is_available()
 
 
