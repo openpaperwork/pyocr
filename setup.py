@@ -31,11 +31,11 @@ setup(
     author_email="jflesch@gmail.com",
     packages=[
         'pyocr',
-        'pyocr.tesseract_capi',
+        'pyocr.libtesseract',
     ],
     package_dir={
         'pyocr': 'src/pyocr',
-        'pyocr.tesseract_capi': 'src/pyocr/tesseract_capi',
+        'pyocr.libtesseract': 'src/pyocr/libtesseract',
     },
     data_files=[],
     scripts=[],
