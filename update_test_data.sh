@@ -169,12 +169,15 @@ cd tests
 
 echo "=== Tesseract sh ==="
 
+run_tess_all real
 run_tess_all specific
 
 echo "=== Tesseract C-api ==="
 
+run_tess_api_all real
 run_tess_api_all specific
 
 echo "=== Cuneiform ==="
 
+run_cuneiform_all real
 run_cuneiform_all specific

@@ -264,6 +264,47 @@ class TestOrientation(unittest.TestCase):
         self.assertEqual(result['angle'], 90)
 
 
+class TestBasicDoc(unittest.TestCase):
+    """
+    These tests make sure that Tesseract box handling works fine.
+    """
+    def setUp(self):
+        self.builder = builders.LineBoxBuilder()
+
+    def __test_txt(self, expected_output_file, lang='eng'):
+        image_file = os.path.join(
+            "tests", "input", "real", "basic_doc.jpg"
+        )
+        expected_output_file = os.path.join(
+            "tests", "output", "real", "libtesseract", expected_output_file
+        )
+
+        output = libtesseract.image_to_string(
+            Image.open(image_file), lang=lang,
+            builder=self.builder
+        )
+        output.sort()
+
+        with codecs.open(expected_output_file, 'r', encoding='utf-8') \
+                as file_descriptor:
+            expected_output = self.builder.read_file(file_descriptor)
+        expected_output.sort()
+
+        self.assertEqual(len(output), len(expected_output))
+
+        for i in range(0, min(len(output), len(expected_output))):
+            for j in range(0, len(output[i].word_boxes)):
+                self.assertEqual(type(output[i].word_boxes[j]),
+                                 type(expected_output[i].word_boxes[j]))
+            self.assertEqual(output[i], expected_output[i])
+
+    def test_basic(self):
+        self.__test_txt('basic_doc.lines')
+
+    def tearDown(self):
+        pass
+
+
 def get_all_tests():
     all_tests = unittest.TestSuite()
 
@@ -301,6 +342,12 @@ def get_all_tests():
         'test_orientation_90',
     ]
     tests = unittest.TestSuite(map(TestOrientation, test_names))
+    all_tests.addTest(tests)
+
+    test_names = [
+        'test_basic',
+    ]
+    tests = unittest.TestSuite(map(TestBasicDoc, test_names))
     all_tests.addTest(tests)
 
     return all_tests
