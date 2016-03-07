@@ -21,6 +21,44 @@ run_tess()
 	fi
 }
 
+run_tess_all()
+{
+	type=${1}
+
+	mkdir -p output/${type}/tesseract
+	for input in input/${type}/*;
+	do
+		output=$(basename ${input})
+		output=$(echo ${output} | sed s/.jpg//g)
+		output=$(echo ${output} | sed s/.png//g)
+
+		lang=eng
+		if echo ${output} | grep digit > /dev/null ;
+		then
+			run_tess ${input} output/${type}/tesseract/${output} ${lang} \
+				digits
+			continue
+		fi
+
+		if echo ${output} | grep french > /dev/null ;
+		then lang=fra
+		elif echo ${output} | grep japanese > /dev/null ;
+		then lang=jpn
+		fi
+
+		run_tess ${input} output/${type}/tesseract/${output} ${lang}
+		run_tess ${input} output/${type}/tesseract/${output} ${lang} \
+			batch.nochop makebox
+		run_tess ${input} output/${type}/tesseract/${output} ${lang} \
+			hocr
+
+		mv output/${type}/tesseract/${output}.hocr \
+			output/${type}/tesseract/${output}.words
+		cp output/${type}/tesseract/${output}.words \
+			output/${type}/tesseract/${output}.lines
+	done
+}
+
 run_tess_api()
 {
 	img="$1"
@@ -54,50 +92,89 @@ with open("${out}", "w") as fd:
 EOF
 }
 
+run_tess_api_all()
+{
+	type="$1"
+
+	mkdir -p output/${type}/libtesseract
+	for input in input/${type}/*;
+	do
+		output=$(basename ${input})
+		output=$(echo ${output} | sed s/.jpg//g)
+		output=$(echo ${output} | sed s/.png//g)
+
+		lang=eng
+		if echo ${output} | grep french > /dev/null ;
+		then lang=fra
+		elif echo ${output} | grep japanese > /dev/null ;
+		then lang=jpn
+		fi
+
+		run_tess_api ${input} output/${type}/libtesseract/${output}.txt ${lang} \
+			TextBuilder
+		run_tess_api ${input} output/${type}/libtesseract/${output}.words ${lang} \
+			WordBoxBuilder
+		run_tess_api ${input} output/${type}/libtesseract/${output}.lines ${lang} \
+			LineBoxBuilder
+	done
+}
+
+run_cuneiform()
+{
+	img="$1"
+	shift
+	out="$1"
+	shift
+	lang="$1"
+	shift
+
+	lang_arg=""
+	if [ -n "${lang}" ]; then
+		lang_arg=-l
+	fi
+
+	echo cuneiform ${lang_arg} ${lang} "$@" -o ${out} ${img}
+	if ! cuneiform ${lang_arg} ${lang} "$@" -o ${out} ${img} > /dev/null; then
+		echo "FAILED !"
+	fi
+}
+
+run_cuneiform_all()
+{
+	type="$1"
+
+	mkdir -p output/${type}/cuneiform
+	for input in input/${type}/*;
+	do
+		output=$(basename ${input})
+		output=$(echo ${output} | sed s/.jpg//g)
+		output=$(echo ${output} | sed s/.png//g)
+
+		lang=eng
+		if echo ${output} | grep french > /dev/null ;
+		then lang=fra
+		elif echo ${output} | grep japanese > /dev/null ;
+		then
+			# skip japanese for now
+			continue
+		fi
+
+		run_cuneiform ${input} output/${type}/cuneiform/${output}.txt ${lang} -f text
+		run_cuneiform ${input} output/${type}/cuneiform/${output}.words ${lang} -f hocr
+		run_cuneiform ${input} output/${type}/cuneiform/${output}.lines ${lang} -f hocr
+	done
+}
+
 cd tests
 
 echo "=== Tesseract sh ==="
 
-run_tess data/test.png tesseract/test eng
-run_tess data/test.png tesseract/test eng batch.nochop makebox
-run_tess data/test.png tesseract/test eng hocr
-mv tesseract/test.hocr tesseract/test.words
-cp tesseract/test.words tesseract/test.lines
-
-run_tess data/test-digits.png tesseract/test-digits eng digits
-
-run_tess data/test-european.jpg tesseract/test-european eng
-run_tess data/test-european.jpg tesseract/test-european eng batch.nochop makebox
-run_tess data/test-european.jpg tesseract/test-european eng hocr
-mv tesseract/test-european.hocr tesseract/test-european.words
-cp tesseract/test-european.words tesseract/test-european.lines
-
-run_tess data/test-french.jpg tesseract/test-french fra
-run_tess data/test-french.jpg tesseract/test-french fra batch.nochop makebox
-run_tess data/test-french.jpg tesseract/test-french fra hocr
-mv tesseract/test-french.hocr tesseract/test-french.words
-cp tesseract/test-french.words tesseract/test-french.lines
-
-run_tess data/test-japanese.jpg tesseract/test-japanese jpn
-run_tess data/test-japanese.jpg tesseract/test-japanese jpn batch.nochop makebox
-run_tess data/test-japanese.jpg tesseract/test-japanese jpn hocr
-mv tesseract/test-japanese.hocr tesseract/test-japanese.words
-cp tesseract/test-japanese.words tesseract/test-japanese.lines
+run_tess_all specific
 
 echo "=== Tesseract C-api ==="
 
-run_libtess data/test.png libtesseract/test.txt eng TextBuilder
-run_libtess data/test.png libtesseract/test.words eng WordBoxBuilder
-run_libtess data/test.png libtesseract/test.lines eng LineBoxBuilder
+run_tess_api_all specific
 
-run_libtess data/test-european.jpg libtesseract/test-european.txt eng TextBuilder
-run_libtess data/test-european.jpg libtesseract/test-european.words eng WordBoxBuilder
-run_libtess data/test-european.jpg libtesseract/test-european.lines eng LineBoxBuilder
+echo "=== Cuneiform ==="
 
-run_libtess data/test-french.jpg libtesseract/test-french.txt fra TextBuilder
-run_libtess data/test-french.jpg libtesseract/test-french.words fra WordBoxBuilder
-run_libtess data/test-french.jpg libtesseract/test-french.lines fra LineBoxBuilder
-
-run_libtess data/test-japanese.jpg libtesseract/test-japanese.txt jpn TextBuilder
-run_libtess data/test-japanese.jpg libtesseract/test-japanese.words jpn WordBoxBuilder
-run_libtess data/test-japanese.jpg libtesseract/test-japanese.lines jpn LineBoxBuilder
+run_cuneiform_all specific

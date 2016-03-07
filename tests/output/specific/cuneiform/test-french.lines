@@ -1,0 +1,13 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><title></title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+<meta name='ocr-system' content='openocr'>
+</head>
+<body><div class='ocr_page' id='page_1' title='image "input/specific/test-french.jpg"; bbox 0 0 200 200'>
+<p><span class='ocr_line' id='line_1' title="bbox 23 37 186 56">Phrase en français. <span class='ocr_cinfo' title="x_bboxes 23 37 32 51 34 37 43 51 45 41 52 51 52 41 61 51 62 41 70 52 70 41 81 52 -1 -1 -1 -1 87 42 98 52 99 42 108 52 -1 -1 -1 -1 114 38 122 52 122 42 129 52 129 42 138 53 140 43 149 53 150 43 159 56 160 43 168 53 170 39 173 53 174 43 182 53 183 51 186 53 -1 -1 -1 -1 "></span><br></span>
+<span class='ocr_line' id='line_2' title="bbox 21 58 170 74">avec des accents <span class='ocr_cinfo' title="x_bboxes 21 59 33 72 33 62 43 72 44 62 54 72 55 62 63 72 -1 -1 -1 -1 70 58 79 73 81 62 91 73 92 63 99 73 -1 -1 -1 -1 106 63 114 73 116 63 124 73 125 63 133 74 134 63 144 74 146 63 154 74 156 61 162 74 163 64 170 74 -1 -1 -1 -1 "></span><br></span>
+<span class='ocr_line' id='line_3' title="bbox 23 77 112 97">éphémère<span class='ocr_cinfo' title="x_bboxes 23 77 31 93 33 83 43 97 45 79 53 93 55 79 65 93 67 83 81 94 83 80 93 94 94 84 101 94 102 84 112 94 "></span></span>
+</p>
+<p><span class='ocr_line' id='line_4' title="bbox 0 0 0 0"></span>
+</p>
+</div></body></html>

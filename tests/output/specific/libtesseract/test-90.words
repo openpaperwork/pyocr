@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+ "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+</head>
+<body>
+<span class="ocrx_word" title="bbox 364 36 388 96">This</span><br/>
+<span class="ocrx_word" title="bbox 364 109 388 129">is</span><br/>
+<span class="ocrx_word" title="bbox 364 141 382 156">a</span><br/>
+<span class="ocrx_word" title="bbox 364 169 388 201">lot</span><br/>
+<span class="ocrx_word" title="bbox 364 212 388 240">of</span><br/>
+<span class="ocrx_word" title="bbox 364 251 388 282">12</span><br/>
+<span class="ocrx_word" title="bbox 358 296 388 364">point</span><br/>
+<span class="ocrx_word" title="bbox 364 374 387 427">text</span><br/>
+<span class="ocrx_word" title="bbox 364 437 387 463">to</span><br/>
+<span class="ocrx_word" title="bbox 364 474 387 526">test</span><br/>
+<span class="ocrx_word" title="bbox 364 536 388 580">the</span><br/>
+<span class="ocrx_word" title="bbox 330 36 348 81">ocr</span><br/>
+<span class="ocrx_word" title="bbox 330 91 354 160">code</span><br/>
+<span class="ocrx_word" title="bbox 330 172 354 223">and</span><br/>
+<span class="ocrx_word" title="bbox 330 236 348 286">see</span><br/>
+<span class="ocrx_word" title="bbox 330 299 354 314">if</span><br/>
+<span class="ocrx_word" title="bbox 330 325 354 339">it</span><br/>
+<span class="ocrx_word" title="bbox 330 348 354 433">works</span><br/>
+<span class="ocrx_word" title="bbox 330 445 348 478">on</span><br/>
+<span class="ocrx_word" title="bbox 330 500 354 529">all</span><br/>
+<span class="ocrx_word" title="bbox 323 541 353 618">types</span><br/>
+<span class="ocrx_word" title="bbox 296 36 320 64">of</span><br/>
+<span class="ocrx_word" title="bbox 296 72 320 113">file</span><br/>
+<span class="ocrx_word" title="bbox 296 123 320 223">format.</span><br/>
+<span class="ocrx_word" title="bbox 262 36 286 91">The</span><br/>
+<span class="ocrx_word" title="bbox 256 102 286 177">quick</span><br/>
+<span class="ocrx_word" title="bbox 262 189 286 274">brown</span><br/>
+<span class="ocrx_word" title="bbox 255 287 286 339">dog</span><br/>
+<span class="ocrx_word" title="bbox 255 348 286 456">jumped</span><br/>
+<span class="ocrx_word" title="bbox 262 468 280 531">over</span><br/>
+<span class="ocrx_word" title="bbox 262 540 286 585">the</span><br/>
+<span class="ocrx_word" title="bbox 221 37 252 92">lazy</span><br/>
+<span class="ocrx_word" title="bbox 228 103 252 153">fox.</span><br/>
+<span class="ocrx_word" title="bbox 228 165 252 220">The</span><br/>
+<span class="ocrx_word" title="bbox 222 232 252 307">quick</span><br/>
+<span class="ocrx_word" title="bbox 228 319 252 404">brown</span><br/>
+<span class="ocrx_word" title="bbox 221 417 252 468">dog</span><br/>
+<span class="ocrx_word" title="bbox 221 478 252 585">jumped</span><br/>
+<span class="ocrx_word" title="bbox 194 36 212 99">over</span><br/>
+<span class="ocrx_word" title="bbox 194 109 218 153">the</span><br/>
+<span class="ocrx_word" title="bbox 187 165 218 221">lazy</span><br/>
+<span class="ocrx_word" title="bbox 194 231 218 281">fox.</span><br/>
+<span class="ocrx_word" title="bbox 194 294 218 349">The</span><br/>
+<span class="ocrx_word" title="bbox 188 360 218 435">quick</span><br/>
+<span class="ocrx_word" title="bbox 194 447 218 532">brown</span><br/>
+<span class="ocrx_word" title="bbox 187 545 218 597">dog</span><br/>
+<span class="ocrx_word" title="bbox 153 43 184 150">jumped</span><br/>
+<span class="ocrx_word" title="bbox 160 162 178 226">over</span><br/>
+<span class="ocrx_word" title="bbox 160 235 184 279">the</span><br/>
+<span class="ocrx_word" title="bbox 153 292 184 347">lazy</span><br/>
+<span class="ocrx_word" title="bbox 160 357 184 407">fox.</span><br/>
+<span class="ocrx_word" title="bbox 160 420 184 475">The</span><br/>
+<span class="ocrx_word" title="bbox 154 486 184 561">quick</span><br/>
+<span class="ocrx_word" title="bbox 126 37 150 122">brown</span><br/>
+<span class="ocrx_word" title="bbox 119 135 150 187">dog</span><br/>
+<span class="ocrx_word" title="bbox 119 196 150 304">jumped</span><br/>
+<span class="ocrx_word" title="bbox 126 316 144 379">over</span><br/>
+<span class="ocrx_word" title="bbox 126 388 150 433">the</span><br/>
+<span class="ocrx_word" title="bbox 119 445 150 500">lazy</span><br/>
+<span class="ocrx_word" title="bbox 126 511 150 561">fox.</span><br/>
+</body>

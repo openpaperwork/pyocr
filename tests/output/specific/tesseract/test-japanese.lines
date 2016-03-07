@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+ <head>
+  <title>
+</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta name='ocr-system' content='tesseract 3.04.00' />
+  <meta name='ocr-capabilities' content='ocr_page ocr_carea ocr_par ocr_line ocrx_word'/>
+</head>
+<body>
+  <div class='ocr_page' id='page_1' title='image "input/specific/test-japanese.jpg"; bbox 0 0 1185 778; ppageno 0'>
+   <div class='ocr_carea' id='block_1_1' title="bbox 34 23 1151 264">
+    <p class='ocr_par' dir='ltr' id='par_1_1' title="bbox 34 23 1151 264">
+     <span class='ocr_line' id='line_1_1' title="bbox 34 23 1151 111; baseline -0.001 -1"><span class='ocrx_word' id='word_1_1' title='bbox 34 23 617 111; x_wconf 94' lang='jpn' dir='ltr'>たいなかりつ</span> <span class='ocrx_word' id='word_1_2' title='bbox 666 23 1151 111; x_wconf 85' lang='jpn' dir='ltr'><strong>おれのよめ</strong></span> 
+     </span>
+     <span class='ocr_line' id='line_1_2' title="bbox 34 171 757 264; baseline 0.001 -1"><span class='ocrx_word' id='word_1_3' title='bbox 34 171 423 264; x_wconf 93' lang='jpn' dir='ltr'>田井中律</span> <span class='ocrx_word' id='word_1_4' title='bbox 461 171 757 264; x_wconf 88' lang='jpn' dir='ltr'>俺の嫁</span> 
+     </span>
+    </p>
+   </div>
+   <div class='ocr_carea' id='block_1_2' title="bbox 26 309 973 460">
+    <p class='ocr_par' dir='ltr' id='par_1_2' title="bbox 26 309 973 460">
+     <span class='ocr_line' id='line_1_3' title="bbox 27 309 973 366; baseline -0.002 -2"><span class='ocrx_word' id='word_1_5' title='bbox 27 311 147 364; x_wconf 80' lang='jpn' dir='ltr'>abC</span> <span class='ocrx_word' id='word_1_6' title='bbox 172 310 319 364; x_wconf 81' lang='jpn' dir='ltr'>ABC</span> <span class='ocrx_word' id='word_1_7' title='bbox 348 309 783 365; x_wconf 80' lang='jpn' dir='ltr'>ぁいうえおかき</span> <span class='ocrx_word' id='word_1_8' title='bbox 803 309 840 366; x_wconf 89' lang='jpn'>〈</span> <span class='ocrx_word' id='word_1_9' title='bbox 863 310 973 366; x_wconf 81' lang='jpn' dir='ltr'>けこ</span> 
+     </span>
+     <span class='ocr_line' id='line_1_4' title="bbox 26 406 661 460; baseline 0 -1"><span class='ocrx_word' id='word_1_10' title='bbox 26 406 152 460; x_wconf 85' lang='jpn' dir='ltr'>0〇ー</span> <span class='ocrx_word' id='word_1_11' title='bbox 173 406 661 460; x_wconf 78' lang='jpn' dir='ltr'>ー2ー3B4586789</span> 
+     </span>
+    </p>
+   </div>
+   <div class='ocr_carea' id='block_1_3' title="bbox 263 513 723 613">
+    <p class='ocr_par' dir='ltr' id='par_1_3' title="bbox 263 513 723 613">
+     <span class='ocr_line' id='line_1_5' title="bbox 263 513 723 613; baseline 0.002 -1"><span class='ocrx_word' id='word_1_12' title='bbox 263 516 348 612; x_wconf 88' lang='jpn' dir='ltr'>F</span> <span class='ocrx_word' id='word_1_13' title='bbox 451 513 533 612; x_wconf 93' lang='jpn' dir='ltr'>U</span> <span class='ocrx_word' id='word_1_14' title='bbox 639 513 723 613; x_wconf 91' lang='jpn' dir='ltr'>N</span> 
+     </span>
+    </p>
+   </div>
+   <div class='ocr_carea' id='block_1_4' title="bbox 316 655 723 694">
+    <p class='ocr_par' dir='ltr' id='par_1_4' title="bbox 316 655 723 694">
+     <span class='ocr_line' id='line_1_6' title="bbox 316 655 723 694; baseline -0.002 -2"><span class='ocrx_word' id='word_1_15' title='bbox 316 655 723 694; x_wconf 85' lang='jpn' dir='ltr'>ぁったりまぇじゃん!</span> 
+     </span>
+    </p>
+   </div>
+   <div class='ocr_carea' id='block_1_5' title="bbox 616 716 723 749">
+    <p class='ocr_par' dir='ltr' id='par_1_5' title="bbox 616 716 723 749">
+     <span class='ocr_line' id='line_1_7' title="bbox 616 716 723 749; baseline 0 0"><span class='ocrx_word' id='word_1_16' title='bbox 616 716 723 749; x_wconf 72' lang='jpn' dir='ltr'><strong>ritsu</strong></span> 
+     </span>
+    </p>
+   </div>
+   <div class='ocr_carea' id='block_1_6' title="bbox 478 735 610 740">
+    <p class='ocr_par' dir='ltr' id='par_1_6' title="bbox 478 735 610 740">
+     <span class='ocr_line' id='line_1_8' title="bbox 478 735 610 740; baseline 0 0"><span class='ocrx_word' id='word_1_17' title='bbox 478 735 610 740; x_wconf 95' lang='jpn' dir='ltr'> </span> 
+     </span>
+    </p>
+   </div>
+  </div>
+ </body>
+</html>
