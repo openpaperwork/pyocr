@@ -7,6 +7,7 @@
   and saved by Pillow, then be reloaded by Leptonica. So the results may
   vary slightly.
 * Tesseract: Add support for Win32
+* Tesseract: Fix orientation detection for version >= 3.04.01
 
 
 0.3.1:
