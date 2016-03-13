@@ -4,13 +4,20 @@ PyOCR is an optical character recognition (OCR) tool wrapper for python.
 That is, it helps using OCR tools from a Python program.
 
 It has been tested only on GNU/Linux systems. It should also work on similar
-systems (*BSD, etc). It doesn't work on Windows, MacOSX, etc.
+systems (*BSD, etc). It may or may not work on Windows, MacOSX, etc.
 
 PyOCR can be used as a wrapper for google's
 [Tesseract-OCR](http://code.google.com/p/tesseract-ocr/) or Cuneiform.
 It can read all image types supported by
 [Pillow](https://github.com/python-imaging/Pillow), including jpeg, png, gif,
 bmp, tiff, and others. It also support bounding box data.
+
+
+## Supported OCR tools
+
+* Libtesseract (C API)
+* Tesseract (fork + exec)
+* Cuneiform (fork + exec)
 
 
 ## Usage
@@ -59,6 +66,8 @@ digits = tool.image_to_string(
 )
 
 ```
+
+
 ## Dependencies
 
 * PyOCR requires python 2.7 or later. Python 3 is supported.
