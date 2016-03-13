@@ -45,8 +45,7 @@ class Box(object):
                 tuple of tuple:
                 ((width_pt_x, height_pt_x), (width_pt_y, height_pt_y))
         """
-        if hasattr(content, 'decode'):
-            content = to_unicode("%s") % content
+        content = to_unicode(content)
         self.content = content
         self.position = position
 
@@ -581,8 +580,7 @@ class LineBoxBuilder(object):
         file_descriptor.write(to_unicode("<body>\n"))
         for box in boxes:
             xml_str = box.get_xml_tag(newdoc).toxml()
-            if hasattr(xml_str, 'decode'):
-                xml_str = xml_str.decode('utf-8')
+            xml_str = to_unicode(xml_str)
             file_descriptor.write(xml_str + to_unicode("<br/>\n"))
         file_descriptor.write(to_unicode("</body>\n"))
 

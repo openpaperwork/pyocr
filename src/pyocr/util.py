@@ -2,11 +2,15 @@
 
 import os
 
+import six
+
 
 def to_unicode(string):
-    if hasattr(string, 'decode'):
-        return string.decode('utf-8')
-    return string
+    try:
+        return six.u(string)
+    except:
+        # probably already decoded
+        return string
 
 
 def is_on_path(exec_name):

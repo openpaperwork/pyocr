@@ -380,8 +380,7 @@ def get_version():
                             stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT)
     ver_string = proc.stdout.read()
-    if hasattr(ver_string, 'decode'):
-        ver_string = ver_string.decode('utf-8')
+    ver_string = ver_string.decode('utf-8')
     ret = proc.wait()
     if ret not in (0, 1):
         raise TesseractError(ret, ver_string)
