@@ -50,7 +50,7 @@ txt = tool.image_to_string(
 )
 word_boxes = tool.image_to_string(
     Image.open('test.png'),
-    lang="eng"
+    lang="eng",
     builder=pyocr.builders.WordBoxBuilder()
 )
 line_and_word_boxes = tool.image_to_string(
