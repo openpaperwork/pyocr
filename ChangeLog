@@ -1,4 +1,11 @@
-0.4.0:
+06/04/2016 - 0.4.1:
+* Disable 'libtesseract' with Tesseract <= 3.03. It tends to segfault.
+  Libtesseract: Disable it with Tesseract <= 3.03. It tends to segfault.
+  Note: the segfault may not actually be related to Libtesseract. It may be due to other things in Debian stable (jessie).
+  Anyway, Paperwork cannot work on Debian stable because of that --> disabled just to be safe
+
+
+13/03/2013 - 0.4.0:
 * New module: 'libtesseract'. Use the C API of Tesseract for OCR.
   This module is more efficient and cleaner than the old 'tesseract' module
   (no more fork + exec + sh, less image manipulation, etc).
