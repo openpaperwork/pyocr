@@ -146,7 +146,17 @@ def image_to_string(image, lang=None, builder=None):
 
 
 def is_available():
-    return tesseract_raw.is_available()
+    available = tesseract_raw.is_available()
+    if not available:
+        return False
+    version = get_version()
+    # C-API with Tesseract <= 3.02 segfaults sometimes
+    # (seen with Debian stable + Paperwork)
+    # not tested with 3.03
+    if (version[0] < 3 or
+            (version[0] == 3 and version[1] < 4)):
+        return False
+    return True
 
 
 def get_available_languages():
