@@ -386,7 +386,12 @@ def get_version():
         raise TesseractError(ret, ver_string)
 
     try:
-        els = ver_string.split(" ")[1].split(".")
+        ver_string = ver_string.split(" ")[1]
+        index = ver_string.find("dev")
+        if index:  
+          ver_string = ver_string[:index]
+        
+        els = ver_string.split(".")
         els = [int(x) for x in els]
         major = els[0]
         minor = els[1]
