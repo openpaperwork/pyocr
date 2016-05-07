@@ -386,6 +386,8 @@ def get_version():
         raise TesseractError(ret, ver_string)
 
     try:
+        if  ver_string.endswith("dev"): # fix for dev builds
+          ver_string.substring(0, ver_string.length()-3);
         els = ver_string.split(" ")[1].split(".")
         els = [int(x) for x in els]
         major = els[0]
