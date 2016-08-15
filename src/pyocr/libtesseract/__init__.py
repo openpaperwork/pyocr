@@ -170,6 +170,12 @@ def get_available_languages():
 def get_version():
     version = tesseract_raw.get_version()
     version = version.split(" ", 1)[0]
+    
+    # cut off "dev" string if exists for proper int conversion
+    index = version.find("dev")
+    if index:
+        version = version[:index]
+
     version = version.split(".")
     major = int(version[0])
     minor = int(version[1])
