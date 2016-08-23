@@ -28,18 +28,6 @@ from . import util
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
 TESSERACT_CMD = 'tesseract.exe' if os.name == 'nt' else 'tesseract'
 
-TESSDATA_POSSIBLE_PATHS = [
-    "/usr/local/share/tessdata",
-    "/usr/share/tessdata",
-    "/usr/share/tesseract/tessdata",
-    "/usr/local/share/tesseract-ocr/tessdata",
-    "/usr/share/tesseract-ocr/tessdata",
-    "/app/vendor/tesseract-ocr/tessdata",  # Heroku
-    "/opt/local/share/tessdata",  # OSX MacPorts
-    r"C:\Program Files (x86)\Tesseract-OCR\tessdata",  # Windows port
-    r"C:\Program Files\Tesseract-OCR\tessdata",  # Windows port
-]
-
 TESSDATA_EXTENSION = ".traineddata"
 
 
@@ -353,15 +341,15 @@ def get_available_languages():
         terminology, but not all. Most of the time, truncating the language
         name name returned by this function to 3 letters should do the trick.
     """
-    langs = []
-    for dirpath in TESSDATA_POSSIBLE_PATHS:
-        if not os.access(dirpath, os.R_OK):
-            continue
-        for filename in os.listdir(dirpath):
-            if filename.lower().endswith(TESSDATA_EXTENSION):
-                lang = filename[:(-1 * len(TESSDATA_EXTENSION))]
-                langs.append(lang)
-    return langs
+    proc = subprocess.Popen([TESSERACT_CMD, "--list-langs"],
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT)
+    langs = proc.stdout.read().decode('utf-8').splitlines(False)
+    ret = proc.wait()
+    if ret != 0:
+        raise TesseractError(ret, "unable to get languages")
+
+    return [lang for lang in langs if lang and lang[-1] != ':']
 
 
 def get_version():
