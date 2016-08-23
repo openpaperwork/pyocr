@@ -1,16 +1,18 @@
 $ git shortlog -sne >| AUTHORS
 
-   162	Jerome Flesch <jflesch@gmail.com>
-    12	Samuel Hoffstaetter <samuel@hoffstaetter.com>
-    10	Jerome Flesch <jflesch@wyplay.com>
-     7	Jerome Flesch <jerome.flesch@netasq.com>
-     6	Paulo Miguel Almeida <paulo.ubuntu@gmail.com>
-     3	Teis <https://github.com/TeisD>
-     3	hoffstaetter <samuel@hoffstaetter.com>
-     2	Chanwoong Kim <devk0817@gmail.com>
-     2	Ross Vandegrift <ross@kallisti.us>
-     1	Bernard Cafarelli <bernard.cafarelli@gmail.com>
-     1	Gian Luca Dalla Torre <gianluca@gestionaleauto.com>
-     1	Jon Debonis <jon@trov.com>
-     1	Pedro-Juan Ferrer <vehrka@gmail.com>
-     1	jbochi <jbochi@gmail.com>
+   201  Jerome Flesch
+    12  Samuel Hoffstaetter
+     6  Paulo Miguel Almeida
+     3  Teis
+     3  hoffstaetter
+     2  Chanwoong Kim
+     2  Fjup
+     2  Ross Vandegrift
+     1  Bernard Cafarelli
+     1  Bernhard Liebl
+     1  Gian Luca Dalla Torre
+     1  Jakub Semerák
+     1  Jon Debonis
+     1  Pedro-Juan Ferrer
+     1  Yada
+     1  jbochi
