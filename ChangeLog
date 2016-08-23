@@ -1,3 +1,11 @@
+xx/xx/2016 - 0.4.2:
+* Tesseract: orientation detection: Ignore errors printed by libleptonic
+  on stderr (thanks to TeisD)
+* Tesseract: Fix support of dev builds (thanks to Fjup)
+* Libtesseract: Fix support of dev builds (thanks to Jakub Semerák)
+* Tesseract: Use '--list-langs' to get the available languages instead of
+  looking for the data directory (thanks to Bernhard Liebl)
+
 06/04/2016 - 0.4.1:
 * Disable 'libtesseract' with Tesseract <= 3.03. It tends to segfault.
   Libtesseract: Disable it with Tesseract <= 3.03. It tends to segfault.
