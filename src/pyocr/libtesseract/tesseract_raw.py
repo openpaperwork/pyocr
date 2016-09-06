@@ -506,7 +506,7 @@ def detect_os(handle):
         ctypes.pointer(results)
     )
     if not r:
-        raise TesseractError("TessBaseAPIDetectOS() failed")
+        raise TesseractError("detect_orientation failed", "TessBaseAPIDetectOS() failed")
     return {
         "orientation": results.best_orientation_id,
         "confidence": results.best_oconfidence,
