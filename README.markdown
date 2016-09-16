@@ -31,6 +31,9 @@ bmp, tiff, and others. It also support bounding box data.
 * hOCR: Only a subset of the specification is supported. For instance, pages and paragraph positions are not stored.
 
 ## Usage
+
+### Initialization
+
 ```Python
 from PIL import Image
 import sys
@@ -52,17 +55,26 @@ print("Available languages: %s" % ", ".join(langs))
 lang = langs[0]
 print("Will use lang '%s'" % (lang))
 # Ex: Will use lang 'fra'
+# Note that languages are NOT sorted in any way. Please refer
+# to the system locale settings for the default language
+# to use.
+```
 
+### Image to text
+
+```Python
 txt = tool.image_to_string(
     Image.open('test.png'),
     lang=lang,
     builder=pyocr.builders.TextBuilder()
 )
+
 word_boxes = tool.image_to_string(
     Image.open('test.png'),
     lang="eng",
     builder=pyocr.builders.WordBoxBuilder()
 )
+
 line_and_word_boxes = tool.image_to_string(
     Image.open('test.png'), lang="fra",
     builder=pyocr.builders.LineBoxBuilder()
@@ -74,8 +86,41 @@ digits = tool.image_to_string(
     lang=lang,
     builder=pyocr.tesseract.DigitBuilder()
 )
-
 ```
+
+Argument 'lang' is optionnal. The default value depends of
+the tool used.
+
+Argument 'builder' is optionnal. Default value is
+builders.TextBuilder().
+
+
+### Orientation detection
+
+Currently only available with Tesseract or Libtesseract.
+
+```Python
+if tool.can_detect_orientation():
+    orientation = tool.detect_orientation(
+        Image.open('test.png'),
+        lang='fra'
+    )
+    pprint("Orientation: {}".format(orientation))
+# Ex: Orientation: {
+#   'angle': 90,
+#   'confidence': 123.4,
+# }
+```
+
+Angles are given in degrees (range: [0-360[). Exact possible
+values depend of the tool used. Tesseract only returns angles =
+0, 90, 180, 270.
+
+Confidence is a score arbitrarily defined by the tool. It MAY not
+be returned.
+
+detect_orientation() MAY raise an exception if there is no text
+detected in the image.
 
 
 ## Dependencies
