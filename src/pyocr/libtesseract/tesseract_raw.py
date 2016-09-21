@@ -1,19 +1,36 @@
 import ctypes
+import logging
 import os
 import sys
 
 
+logger = logging.getLogger(__name__)
+
 TESSDATA_PREFIX = os.getenv('TESSDATA_PREFIX', None)
+libnames = []
+
+if getattr(sys, 'frozen', False):
+    # Pyinstaller integration
+    libnames += [os.path.join(sys._MEIPASS, "libtesseract-3.dll")]
+    tessdata = os.path.join(sys._MEIPASS, "data")
+    if not os.path.exists(os.path.join(tessdata, "tessdata")):
+        logger.warning(
+            "Running from container, but no tessdata ({}) found !".format(tessdata)
+        )
+    else:
+        TESSDATA_PREFIX = tessdata
+
 
 if sys.platform[:3] == "win":
-    libnames = [
+    libnames += [
         # Jflesch> Don't they have the equivalent of LD_LIBRARY_PATH on
         # Windows ?
         "../vs2010/DLL_Release/libtesseract302.dll",
         "libtesseract302.dll",
+        "C:\\Program Files (x86)\\Tesseract-OCR\\libtesseract-3.dll",
     ]
 else:
-    libnames = [
+    libnames += [
         "libtesseract.so.3",
     ]
 
