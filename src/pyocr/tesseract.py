@@ -126,18 +126,21 @@ def _set_environment():
 
         tesspath = os.path.join(sys._MEIPASS, "tesseract")
         tessprefix = os.path.join(sys._MEIPASS, "data")
+        logger.info("Running in packaged environment")
 
         if not os.path.exists(os.path.join(tessprefix, "tessdata")):
             logger.warning(
                 "Running from container, but no tessdata ({}) found !".format(tessprefix)
             )
         else:
-            TESSDATA_PREFIX = tessprefix
+            logger.info("TESSDATA_PREFIX set to [{}]".format(tessprefix))
+            os.environ['TESSDATA_PREFIX'] = tessprefix
         if not os.path.exists(tesspath):
             logger.warning(
                 "Running from container, but no tesseract ({}) found !".format(tesspath)
             )
         else:
+            logger.info("[{}] added to PATH".format(tesspath))
             os.environ['PATH'] = (
                 tesspath + os.pathsep + os.environ['PATH']
             )
