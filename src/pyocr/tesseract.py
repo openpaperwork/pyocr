@@ -17,18 +17,21 @@ https://github.com/jflesch/python-tesseract#readme
 '''
 
 import codecs
+import logging
 import os
 import subprocess
+import sys
 import tempfile
 
 from . import builders
 from . import util
 
-
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
 TESSERACT_CMD = 'tesseract.exe' if os.name == 'nt' else 'tesseract'
 
 TESSDATA_EXTENSION = ".traineddata"
+
+logger = logging.getLogger(__name__)
 
 
 __all__ = [
@@ -113,6 +116,33 @@ class DigitBuilder(builders.TextBuilder):
         self.tesseract_configs.append("digits")
 
 
+def _set_environment():
+    if getattr(sys, 'frozen', False):
+        # Pyinstaller support
+        path = os.environ["PATH"]
+        if sys._MEIPASS in path:
+            # already changed
+            return
+
+        tesspath = os.path.join(sys._MEIPASS, "tesseract")
+        tessprefix = os.path.join(sys._MEIPASS, "data")
+
+        if not os.path.exists(os.path.join(tessprefix, "tessdata")):
+            logger.warning(
+                "Running from container, but no tessdata ({}) found !".format(tessprefix)
+            )
+        else:
+            TESSDATA_PREFIX = tessprefix
+        if not os.path.exists(tesspath):
+            logger.warning(
+                "Running from container, but no tesseract ({}) found !".format(tesspath)
+            )
+        else:
+            os.environ['PATH'] = (
+                tesspath + os.pathsep + os.environ['PATH']
+            )
+
+
 def can_detect_orientation():
     version = get_version()
     return (
@@ -136,6 +166,7 @@ def detect_orientation(image, lang=None):
     Raises:
         TesseractError --- if no script detected on the image
     """
+    _set_environment()
     with temp_file(".bmp") as input_file:
         command = [TESSERACT_CMD, input_file.name, 'stdout', "-psm", "0"]
         if lang is not None:
@@ -205,6 +236,7 @@ def run_tesseract(input_filename, output_filename_base, lang=None,
     Returns:
         Returns (the exit status of Tesseract, Tesseract's output)
     '''
+    _set_environment()
 
     command = [TESSERACT_CMD, input_filename, output_filename_base]
 
@@ -329,6 +361,7 @@ def image_to_string(image, lang=None, builder=None):
 
 
 def is_available():
+    _set_environment()
     return util.is_on_path(TESSERACT_CMD)
 
 
@@ -341,6 +374,7 @@ def get_available_languages():
         terminology, but not all. Most of the time, truncating the language
         name name returned by this function to 3 letters should do the trick.
     """
+    _set_environment()
     proc = subprocess.Popen([TESSERACT_CMD, "--list-langs"],
                             stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT)
@@ -362,6 +396,8 @@ def get_version():
     Exception:
         TesseractError --- Unable to run tesseract or to parse the version
     """
+    _set_environment()
+
     command = [TESSERACT_CMD, "-v"]
 
     proc = subprocess.Popen(command,
