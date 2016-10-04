@@ -11,7 +11,7 @@ setup(
                  " etc)"),
     keywords="tesseract cuneiform ocr",
     url="https://github.com/jflesch/pyocr",
-    download_url="https://github.com/jflesch/pyocr/archive/v0.4.0.zip",
+    download_url="https://github.com/jflesch/pyocr/archive/v0.4.2.zip",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
