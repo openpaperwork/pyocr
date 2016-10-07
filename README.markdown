@@ -157,6 +157,13 @@ To run the tesseract tests, you will need the following lang data files:
 - Japanese (tesseract-ocr-jpn)
 
 
+## OCR on natural scenes
+
+If you want to run OCR on natural scenes (photos, etc), you will have to filter
+the image first. There are many algorithms possible to do that. One of those
+who gives the best results is [Stroke Width Transform](https://github.com/jflesch/libpillowfight#stroke-width-transformation).
+
+
 ## Copyright
 
 PyOCR is released under the GPL v3+.
