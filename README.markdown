@@ -164,6 +164,12 @@ the image first. There are many algorithms possible to do that. One of those
 who gives the best results is [Stroke Width Transform](https://github.com/jflesch/libpillowfight#stroke-width-transformation).
 
 
+## Contact
+
+* [Mailing-list](https://github.com/jflesch/paperwork/wiki/Contact#mailing-list)
+* [Bug tracker](https://github.com/jflesch/pyocr/issues/)
+
+
 ## Copyright
 
 PyOCR is released under the GPL v3+.
