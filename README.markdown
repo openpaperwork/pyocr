@@ -187,14 +187,8 @@ who gives the best results is [Stroke Width Transform](https://github.com/jflesc
 ## Copyright
 
 PyOCR is released under the GPL v3+.
-
-tesseract.py:
-
-* Copyright (c) Samuel Hoffstaetter, 2009
-* Copyright (c) Jerome Flesch, 2011-2016
-
-other files:
-
-* Copyright (c) Jerome Flesch, 2011-2016
+Copyright belongs to the authors of each piece of code
+(see the file AUTHORS for the contributors list, and
+```git blame``` to know which lines belong to which author).
 
 https://github.com/jflesch/pyocr
