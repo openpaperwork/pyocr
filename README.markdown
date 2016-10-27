@@ -19,6 +19,7 @@ bmp, tiff, and others. It also support bounding box data.
 * Tesseract (fork + exec)
 * Cuneiform (fork + exec)
 
+
 ## Features
 
 * Support all the image formats supported by [Pillow](https://github.com/python-imaging/Pillow)
@@ -26,9 +27,27 @@ bmp, tiff, and others. It also support bounding box data.
 * Can focus on digits only (Tesseract only)
 * Can save and reload boxes in hOCR format
 
+
 ## Limitations
 
 * hOCR: Only a subset of the specification is supported. For instance, pages and paragraph positions are not stored.
+
+
+## Installation
+
+```sh
+$ sudo pip install pyocr  # Python 2.7
+$ sudo pip3 install pyocr  # Python 3.0
+```
+
+or the manual way:
+```sh
+$ mkdir -p ~/git ; cd git
+$ git clone https://github.com/jflesch/pyocr.git
+$ cd pyocr
+$ sudo python ./setup.py install
+```
+
 
 ## Usage
 
@@ -137,11 +156,6 @@ detected in the image.
     You must be able to invoke the tesseract command as "tesseract".
     PyOCR is tested with Tesseract >= 3.01 only.
   * or cuneiform
-
-
-## Installation
-
-    $ sudo python ./setup.py install
 
 
 ## Tests
