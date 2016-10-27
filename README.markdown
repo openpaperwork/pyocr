@@ -107,10 +107,10 @@ digits = tool.image_to_string(
 )
 ```
 
-Argument 'lang' is optionnal. The default value depends of
+Argument 'lang' is optional. The default value depends of
 the tool used.
 
-Argument 'builder' is optionnal. Default value is
+Argument 'builder' is optional. Default value is
 builders.TextBuilder().
 
 
