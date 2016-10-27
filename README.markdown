@@ -36,16 +36,16 @@ bmp, tiff, and others. It also support bounding box data.
 ## Installation
 
 ```sh
-$ sudo pip install pyocr  # Python 2.7
-$ sudo pip3 install pyocr  # Python 3.X
+sudo pip install pyocr  # Python 2.7
+sudo pip3 install pyocr  # Python 3.X
 ```
 
 or the manual way:
 ```sh
-$ mkdir -p ~/git ; cd git
-$ git clone https://github.com/jflesch/pyocr.git
-$ cd pyocr
-$ sudo python ./setup.py install
+mkdir -p ~/git ; cd git
+git clone https://github.com/jflesch/pyocr.git
+cd pyocr
+sudo python ./setup.py install
 ```
 
 
@@ -146,8 +146,9 @@ detected in the image.
 
 * PyOCR requires python 2.7 or later. Python 3 is supported.
 * You will need [Pillow](https://github.com/python-imaging/Pillow)
-  or Python Imaging Library (PIL). Under Debian/Ubuntu, PIL is in
-  the package "python-imaging".
+  or Python Imaging Library (PIL). Under Debian/Ubuntu, Pillow is in
+  the package ```python-pil``` (```python3-pil``` for the Python 3
+  version).
 * Install an OCR:
   * [libtesseract](http://code.google.com/p/tesseract-ocr/)
     ('libtesseract3' + 'tesseract-ocr-&lt;lang&gt;' in Debian).
@@ -155,12 +156,14 @@ detected in the image.
     ('tesseract-ocr' + 'tesseract-ocr-&lt;lang&gt;' in Debian).
     You must be able to invoke the tesseract command as "tesseract".
     PyOCR is tested with Tesseract >= 3.01 only.
-  * or cuneiform
+  * or Cuneiform
 
 
 ## Tests
 
-    $ python ./run_tests.py
+```sh
+python ./run_tests.py
+```
 
 Tests are made to be run with the latest versions of Tesseract and Cuneiform.
 the first tests verify that you're using the expected version.
@@ -175,7 +178,8 @@ To run the tesseract tests, you will need the following lang data files:
 
 If you want to run OCR on natural scenes (photos, etc), you will have to filter
 the image first. There are many algorithms possible to do that. One of those
-who gives the best results is [Stroke Width Transform](https://github.com/jflesch/libpillowfight#stroke-width-transformation).
+who gives the best results is
+[Stroke Width Transform](https://github.com/jflesch/libpillowfight#stroke-width-transformation).
 
 
 ## Contact
