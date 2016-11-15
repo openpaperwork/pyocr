@@ -83,7 +83,16 @@ def _tess_box_to_pyocr_box(box):
 def image_to_string(image, lang=None, builder=None):
     if builder is None:
         builder = builders.TextBuilder()
-    handle = tesseract_raw.init(lang=lang)
+    if lang is not None: 
+        if builder.lang is not None:
+            raise ValueError(
+                "Language is set twice, for the builder and in image_to_string"
+            )
+        else:
+            builder.set_language(lang)
+    handle = tesseract_raw.init(lang=builder.lang)
+    if builder.numeric_mode is not None:
+        tesseract_raw.set_numeric_mode(handle, builder.numeric_mode)
 
     lvl_line = tesseract_raw.PageIteratorLevel.TEXTLINE
     lvl_word = tesseract_raw.PageIteratorLevel.WORD

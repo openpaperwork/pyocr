@@ -334,6 +334,17 @@ def get_available_languages(handle):
     return langs
 
 
+def set_numeric_mode(handle, mode):
+    global g_libtesseract
+    assert(g_libtesseract)
+
+    g_libtesseract.TessBaseAPISetVariable(
+        ctypes.c_void_p(handle), 
+        ctypes.c_wchar_p("classify_bln_numeric_mode"),
+        ctypes.c_bool(mode)
+    )
+
+
 def set_page_seg_mode(handle, mode):
     global g_libtesseract
     assert(g_libtesseract)

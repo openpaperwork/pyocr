@@ -49,7 +49,7 @@ __all__ = [
 ]
 
 
-class CharBoxBuilder(object):
+class CharBoxBuilder(builders.BaseBuilder):
     """
     If passed to image_to_string(), image_to_string() will return an array of
     Box. Each box correspond to a character recognized in the image.
@@ -58,8 +58,8 @@ class CharBoxBuilder(object):
     file_extensions = ["box"]
     tesseract_configs = ['batch.nochop', 'makebox']
 
-    def __init__(self):
-        pass
+    def __init__(self, lang=None):
+        super(CharBoxBuilder, self).__init__(lang, num_mode=True)
 
     @staticmethod
     def read_file(file_descriptor):
@@ -105,13 +105,17 @@ class DigitBuilder(builders.TextBuilder):
     If passed to image_to_string(), image_to_string() will return a string with
     only digits. Characters recognition will consider text as if it will only
     composed by digits.
+
+    Pending deprecation, as any builder can now be passed num_mode=True 
+    for the same behaviour (with the appropriate tool).
+
     """
 
     @staticmethod
     def __str__():
         return "Digits only"
 
-    def __init__(self, tesseract_layout=3):
+    def __init__(self, tesseract_layout=3, lang=None, ):
         super(DigitBuilder, self).__init__(tesseract_layout)
         self.tesseract_configs.append("digits")
 
@@ -316,7 +320,8 @@ def image_to_string(image, lang=None, builder=None):
 
     Arguments:
         image --- image to OCR
-        lang --- tesseract language to use
+        lang --- tesseract language to use. 
+            Pending deprecation, prefer specifying at builder instantiation.
         builder --- builder used to configure Tesseract and read its result.
             The builder is used to specify the type of output expected.
             Possible builders are TextBuilder or CharBoxBuilder. If builder ==
@@ -329,7 +334,16 @@ def image_to_string(image, lang=None, builder=None):
 
     if builder is None:
         builder = builders.TextBuilder()
-
+    if lang is not None:
+        if builder.lang is not None:
+            raise ValueError(
+                "Language is set twice, for the builder and in image_to_string"
+            )
+        else:
+            builder.set_language(lang)
+    if builder.numeric_mode:
+        builder.tesseract_configs.append("digits")
+    
     with temp_file(".bmp") as input_file:
         with temp_file('') as output_file:
             output_file_name_base = output_file.name
@@ -339,7 +353,7 @@ def image_to_string(image, lang=None, builder=None):
         image.save(input_file.name)
         (status, errors) = run_tesseract(input_file.name,
                                          output_file_name_base,
-                                         lang=lang,
+                                         lang=builder.lang,
                                          configs=builder.tesseract_configs)
         if status:
             raise TesseractError(status, errors)
