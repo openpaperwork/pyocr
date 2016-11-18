@@ -339,7 +339,7 @@ def set_is_numeric(handle, mode):
     assert(g_libtesseract)
 
     if mode:
-        wl = b"0123456789"
+        wl = b"0123456789."
     else:
         wl = b""
 

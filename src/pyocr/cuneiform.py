@@ -89,6 +89,10 @@ def cleanup(filename):
 def image_to_string(image, lang=None, builder=None):
     if builder is None:
         builder = builders.TextBuilder()
+    if "digits" in builder.tesseract_configs:
+        raise NotImplementedError(
+            "Numerical only : This option is not available with Cuneiform"
+        )
     with temp_file(builder.file_extensions[0]) as output_file:
         cmd = [CUNEIFORM_CMD]
         if lang is not None:

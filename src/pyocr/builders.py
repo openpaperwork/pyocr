@@ -20,6 +20,8 @@ __all__ = [
     'TextBuilder',
     'WordBoxBuilder',
     'LineBoxBuilder',
+    'DigitBuilder',
+    'DigitLineBoxBuilder',
 ]
 
 _XHTML_HEADER = to_unicode("""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
@@ -282,6 +284,27 @@ class TextBuilder(object):
     @staticmethod
     def __str__():
         return "Raw text"
+
+
+class DigitBuilder(TextBuilder):
+    """
+    If passed to image_to_string(), image_to_string() will return a simple
+    string of digits. 
+    This string will be the output of the OCR tool, as-is. 
+    In other words, the raw text as produced by the tool when the input is
+    assumed to be 0-9 only.
+
+    Warning:
+        The returned string is encoded in UTF-8
+    """
+    @staticmethod
+    def __str__():
+        return "Digits raw text."
+
+    def __init__(self, tesseract_layout=3):
+        super(DigitBuilder, self).__init__(tesseract_layout)
+        self.tesseract_configs.append("digits")
+
 
 
 class _WordHTMLParser(HTMLParser):
@@ -602,3 +625,19 @@ class LineBoxBuilder(object):
     @staticmethod
     def __str__():
         return "Line boxes"
+
+
+class DigitLineBoxBuilder(LineBoxBuilder):
+    """
+    If passed to image_to_string(), image_to_string() will return
+    an array of LineBox. Each box contains a word recognized in the image
+    with only numeric character (0-9).
+
+    """
+    @staticmethod
+    def __str__():
+        return "Digit line boxes"
+
+    def __init__(self, tesseract_layout=1):
+        super(DigitLineBoxBuilder, self).__init__(tesseract_layout)
+        self.tesseract_configs.append("digits")

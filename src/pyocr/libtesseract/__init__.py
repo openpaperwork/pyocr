@@ -94,7 +94,8 @@ def image_to_string(image, lang=None, builder=None):
         )
 
         tesseract_raw.set_image(handle, image)
-
+        if "digits" in builder.tesseract_configs:
+            tesseract_raw.set_is_numeric(handle, True)
         # XXX(JFlesch): PageIterator and ResultIterator are actually the
         # very same thing. If it changes, we are screwed.
         tesseract_raw.recognize(handle)

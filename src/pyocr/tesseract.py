@@ -25,6 +25,7 @@ import tempfile
 
 from . import builders
 from . import util
+from pyocr.builders import DigitBuilder
 
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
 TESSERACT_CMD = 'tesseract.exe' if os.name == 'nt' else 'tesseract'
@@ -49,7 +50,7 @@ __all__ = [
 ]
 
 
-class CharBoxBuilder(builders.BaseBuilder):
+class CharBoxBuilder(object):
     """
     If passed to image_to_string(), image_to_string() will return an array of
     Box. Each box correspond to a character recognized in the image.
@@ -98,26 +99,6 @@ class CharBoxBuilder(builders.BaseBuilder):
     @staticmethod
     def __str__():
         return "Character boxes"
-
-
-class DigitBuilder(builders.TextBuilder):
-    """
-    If passed to image_to_string(), image_to_string() will return a string with
-    only digits. Characters recognition will consider text as if it will only
-    composed by digits.
-
-    Pending deprecation, as any builder can now be passed num_mode=True 
-    for the same behaviour (with the appropriate tool).
-
-    """
-
-    @staticmethod
-    def __str__():
-        return "Digits only"
-
-    def __init__(self, tesseract_layout=3):
-        super(DigitBuilder, self).__init__(tesseract_layout)
-        self.tesseract_configs.append("digits")
 
 
 def _set_environment():
