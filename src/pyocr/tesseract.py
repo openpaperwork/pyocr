@@ -59,9 +59,6 @@ class CharBoxBuilder(object):
     file_extensions = ["box"]
     tesseract_configs = ['batch.nochop', 'makebox']
 
-    def __init__(self, lang=None):
-        super(CharBoxBuilder, self).__init__(lang, num_mode=True)
-
     @staticmethod
     def read_file(file_descriptor):
         """
@@ -314,7 +311,6 @@ def image_to_string(image, lang=None, builder=None):
 
     if builder is None:
         builder = builders.TextBuilder()
-    
     with temp_file(".bmp") as input_file:
         with temp_file('') as output_file:
             output_file_name_base = output_file.name
