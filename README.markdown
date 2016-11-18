@@ -19,6 +19,7 @@ bmp, tiff, and others. It also support bounding box data.
 * Tesseract (fork + exec)
 * Cuneiform (fork + exec)
 
+
 ## Features
 
 * Support all the image formats supported by [Pillow](https://github.com/python-imaging/Pillow)
@@ -26,9 +27,27 @@ bmp, tiff, and others. It also support bounding box data.
 * Can focus on digits only (Tesseract only)
 * Can save and reload boxes in hOCR format
 
+
 ## Limitations
 
 * hOCR: Only a subset of the specification is supported. For instance, pages and paragraph positions are not stored.
+
+
+## Installation
+
+```sh
+sudo pip install pyocr  # Python 2.7
+sudo pip3 install pyocr  # Python 3.X
+```
+
+or the manual way:
+```sh
+mkdir -p ~/git ; cd git
+git clone https://github.com/jflesch/pyocr.git
+cd pyocr
+sudo python ./setup.py install
+```
+
 
 ## Usage
 
@@ -88,10 +107,10 @@ digits = tool.image_to_string(
 )
 ```
 
-Argument 'lang' is optionnal. The default value depends of
+Argument 'lang' is optional. The default value depends of
 the tool used.
 
-Argument 'builder' is optionnal. Default value is
+Argument 'builder' is optional. Default value is
 builders.TextBuilder().
 
 
@@ -127,8 +146,9 @@ detected in the image.
 
 * PyOCR requires python 2.7 or later. Python 3 is supported.
 * You will need [Pillow](https://github.com/python-imaging/Pillow)
-  or Python Imaging Library (PIL). Under Debian/Ubuntu, PIL is in
-  the package "python-imaging".
+  or Python Imaging Library (PIL). Under Debian/Ubuntu, Pillow is in
+  the package ```python-pil``` (```python3-pil``` for the Python 3
+  version).
 * Install an OCR:
   * [libtesseract](http://code.google.com/p/tesseract-ocr/)
     ('libtesseract3' + 'tesseract-ocr-&lt;lang&gt;' in Debian).
@@ -136,17 +156,14 @@ detected in the image.
     ('tesseract-ocr' + 'tesseract-ocr-&lt;lang&gt;' in Debian).
     You must be able to invoke the tesseract command as "tesseract".
     PyOCR is tested with Tesseract >= 3.01 only.
-  * or cuneiform
-
-
-## Installation
-
-    $ sudo python ./setup.py install
+  * or Cuneiform
 
 
 ## Tests
 
-    $ python ./run_tests.py
+```sh
+python ./run_tests.py
+```
 
 Tests are made to be run with the latest versions of Tesseract and Cuneiform.
 the first tests verify that you're using the expected version.
@@ -157,17 +174,25 @@ To run the tesseract tests, you will need the following lang data files:
 - Japanese (tesseract-ocr-jpn)
 
 
+## OCR on natural scenes
+
+If you want to run OCR on natural scenes (photos, etc), you will have to filter
+the image first. There are many algorithms possible to do that. One of those
+who gives the best results is
+[Stroke Width Transform](https://github.com/jflesch/libpillowfight#stroke-width-transformation).
+
+
+## Contact
+
+* [Mailing-list](https://github.com/jflesch/paperwork/wiki/Contact#mailing-list)
+* [Bug tracker](https://github.com/jflesch/pyocr/issues/)
+
+
 ## Copyright
 
 PyOCR is released under the GPL v3+.
-
-tesseract.py:
-
-* Copyright (c) Samuel Hoffstaetter, 2009
-* Copyright (c) Jerome Flesch, 2011-2016
-
-other files:
-
-* Copyright (c) Jerome Flesch, 2011-2016
+Copyright belongs to the authors of each piece of code
+(see the file AUTHORS for the contributors list, and
+```git blame``` to know which lines belong to which author).
 
 https://github.com/jflesch/pyocr
