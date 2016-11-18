@@ -115,7 +115,7 @@ class DigitBuilder(builders.TextBuilder):
     def __str__():
         return "Digits only"
 
-    def __init__(self, tesseract_layout=3, lang=None, ):
+    def __init__(self, tesseract_layout=3):
         super(DigitBuilder, self).__init__(tesseract_layout)
         self.tesseract_configs.append("digits")
 
@@ -321,7 +321,6 @@ def image_to_string(image, lang=None, builder=None):
     Arguments:
         image --- image to OCR
         lang --- tesseract language to use. 
-            Pending deprecation, prefer specifying at builder instantiation.
         builder --- builder used to configure Tesseract and read its result.
             The builder is used to specify the type of output expected.
             Possible builders are TextBuilder or CharBoxBuilder. If builder ==
@@ -334,15 +333,6 @@ def image_to_string(image, lang=None, builder=None):
 
     if builder is None:
         builder = builders.TextBuilder()
-    if lang is not None:
-        if builder.lang is not None:
-            raise ValueError(
-                "Language is set twice, for the builder and in image_to_string"
-            )
-        else:
-            builder.set_language(lang)
-    if builder.numeric_mode:
-        builder.tesseract_configs.append("digits")
     
     with temp_file(".bmp") as input_file:
         with temp_file('') as output_file:
@@ -353,7 +343,7 @@ def image_to_string(image, lang=None, builder=None):
         image.save(input_file.name)
         (status, errors) = run_tesseract(input_file.name,
                                          output_file_name_base,
-                                         lang=builder.lang,
+                                         lang=lang,
                                          configs=builder.tesseract_configs)
         if status:
             raise TesseractError(status, errors)

@@ -224,33 +224,7 @@ class LineBox(object):
         return (position_hash ^ hash(content) ^ hash(content))
 
 
-class BaseBuilder(object):
-    """
-    Abstract base class for builders.
-    A builder specifies the expected output format 
-    and some OCR configuration options.
-
-    Arguments:
-        lang --- language of the input. Defaults to None.
-        num_mode --- boolean
-
-    """
-    file_extensions = []
-    tesseract_configs = []
-    cuneiform_args = []
-
-    def __init__(self, lang=None, num_mode=None):
-        self.set_language(lang)
-        self.set_numeric_mode(num_mode)
-
-    def set_language(self, lang):
-        self.lang = lang
-
-    def set_numeric_mode(self, num_mode):
-        self.numeric_mode = num_mode
-
-
-class TextBuilder(BaseBuilder):
+class TextBuilder(object):
     """
     If passed to image_to_string(), image_to_string() will return a simple
     string. This string will be the output of the OCR tool, as-is. In other
@@ -265,9 +239,7 @@ class TextBuilder(BaseBuilder):
     cuneiform_args = ["-f", "text"]
 
     def __init__(self, tesseract_layout=3, cuneiform_dotmatrix=False,
-                 cuneiform_fax=False, cuneiform_singlecolumn=False,
-                 lang=None, num_mode=None):
-        super(TextBuilder, self).__init__(lang, num_mode)
+                 cuneiform_fax=False, cuneiform_singlecolumn=False):
         self.tesseract_layout = tesseract_layout
         self.tesseract_configs += ["-psm", str(tesseract_layout)]
         # Add custom cuneiform parameters if needed
@@ -478,7 +450,7 @@ class _LineHTMLParser(HTMLParser):
         return "LineHTMLParser"
 
 
-class WordBoxBuilder(BaseBuilder):
+class WordBoxBuilder(object):
     """
     If passed to image_to_string(), image_to_string() will return an array of
     Box. Each box contains a word recognized in the image.
@@ -488,8 +460,7 @@ class WordBoxBuilder(BaseBuilder):
     tesseract_configs = ['hocr']
     cuneiform_args = ["-f", "hocr"]
 
-    def __init__(self, tesseract_layout=1, lang=None, num_mode=None):
-        super(WordBoxBuilder, self).__init__(lang, num_mode)
+    def __init__(self, tesseract_layout=1):
         self.word_boxes = []
         self.tesseract_layout = tesseract_layout
         self.tesseract_configs += ["-psm", str(tesseract_layout)]
@@ -552,7 +523,7 @@ class WordBoxBuilder(BaseBuilder):
         return "Word boxes"
 
 
-class LineBoxBuilder(BaseBuilder):
+class LineBoxBuilder(object):
     """
     If passed to image_to_string(), image_to_string() will return an array of
     LineBox. Each box contains a word recognized in the image.
@@ -562,8 +533,7 @@ class LineBoxBuilder(BaseBuilder):
     tesseract_configs = ['hocr']
     cuneiform_args = ["-f", "hocr"]
 
-    def __init__(self, tesseract_layout=1, lang=None, num_mode=None):
-        super(LineBoxBuilder, self).__init__(lang, num_mode)
+    def __init__(self, tesseract_layout=1):
         self.lines = []
         self.tesseract_layout = tesseract_layout
         self.tesseract_configs += ["-psm", str(tesseract_layout)]

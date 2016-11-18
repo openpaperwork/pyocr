@@ -89,20 +89,10 @@ def cleanup(filename):
 def image_to_string(image, lang=None, builder=None):
     if builder is None:
         builder = builders.TextBuilder()
-    if lang is not None:
-        if builder.lang is not None:
-            raise ValueError(
-                "Language is set twice, for the builder and in image_to_string"
-            )
-        else:
-            builder.set_language(lang)
-    if builder.numeric_mode:
-        raise NotImplementedError("This option is not available with Cuneiform.")
-
     with temp_file(builder.file_extensions[0]) as output_file:
         cmd = [CUNEIFORM_CMD]
-        if builder.lang is not None:
-            cmd += ["-l", builder.lang]
+        if lang is not None:
+            cmd += ["-l", lang]
         cmd += builder.cuneiform_args
         cmd += ["-o", output_file.name]
         cmd += ["-"]  # stdin

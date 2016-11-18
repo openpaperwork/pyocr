@@ -83,16 +83,7 @@ def _tess_box_to_pyocr_box(box):
 def image_to_string(image, lang=None, builder=None):
     if builder is None:
         builder = builders.TextBuilder()
-    if lang is not None: 
-        if builder.lang is not None:
-            raise ValueError(
-                "Language is set twice, for the builder and in image_to_string"
-            )
-        else:
-            builder.set_language(lang)
-    handle = tesseract_raw.init(lang=builder.lang)
-    if builder.numeric_mode is not None:
-        tesseract_raw.set_numeric_mode(handle, builder.numeric_mode)
+    handle = tesseract_raw.init(lang=lang)
 
     lvl_line = tesseract_raw.PageIteratorLevel.TEXTLINE
     lvl_word = tesseract_raw.PageIteratorLevel.WORD
@@ -163,7 +154,7 @@ def is_available():
     # (seen with Debian stable + Paperwork)
     # not tested with 3.03
     if (version[0] < 3 or
-            (version[0] == 3 and version[1] < 4)):
+            (version[0] == 3 and version[1] < 3)):
         return False
     return True
 
@@ -182,7 +173,7 @@ def get_version():
     
     # cut off "dev" string if exists for proper int conversion
     index = version.find("dev")
-    if index:
+    if index != -1:
         version = version[:index]
 
     version = version.split(".")
