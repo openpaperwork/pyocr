@@ -334,14 +334,19 @@ def get_available_languages(handle):
     return langs
 
 
-def set_numeric_mode(handle, mode):
+def set_is_numeric(handle, mode):
     global g_libtesseract
     assert(g_libtesseract)
 
+    if mode:
+        wl = b"0123456789"
+    else:
+        wl = b""
+
     g_libtesseract.TessBaseAPISetVariable(
-        ctypes.c_void_p(handle), 
-        ctypes.c_wchar_p("classify_bln_numeric_mode"),
-        ctypes.c_bool(mode)
+        ctypes.c_void_p(handle),
+        b"tessedit_char_whitelist",
+        wl
     )
 
 
