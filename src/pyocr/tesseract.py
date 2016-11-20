@@ -34,6 +34,8 @@ TESSDATA_EXTENSION = ".traineddata"
 
 logger = logging.getLogger(__name__)
 
+g_subprocess_startup_info = None
+g_creation_flags = 0
 
 __all__ = [
     'CharBoxBuilder',
@@ -104,8 +106,17 @@ class CharBoxBuilder(builders.BaseBuilder):
 
 
 def _set_environment():
+    global g_subprocess_startup_info
+    global g_creation_flags
+
     if getattr(sys, 'frozen', False):
         # Pyinstaller support
+        if os.name == "nt":
+            g_subprocess_startup_info = subprocess.STARTUPINFO()
+            g_subprocess_startup_info.wShowWindow = subprocess.SW_HIDE
+            g_subprocess_startup_info.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+            g_creation_flags = 0x08000000  # CREATE_NO_WINDOW
+
         path = os.environ["PATH"]
         if sys._MEIPASS in path:
             # already changed
@@ -166,7 +177,10 @@ def detect_orientation(image, lang=None):
             image = image.convert("RGB")
         image.save(input_file.name)
 
-        proc = subprocess.Popen(command, stdin=subprocess.PIPE,
+        shell = True
+        shell = False
+        proc = subprocess.Popen(command, stdin=subprocess.PIPE, shell=False,
+                                startupinfo=g_subprocess_startup_info, creationflags=g_creation_flags,
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.STDOUT)
         proc.stdin.close()
@@ -237,6 +251,7 @@ def run_tesseract(input_filename, output_filename_base, lang=None,
         command += configs
 
     proc = subprocess.Popen(command,
+                            startupinfo=g_subprocess_startup_info, creationflags=g_creation_flags,
                             stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT)
     # Beware that in some cases, tesseract may print more on stderr than
@@ -365,6 +380,7 @@ def get_available_languages():
     """
     _set_environment()
     proc = subprocess.Popen([TESSERACT_CMD, "--list-langs"],
+                            startupinfo=g_subprocess_startup_info, creationflags=g_creation_flags,
                             stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT)
     langs = proc.stdout.read().decode('utf-8').splitlines(False)
@@ -390,6 +406,7 @@ def get_version():
     command = [TESSERACT_CMD, "-v"]
 
     proc = subprocess.Popen(command,
+                            startupinfo=g_subprocess_startup_info, creationflags=g_creation_flags,
                             stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT)
     ver_string = proc.stdout.read()
