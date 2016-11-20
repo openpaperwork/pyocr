@@ -29,6 +29,7 @@ class TestContext(unittest.TestCase):
             (3, 2, 2),
             (3, 3, 0),
             (3, 4, 0),
+            (3, 4, 1),
         ), ("Tesseract does not have the expected version"
             " (3.4.0) ! Some tests will be skipped !"))
 

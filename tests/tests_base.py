@@ -110,7 +110,6 @@ class BaseTestLineBox(BaseTestBox):
     def set_builder(self):
         self._builder = builders.LineBoxBuilder()
 
-
     def _test_equal(self, output, expected_output):
         self.assertEqual(len(output), len(expected_output))
 
