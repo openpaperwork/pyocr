@@ -50,14 +50,19 @@ __all__ = [
 ]
 
 
-class CharBoxBuilder(object):
+class CharBoxBuilder(builders.BaseBuilder):
     """
     If passed to image_to_string(), image_to_string() will return an array of
     Box. Each box correspond to a character recognized in the image.
     """
 
-    file_extensions = ["box"]
-    tesseract_configs = ['batch.nochop', 'makebox']
+    def __init__(self):
+        file_ext = ["box"]
+        tess_conf = ["batch.nochop", "makebox"]
+        cun_arg = []
+        super(CharBoxBuilder, self).__init__(file_ext, tess_conf, cun_arg)
+        self.tesseract_layout = 1
+        self.chars = [] # try to make this builder work with libtesseract
 
     @staticmethod
     def read_file(file_descriptor):
