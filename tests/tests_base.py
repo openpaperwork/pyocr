@@ -3,6 +3,8 @@ from PIL import Image
 import sys
 sys.path = ["src"] + sys.path
 
+import six
+
 from pyocr import builders
 from pyocr import tesseract
 
@@ -50,12 +52,9 @@ class BaseTestText(BaseTest):
         self._builder = builders.TextBuilder()
 
     def _read_from_expected(self, expected_output_path):
-        expected_output = ""
         with codecs.open(expected_output_path, 'r', encoding='utf-8') \
                 as file_descriptor:
-            for line in file_descriptor:
-                expected_output += line
-        return expected_output.strip()
+            return file_descriptor.read().strip()
 
     def _test_equal(self, output, expected_output):
         self.assertEqual(output, expected_output)
@@ -95,14 +94,8 @@ class BaseTestWordBox(BaseTestBox):
         self.assertEqual(len(output), len(expected_output))
 
         for i in range(0, min(len(output), len(expected_output))):
-            try:
-                # python 2.7
-                self.assertEqual(type(expected_output[i].content), unicode)
-                self.assertEqual(type(output[i].content), unicode)
-            except NameError:
-                # python 3
-                self.assertEqual(type(expected_output[i].content), str)
-                self.assertEqual(type(output[i].content), str)
+            self.assertTrue(isinstance(expected_output[i].content, six.text_type))
+            self.assertTrue(isinstance(output[i].content, six.text_type))
             self.assertEqual(output[i], expected_output[i])
 
 
@@ -118,6 +111,7 @@ class BaseTestLineBox(BaseTestBox):
                 self.assertEqual(type(output[i].word_boxes[j]),
                                  type(expected_output[i].word_boxes[j]))
             self.assertEqual(output[i], expected_output[i])
+
 
 class BaseTestDigitLineBox(BaseTestLineBox):
     def set_builder(self):

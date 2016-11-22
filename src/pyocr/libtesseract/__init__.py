@@ -155,7 +155,7 @@ def is_available():
     # (seen with Debian stable + Paperwork)
     # not tested with 3.03
     if (version[0] < 3 or
-            (version[0] == 3 and version[1] < 3)):
+            (version[0] == 3 and version[1] < 4)):
         return False
     return True
 

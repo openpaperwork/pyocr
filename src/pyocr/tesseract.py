@@ -25,7 +25,7 @@ import tempfile
 
 from . import builders
 from . import util
-from pyocr.builders import DigitBuilder
+from pyocr.builders import DigitBuilder  # backward compatibility
 
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
 TESSERACT_CMD = 'tesseract.exe' if os.name == 'nt' else 'tesseract'
@@ -61,10 +61,9 @@ class CharBoxBuilder(builders.BaseBuilder):
     def __init__(self):
         file_ext = ["box"]
         tess_conf = ["batch.nochop", "makebox"]
-        cun_arg = []
-        super(CharBoxBuilder, self).__init__(file_ext, tess_conf, cun_arg)
+        cun_args = []
+        super(CharBoxBuilder, self).__init__(file_ext, tess_conf, cun_args)
         self.tesseract_layout = 1
-        self.chars = [] # try to make this builder work with libtesseract
 
     @staticmethod
     def read_file(file_descriptor):
@@ -215,7 +214,7 @@ def get_available_builders():
         builders.TextBuilder,
         builders.WordBoxBuilder,
         CharBoxBuilder,
-        DigitBuilder,
+        builders.DigitBuilder,
     ]
 
 

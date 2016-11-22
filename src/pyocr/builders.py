@@ -235,27 +235,52 @@ class BaseBuilder(object):
         file_extensions : File extensions of the output.
         tesseract_configs : Arguments passed to the Tesseract command line.
         cuneiform_args : Arguments passed to the Cuneiform command line.
-
     """
+
     def __init__(self, file_extensions, tesseract_configs, cuneiform_args):
         self.file_extensions = file_extensions
         self.tesseract_configs = tesseract_configs
         self.cuneiform_args = cuneiform_args
 
+    # used with Tesseract and Cuneiform
     def read_file(self, file_descriptor):
         """
         Read in the OCR results from `file_descriptor`
         as an appropriate format.
-
         """
         raise NotImplementedError("Implement in subclasses")
 
     def write_file(self, file_descriptor, output):
         """
         Write the `output` to `file_descriptor`.
-        
         """
         raise NotImplementedError("Implement in subclasses")
+
+    # used with Libtesseract
+    def start_line(self, box):
+        """
+        Start a new line of output.
+        """
+        raise NotImplementedError("Implement in subclasses")
+
+    def add_word(self, word, box):
+        """
+        Add a word to output.
+        """
+        raise NotImplementedError("Implement in subclasses")
+    
+    def end_line(self):
+        """
+        End a line in output.
+        """
+        raise NotImplementedError("Implement in subclasses")
+
+    def get_output(self):
+        """
+        Return the output that has been built so far.
+        """
+        raise NotImplementedError("Implement in subclasses")
+
 
 
 class TextBuilder(BaseBuilder):
@@ -266,34 +291,34 @@ class TextBuilder(BaseBuilder):
 
     Warning:
         The returned string is encoded in UTF-8
-
     """
+
     def __init__(self, tesseract_layout=3, cuneiform_dotmatrix=False,
                  cuneiform_fax=False, cuneiform_singlecolumn=False):
         file_ext = ["txt"]
         tess_conf = ["-psm", str(tesseract_layout)]
-        cun_arg = ["-f", "text"]
+        cun_args = ["-f", "text"]
         # Add custom cuneiform parameters if needed
         for par, arg in [(cuneiform_dotmatrix, "--dotmatrix"),
                          (cuneiform_fax, "--fax"),
                          (cuneiform_singlecolumn, "--singlecolumn")]:
             if par:
-                cun_arg.append(arg)
-        super(TextBuilder, self).__init__(file_ext, tess_conf, cun_arg)
+                cun_args.append(arg)
+        super(TextBuilder, self).__init__(file_ext, tess_conf, cun_args)
         self.tesseract_layout = tesseract_layout
         self.built_text = []
 
     @staticmethod
     def read_file(file_descriptor):
         """
-        Read a file and extract the content as a string
+        Read a file and extract the content as a string.
         """
         return file_descriptor.read().strip()
 
     @staticmethod
     def write_file(file_descriptor, text):
         """
-        Write a string in a file
+        Write a string in a file.
         """
         file_descriptor.write(text)
 
@@ -322,11 +347,13 @@ class DigitBuilder(TextBuilder):
     string of digits. 
     This string will be the output of the OCR tool, as-is. 
     In other words, the raw text as produced by the tool when the input is
-    assumed to be 0-9 only.
+    assumed to be [0-9.] only. Note that depending on the tool, 
+    some other characters may be included.
 
     Warning:
-        The returned string is encoded in UTF-8
+        The returned string is encoded in UTF-8.
     """
+
     @staticmethod
     def __str__():
         return "Digits raw text."
@@ -512,8 +539,8 @@ class WordBoxBuilder(BaseBuilder):
     def __init__(self, tesseract_layout=1):
         file_ext = ["html", "hocr"]
         tess_conf = ["hocr", "-psm", str(tesseract_layout)]
-        cun_arg = ["-f", "hocr"]
-        super(WordBoxBuilder, self).__init__(file_ext, tess_conf, cun_arg)
+        cun_args = ["-f", "hocr"]
+        super(WordBoxBuilder, self).__init__(file_ext, tess_conf, cun_args)
         self.word_boxes = []
         self.tesseract_layout = tesseract_layout
 
@@ -578,14 +605,14 @@ class WordBoxBuilder(BaseBuilder):
 class LineBoxBuilder(BaseBuilder):
     """
     If passed to image_to_string(), image_to_string() will return an array of
-    LineBox. Each box contains a line of text recognized in the image.
+    LineBox. Each LineBox contains a list of word boxes.
     """
 
     def __init__(self, tesseract_layout=1):
         file_ext = ["html", "hocr"]
         tess_conf = ["hocr", "-psm", str(tesseract_layout)]
-        cun_arg = ["-f", "hocr"]
-        super(LineBoxBuilder, self).__init__(file_ext, tess_conf, cun_arg)
+        cun_args = ["-f", "hocr"]
+        super(LineBoxBuilder, self).__init__(file_ext, tess_conf, cun_args)
         self.lines = []
         self.tesseract_layout = tesseract_layout
 
@@ -659,7 +686,7 @@ class DigitLineBoxBuilder(LineBoxBuilder):
     """
     If passed to image_to_string(), image_to_string() will return
     an array of LineBox. Each box contains a word recognized in the image
-    with only numeric character (0-9).
+    with nearly only numeric characters [0-9.], depending on the tool.
 
     """
     @staticmethod
