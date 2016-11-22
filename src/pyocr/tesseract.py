@@ -316,8 +316,8 @@ def image_to_string(image, lang=None, builder=None):
     read, and the temporary files are erased.
 
     Arguments:
-        image --- image to OCR
-        lang --- tesseract language to use. 
+        image --- image to OCR.
+        lang --- tesseract language to use.
         builder --- builder used to configure Tesseract and read its result.
             The builder is used to specify the type of output expected.
             Possible builders are TextBuilder or CharBoxBuilder. If builder ==

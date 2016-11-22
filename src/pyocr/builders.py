@@ -347,8 +347,9 @@ class DigitBuilder(TextBuilder):
     string of digits. 
     This string will be the output of the OCR tool, as-is. 
     In other words, the raw text as produced by the tool when the input is
-    assumed to be [0-9.] only. Note that depending on the tool, 
-    some other characters may be included.
+    assumed to be [0-9.] only.
+    image_to_string() raises `NotImplementedError` with tools (Cuneiform)
+    unable to process the input this way.
 
     Warning:
         The returned string is encoded in UTF-8.
@@ -687,8 +688,10 @@ class DigitLineBoxBuilder(LineBoxBuilder):
     If passed to image_to_string(), image_to_string() will return
     an array of LineBox. Each box contains a word recognized in the image
     with nearly only numeric characters [0-9.], depending on the tool.
-
+    `image_to_string` raises NotImplementedError with some tools (Cuneiform)
+    unable to process the input this way.
     """
+
     @staticmethod
     def __str__():
         return "Digit line boxes"
