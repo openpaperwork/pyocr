@@ -1,7 +1,8 @@
 $ git shortlog -sne >| AUTHORS
 
-   208	Jerome Flesch <jflesch@gmail.com>
+   223	Jerome Flesch <jflesch@openpaper.work>
     12	Samuel Hoffstaetter <samuel@hoffstaetter.com>
+    10	Benjamin Nguyen-Van-Yen <queue@Keats.dehors.org>
      6	Paulo Miguel Almeida <paulo.ubuntu@gmail.com>
      3	Teis <TeisD@users.noreply.github.com>
      3	hoffstaetter <samuel@hoffstaetter.com>
