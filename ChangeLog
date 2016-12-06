@@ -2,6 +2,9 @@
 - (temporary) Use tesseract-sh by default instead of libtesseract. Some
   people have reported crashes with Paperwork+libtesseract. It needs more
   stress-testing
+- DigitBuilder is now available in 'pyocr.builders' (can be used
+  with libtesseract and cuneiform)
+- New builder: DigitLineBoxBuilder
 - Windows: Fix pyinstaller packaging suport: env variable TESSDATA_PREFIX
   wasn't set correctly
 - Windows: Tesseract-sh: Prevent CMD windows from appearing
