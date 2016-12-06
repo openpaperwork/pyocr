@@ -47,13 +47,18 @@ class BaseCuneiform(base.BaseTest):
         return os.path.join(
             "tests", "output", "specific", "cuneiform", expected_output_file
         )
-        
+
 
 class TestTxt(unittest.TestCase, base.BaseTestText, BaseCuneiform):
     """
     These tests make sure the "usual" OCR works fine. (the one generating
     a .txt file)
     """
+    def setUp(self):
+        super().setUp()
+        self.tool = cuneiform
+        self.set_builder()
+
     def test_basic(self):
         self._test_txt('test.png', 'test.txt')
 
@@ -68,11 +73,16 @@ class TestTxt(unittest.TestCase, base.BaseTestText, BaseCuneiform):
 
 
 class TestDigit(base.BaseTestDigit, BaseCuneiform, unittest.TestCase):
+    def setUp(self):
+        super().setUp()
+        self.tool = cuneiform
+        self.set_builder()
+
     def test_digits_not_implemented(self):
         image_path = self._path_to_img("test-digits.png")
         self.assertRaises(
-            NotImplementedError, 
-            self._read_from_img, 
+            NotImplementedError,
+            self._read_from_img,
             image_path
         )
 
@@ -81,6 +91,11 @@ class TestWordBox(base.BaseTestWordBox, BaseCuneiform, unittest.TestCase):
     """
     These tests make sure that cuneiform box handling works fine.
     """
+    def setUp(self):
+        super().setUp()
+        self.tool = cuneiform
+        self.set_builder()
+
     def test_basic(self):
         self._test_txt('test.png', 'test.words')
 
@@ -91,7 +106,9 @@ class TestWordBox(base.BaseTestWordBox, BaseCuneiform, unittest.TestCase):
         self._test_txt('test-french.jpg', 'test-french.words', 'fra')
 
     def test_write_read(self):
-        original_boxes = self._read_from_img("test.png")
+        original_boxes = self._read_from_img(
+            os.path.join("tests", "input", "specific", "test.png")
+        )
         self.assertTrue(len(original_boxes) > 0)
 
         (file_descriptor, tmp_path) = tempfile.mkstemp()
