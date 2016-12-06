@@ -33,24 +33,23 @@ run_tess_all()
 		output=$(echo ${output} | sed s/.png//g)
 
 		lang=eng
+		extra_config=""
 		if echo ${output} | grep digit > /dev/null ;
 		then
-			run_tess ${input} output/${type}/tesseract/${output} ${lang} \
-				digits
-			continue
-		fi
-
-		if echo ${output} | grep french > /dev/null ;
+			lang=eng # don't touch
+			extra_config="digits"
+		elif echo ${output} | grep french > /dev/null ;
 		then lang=fra
 		elif echo ${output} | grep japanese > /dev/null ;
 		then lang=jpn
 		fi
 
-		run_tess ${input} output/${type}/tesseract/${output} ${lang}
 		run_tess ${input} output/${type}/tesseract/${output} ${lang} \
-			batch.nochop makebox
+			${extra_config}
 		run_tess ${input} output/${type}/tesseract/${output} ${lang} \
-			hocr
+			batch.nochop makebox ${extra_config}
+		run_tess ${input} output/${type}/tesseract/${output} ${lang} \
+			hocr ${extra_config}
 
 		mv output/${type}/tesseract/${output}.hocr \
 			output/${type}/tesseract/${output}.words
@@ -104,7 +103,15 @@ run_tess_api_all()
 		output=$(echo ${output} | sed s/.png//g)
 
 		lang=eng
-		if echo ${output} | grep french > /dev/null ;
+		if echo ${output} | grep digit > /dev/null ;
+		then
+			run_tess_api ${input} output/${type}/libtesseract/${output}.txt \
+				${lang} \
+				DigitBuilder
+			run_tess_api ${input} output/${type}/libtesseract/${output}.lines \
+				${lang} \
+				DigitLineBoxBuilder
+		elif echo ${output} | grep french > /dev/null ;
 		then lang=fra
 		elif echo ${output} | grep japanese > /dev/null ;
 		then lang=jpn
