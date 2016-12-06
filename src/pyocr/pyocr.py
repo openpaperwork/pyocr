@@ -57,8 +57,8 @@ __all__ = [
 
 
 TOOLS = [  # in preference order
-    libtesseract,
     tesseract,
+    libtesseract,
     cuneiform,
 ]
 
