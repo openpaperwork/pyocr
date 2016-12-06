@@ -1,3 +1,11 @@
+06/12/2016 - 0.4.3:
+- (temporary) Use tesseract-sh by default instead of libtesseract. Some
+  people have reported crashes with Paperwork+libtesseract. It needs more
+  stress-testing
+- Windows: Fix pyinstaller packaging suport: env variable TESSDATA_PREFIX
+  wasn't set correctly
+- Windows: Tesseract-sh: Prevent CMD windows from appearing
+
 05/10/2016 - 0.4.2:
 * Tesseract: orientation detection: Ignore errors printed by libleptonic
   on stderr (thanks to TeisD)
