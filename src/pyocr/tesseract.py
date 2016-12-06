@@ -25,6 +25,7 @@ import tempfile
 
 from . import builders
 from . import util
+from pyocr.builders import DigitBuilder  # backward compatibility
 
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
 TESSERACT_CMD = 'tesseract.exe' if os.name == 'nt' else 'tesseract'
@@ -51,17 +52,18 @@ __all__ = [
 ]
 
 
-class CharBoxBuilder(object):
+class CharBoxBuilder(builders.BaseBuilder):
     """
     If passed to image_to_string(), image_to_string() will return an array of
     Box. Each box correspond to a character recognized in the image.
     """
 
-    file_extensions = ["box"]
-    tesseract_configs = ['batch.nochop', 'makebox']
-
     def __init__(self):
-        pass
+        file_ext = ["box"]
+        tess_conf = ["batch.nochop", "makebox"]
+        cun_args = []
+        super(CharBoxBuilder, self).__init__(file_ext, tess_conf, cun_args)
+        self.tesseract_layout = 1
 
     @staticmethod
     def read_file(file_descriptor):
@@ -100,22 +102,6 @@ class CharBoxBuilder(object):
     @staticmethod
     def __str__():
         return "Character boxes"
-
-
-class DigitBuilder(builders.TextBuilder):
-    """
-    If passed to image_to_string(), image_to_string() will return a string with
-    only digits. Characters recognition will consider text as if it will only
-    composed by digits.
-    """
-
-    @staticmethod
-    def __str__():
-        return "Digits only"
-
-    def __init__(self, tesseract_layout=3):
-        super(DigitBuilder, self).__init__(tesseract_layout)
-        self.tesseract_configs.append("digits")
 
 
 def _set_environment():
@@ -228,7 +214,7 @@ def get_available_builders():
         builders.TextBuilder,
         builders.WordBoxBuilder,
         CharBoxBuilder,
-        DigitBuilder,
+        builders.DigitBuilder,
     ]
 
 
@@ -330,8 +316,8 @@ def image_to_string(image, lang=None, builder=None):
     read, and the temporary files are erased.
 
     Arguments:
-        image --- image to OCR
-        lang --- tesseract language to use
+        image --- image to OCR.
+        lang --- tesseract language to use.
         builder --- builder used to configure Tesseract and read its result.
             The builder is used to specify the type of output expected.
             Possible builders are TextBuilder or CharBoxBuilder. If builder ==
@@ -344,7 +330,6 @@ def image_to_string(image, lang=None, builder=None):
 
     if builder is None:
         builder = builders.TextBuilder()
-
     with temp_file(".bmp") as input_file:
         with temp_file('') as output_file:
             output_file_name_base = output_file.name

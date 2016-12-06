@@ -20,6 +20,8 @@ __all__ = [
     'TextBuilder',
     'WordBoxBuilder',
     'LineBoxBuilder',
+    'DigitBuilder',
+    'DigitLineBoxBuilder',
 ]
 
 _XHTML_HEADER = to_unicode("""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
@@ -224,7 +226,64 @@ class LineBox(object):
         return (position_hash ^ hash(content) ^ hash(content))
 
 
-class TextBuilder(object):
+class BaseBuilder(object):
+    """
+    Builders format the output of the OCR tools, 
+    and potentially configures the tools.
+    
+    Attributes:
+        file_extensions : File extensions of the output.
+        tesseract_configs : Arguments passed to the Tesseract command line.
+        cuneiform_args : Arguments passed to the Cuneiform command line.
+    """
+
+    def __init__(self, file_extensions, tesseract_configs, cuneiform_args):
+        self.file_extensions = file_extensions
+        self.tesseract_configs = tesseract_configs
+        self.cuneiform_args = cuneiform_args
+
+    # used with Tesseract and Cuneiform
+    def read_file(self, file_descriptor):
+        """
+        Read in the OCR results from `file_descriptor`
+        as an appropriate format.
+        """
+        raise NotImplementedError("Implement in subclasses")
+
+    def write_file(self, file_descriptor, output):
+        """
+        Write the `output` to `file_descriptor`.
+        """
+        raise NotImplementedError("Implement in subclasses")
+
+    # used with Libtesseract
+    def start_line(self, box):
+        """
+        Start a new line of output.
+        """
+        raise NotImplementedError("Implement in subclasses")
+
+    def add_word(self, word, box):
+        """
+        Add a word to output.
+        """
+        raise NotImplementedError("Implement in subclasses")
+    
+    def end_line(self):
+        """
+        End a line in output.
+        """
+        raise NotImplementedError("Implement in subclasses")
+
+    def get_output(self):
+        """
+        Return the output that has been built so far.
+        """
+        raise NotImplementedError("Implement in subclasses")
+
+
+
+class TextBuilder(BaseBuilder):
     """
     If passed to image_to_string(), image_to_string() will return a simple
     string. This string will be the output of the OCR tool, as-is. In other
@@ -234,34 +293,32 @@ class TextBuilder(object):
         The returned string is encoded in UTF-8
     """
 
-    file_extensions = ["txt"]
-    tesseract_configs = []
-    cuneiform_args = ["-f", "text"]
-
     def __init__(self, tesseract_layout=3, cuneiform_dotmatrix=False,
                  cuneiform_fax=False, cuneiform_singlecolumn=False):
-        self.tesseract_configs += ["-psm", str(tesseract_layout)]
-        self.tesseract_layout = tesseract_layout
+        file_ext = ["txt"]
+        tess_conf = ["-psm", str(tesseract_layout)]
+        cun_args = ["-f", "text"]
         # Add custom cuneiform parameters if needed
-        if cuneiform_dotmatrix:
-            self.cuneiform_args.append("--dotmatrix")
-        if cuneiform_fax:
-            self.cuneiform_args.append("--fax")
-        if cuneiform_singlecolumn:
-            self.cuneiform_args.append("--singlecolumn")
+        for par, arg in [(cuneiform_dotmatrix, "--dotmatrix"),
+                         (cuneiform_fax, "--fax"),
+                         (cuneiform_singlecolumn, "--singlecolumn")]:
+            if par:
+                cun_args.append(arg)
+        super(TextBuilder, self).__init__(file_ext, tess_conf, cun_args)
+        self.tesseract_layout = tesseract_layout
         self.built_text = []
 
     @staticmethod
     def read_file(file_descriptor):
         """
-        Read a file and extract the content as a string
+        Read a file and extract the content as a string.
         """
         return file_descriptor.read().strip()
 
     @staticmethod
     def write_file(file_descriptor, text):
         """
-        Write a string in a file
+        Write a string in a file.
         """
         file_descriptor.write(text)
 
@@ -282,6 +339,30 @@ class TextBuilder(object):
     @staticmethod
     def __str__():
         return "Raw text"
+
+
+class DigitBuilder(TextBuilder):
+    """
+    If passed to image_to_string(), image_to_string() will return a simple
+    string of digits. 
+    This string will be the output of the OCR tool, as-is. 
+    In other words, the raw text as produced by the tool when the input is
+    assumed to be [0-9.] only.
+    image_to_string() raises `NotImplementedError` with tools (Cuneiform)
+    unable to process the input this way.
+
+    Warning:
+        The returned string is encoded in UTF-8.
+    """
+
+    @staticmethod
+    def __str__():
+        return "Digits raw text."
+
+    def __init__(self, tesseract_layout=3):
+        super(DigitBuilder, self).__init__(tesseract_layout)
+        self.tesseract_configs.append("digits")
+
 
 
 class _WordHTMLParser(HTMLParser):
@@ -450,20 +531,19 @@ class _LineHTMLParser(HTMLParser):
         return "LineHTMLParser"
 
 
-class WordBoxBuilder(object):
+class WordBoxBuilder(BaseBuilder):
     """
     If passed to image_to_string(), image_to_string() will return an array of
     Box. Each box contains a word recognized in the image.
     """
 
-    file_extensions = ["html", "hocr"]
-    tesseract_configs = ['hocr']
-    cuneiform_args = ["-f", "hocr"]
-
     def __init__(self, tesseract_layout=1):
+        file_ext = ["html", "hocr"]
+        tess_conf = ["hocr", "-psm", str(tesseract_layout)]
+        cun_args = ["-f", "hocr"]
+        super(WordBoxBuilder, self).__init__(file_ext, tess_conf, cun_args)
         self.word_boxes = []
         self.tesseract_layout = tesseract_layout
-        self.tesseract_configs += ["-psm", str(tesseract_layout)]
 
     def read_file(self, file_descriptor):
         """
@@ -523,20 +603,19 @@ class WordBoxBuilder(object):
         return "Word boxes"
 
 
-class LineBoxBuilder(object):
+class LineBoxBuilder(BaseBuilder):
     """
     If passed to image_to_string(), image_to_string() will return an array of
-    LineBox. Each box contains a word recognized in the image.
+    LineBox. Each LineBox contains a list of word boxes.
     """
 
-    file_extensions = ["html", "hocr"]
-    tesseract_configs = ['hocr']
-    cuneiform_args = ["-f", "hocr"]
-
     def __init__(self, tesseract_layout=1):
+        file_ext = ["html", "hocr"]
+        tess_conf = ["hocr", "-psm", str(tesseract_layout)]
+        cun_args = ["-f", "hocr"]
+        super(LineBoxBuilder, self).__init__(file_ext, tess_conf, cun_args)
         self.lines = []
         self.tesseract_layout = tesseract_layout
-        self.tesseract_configs += ["-psm", str(tesseract_layout)]
 
     def read_file(self, file_descriptor):
         """
@@ -602,3 +681,21 @@ class LineBoxBuilder(object):
     @staticmethod
     def __str__():
         return "Line boxes"
+
+
+class DigitLineBoxBuilder(LineBoxBuilder):
+    """
+    If passed to image_to_string(), image_to_string() will return
+    an array of LineBox. Each box contains a word recognized in the image
+    with nearly only numeric characters [0-9.], depending on the tool.
+    `image_to_string` raises NotImplementedError with some tools (Cuneiform)
+    unable to process the input this way.
+    """
+
+    @staticmethod
+    def __str__():
+        return "Digit line boxes"
+
+    def __init__(self, tesseract_layout=1):
+        super(DigitLineBoxBuilder, self).__init__(tesseract_layout)
+        self.tesseract_configs.append("digits")

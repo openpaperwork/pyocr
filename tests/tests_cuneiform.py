@@ -1,14 +1,11 @@
-import codecs
-from PIL import Image
 import os
-import sys
-sys.path = [ "src" ] + sys.path
+import codecs
 import tempfile
 
 import unittest
 
-from pyocr import builders
 from pyocr import cuneiform
+from . import tests_base as base
 
 
 class TestContext(unittest.TestCase):
@@ -40,95 +37,61 @@ class TestContext(unittest.TestCase):
         pass
 
 
-class TestTxt(unittest.TestCase):
+class BaseCuneiform(base.BaseTest):
+    def _path_to_img(self, image_file):
+        return os.path.join(
+            "tests", "input", "specific", image_file
+        )
+
+    def _path_to_out(self, expected_output_file):
+        return os.path.join(
+            "tests", "output", "specific", "cuneiform", expected_output_file
+        )
+        
+
+class TestTxt(unittest.TestCase, base.BaseTestText, BaseCuneiform):
     """
     These tests make sure the "usual" OCR works fine. (the one generating
     a .txt file)
     """
-    def setUp(self):
-        pass
-
-    def __test_txt(self, image_file, expected_output_file, lang='eng'):
-        image_file = os.path.join("tests", "input", "specific", image_file)
-        expected_output_file = os.path.join(
-            "tests", "output", "specific", "cuneiform", expected_output_file
-        )
-
-        expected_output = ""
-        with codecs.open(expected_output_file, 'r', encoding='utf-8') \
-                as file_descriptor:
-            for line in file_descriptor:
-                expected_output += line
-        expected_output = expected_output.strip()
-
-        output = cuneiform.image_to_string(Image.open(image_file), lang=lang)
-
-        self.assertEqual(output, expected_output)
-
     def test_basic(self):
-        self.__test_txt('test.png', 'test.txt')
+        self._test_txt('test.png', 'test.txt')
 
     def test_european(self):
-        self.__test_txt('test-european.jpg', 'test-european.txt')
+        self._test_txt('test-european.jpg', 'test-european.txt')
 
     def test_french(self):
-        self.__test_txt('test-french.jpg', 'test-french.txt', 'fra')
+        self._test_txt('test-french.jpg', 'test-french.txt', 'fra')
 
     def tearDown(self):
         pass
 
 
-class TestWordBox(unittest.TestCase):
+class TestDigit(base.BaseTestDigit, BaseCuneiform, unittest.TestCase):
+    def test_digits_not_implemented(self):
+        image_path = self._path_to_img("test-digits.png")
+        self.assertRaises(
+            NotImplementedError, 
+            self._read_from_img, 
+            image_path
+        )
+
+
+class TestWordBox(base.BaseTestWordBox, BaseCuneiform, unittest.TestCase):
     """
     These tests make sure that cuneiform box handling works fine.
     """
-    def setUp(self):
-        self.builder = builders.WordBoxBuilder()
-
-    def __test_txt(self, image_file, expected_box_file, lang='eng'):
-        image_file = os.path.join("tests", "input", "specific", image_file)
-        expected_box_file = os.path.join(
-            "tests", "output", "specific", "cuneiform", expected_box_file
-        )
-
-        with codecs.open(expected_box_file, 'r', encoding='utf-8') \
-                as file_descriptor:
-            expected_boxes = self.builder.read_file(file_descriptor)
-        expected_boxes.sort()
-
-        boxes = cuneiform.image_to_string(Image.open(image_file), lang=lang,
-                                          builder=self.builder)
-        boxes.sort()
-
-        self.assertEqual(len(boxes), len(expected_boxes))
-
-        for i in range(0, min(len(boxes), len(expected_boxes))):
-            try:
-                # Python 2.7
-                self.assertEqual(type(expected_boxes[i].content), unicode)
-                self.assertEqual(type(boxes[i].content), unicode)
-            except NameError:
-                # Python 3.x
-                self.assertEqual(type(expected_boxes[i].content), str)
-                self.assertEqual(type(boxes[i].content), str)
-            self.assertEqual(boxes[i], expected_boxes[i])
-
     def test_basic(self):
-        self.__test_txt('test.png', 'test.words')
+        self._test_txt('test.png', 'test.words')
 
     def test_european(self):
-        self.__test_txt('test-european.jpg', 'test-european.words')
+        self._test_txt('test-european.jpg', 'test-european.words')
 
     def test_french(self):
-        self.__test_txt('test-french.jpg', 'test-french.words', 'fra')
+        self._test_txt('test-french.jpg', 'test-french.words', 'fra')
 
     def test_write_read(self):
-        original_boxes = cuneiform.image_to_string(
-            Image.open(
-                os.path.join("tests", "input", "specific", "test.png")
-            ),
-            builder=self.builder
-        )
+        original_boxes = self._read_from_img("test.png")
         self.assertTrue(len(original_boxes) > 0)
 
         (file_descriptor, tmp_path) = tempfile.mkstemp()
@@ -137,19 +100,16 @@ class TestWordBox(unittest.TestCase):
             os.close(file_descriptor)
 
             with codecs.open(tmp_path, 'w', encoding='utf-8') as file_descriptor:
-                self.builder.write_file(file_descriptor, original_boxes)
+                self._builder.write_file(file_descriptor, original_boxes)
 
             with codecs.open(tmp_path, 'r', encoding='utf-8') as file_descriptor:
-                new_boxes = self.builder.read_file(file_descriptor)
+                new_boxes = self._builder.read_file(file_descriptor)
 
             self.assertEqual(len(new_boxes), len(original_boxes))
             for i in range(0, len(original_boxes)):
                 self.assertEqual(new_boxes[i], original_boxes[i])
         finally:
             os.remove(tmp_path)
-
-    def tearDown(self):
-        pass
 
 
 class TestOrientation(unittest.TestCase):
@@ -183,6 +143,12 @@ def get_all_tests():
         'test_write_read',
     ]
     tests = unittest.TestSuite(map(TestWordBox, test_names))
+    all_tests.addTest(tests)
+
+    test_names = [
+        'test_digits_not_implemented'
+    ]
+    tests = unittest.TestSuite(map(TestDigit, test_names))
     all_tests.addTest(tests)
 
     test_names = [
