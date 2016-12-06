@@ -40,7 +40,7 @@ class BaseTest(object):
     def _test_txt(self, image_file, expected_output_file, lang='eng'):
         image_path = self._path_to_img(image_file)
         expected_output_path = self._path_to_out(expected_output_file)
-        
+
         expected_output = self._read_from_expected(expected_output_path)
         output = self._read_from_img(image_path, lang)
 
@@ -76,7 +76,7 @@ class BaseTestBox(BaseTest):
 
     def _read_from_img(self, image_path, lang=None):
         boxes = tesseract.image_to_string(
-            Image.open(image_path), 
+            Image.open(image_path),
             lang=lang,
             builder=self._builder
         )
@@ -94,7 +94,8 @@ class BaseTestWordBox(BaseTestBox):
         self.assertEqual(len(output), len(expected_output))
 
         for i in range(0, min(len(output), len(expected_output))):
-            self.assertTrue(isinstance(expected_output[i].content, six.text_type))
+            self.assertTrue(isinstance(expected_output[i].content,
+                                       six.text_type))
             self.assertTrue(isinstance(output[i].content, six.text_type))
             self.assertEqual(output[i], expected_output[i])
 
