@@ -25,7 +25,7 @@ import tempfile
 
 from . import builders
 from . import util
-from pyocr.builders import DigitBuilder  # backward compatibility
+from .builders import DigitBuilder  # backward compatibility
 
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
 TESSERACT_CMD = 'tesseract.exe' if os.name == 'nt' else 'tesseract'
@@ -417,9 +417,9 @@ def get_version():
     try:
         ver_string = ver_string.split(" ")[1]
         index = ver_string.find("dev")
-        if index:  
+        if index:
           ver_string = ver_string[:index]
-        
+
         els = ver_string.split(".")
         els = [int(x) for x in els]
         major = els[0]
