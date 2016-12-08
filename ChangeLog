@@ -1,3 +1,6 @@
+08/12/2016 - 0.4.4:
+- Fix Python 2.7 support (broken import)
+
 06/12/2016 - 0.4.3:
 - (temporary) Use tesseract-sh by default instead of libtesseract. Some
   people have reported crashes with Paperwork+libtesseract. It needs more
