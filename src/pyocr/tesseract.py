@@ -127,14 +127,18 @@ def _set_environment():
 
         if not os.path.exists(os.path.join(tessprefix, "tessdata")):
             logger.warning(
-                "Running from container, but no tessdata ({}) found !".format(tessprefix)
+                "Running from container, but no tessdata ({}) found !".format(
+                    tessprefix
+                )
             )
         else:
             logger.info("TESSDATA_PREFIX set to [{}]".format(tessprefix))
             os.environ['TESSDATA_PREFIX'] = tessprefix
         if not os.path.exists(tesspath):
             logger.warning(
-                "Running from container, but no tesseract ({}) found !".format(tesspath)
+                "Running from container, but no tesseract ({}) found !".format(
+                    tesspath
+                )
             )
         else:
             logger.info("[{}] added to PATH".format(tesspath))
@@ -176,10 +180,9 @@ def detect_orientation(image, lang=None):
             image = image.convert("RGB")
         image.save(input_file.name)
 
-        shell = True
-        shell = False
         proc = subprocess.Popen(command, stdin=subprocess.PIPE, shell=False,
-                                startupinfo=g_subprocess_startup_info, creationflags=g_creation_flags,
+                                startupinfo=g_subprocess_startup_info,
+                                creationflags=g_creation_flags,
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.STDOUT)
         proc.stdin.close()
@@ -193,7 +196,8 @@ def detect_orientation(image, lang=None):
             output = [line.split(": ", 1) for line in output if (": " in line)]
             output = {x: y for (x, y) in output}
             angle = int(output.get('Rotate', output['Orientation in degrees']))
-            # Tesseract reports the angle in the opposite direction the one we want
+            # Tesseract reports the angle in the opposite direction the one we
+            # want
             angle = (360 - angle) % 360
             return {
                 'angle': angle,
@@ -250,7 +254,8 @@ def run_tesseract(input_filename, output_filename_base, lang=None,
         command += configs
 
     proc = subprocess.Popen(command,
-                            startupinfo=g_subprocess_startup_info, creationflags=g_creation_flags,
+                            startupinfo=g_subprocess_startup_info,
+                            creationflags=g_creation_flags,
                             stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT)
     # Beware that in some cases, tesseract may print more on stderr than
@@ -281,10 +286,13 @@ class ReOpenableTempfile(object):
         with tempfile.NamedTemporaryFile(prefix='tess_', suffix=suffix,
                                          delete=False) as fp:
             self.name = fp.name
+
     def __enter__(self):
         return self
+
     def __exit__(self, type, value, traceback):
         self.close()
+
     def close(self):
         if self.name is not None:
             os.remove(self.name)
@@ -379,7 +387,8 @@ def get_available_languages():
     """
     _set_environment()
     proc = subprocess.Popen([TESSERACT_CMD, "--list-langs"],
-                            startupinfo=g_subprocess_startup_info, creationflags=g_creation_flags,
+                            startupinfo=g_subprocess_startup_info,
+                            creationflags=g_creation_flags,
                             stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT)
     langs = proc.stdout.read().decode('utf-8').splitlines(False)
@@ -405,7 +414,8 @@ def get_version():
     command = [TESSERACT_CMD, "-v"]
 
     proc = subprocess.Popen(command,
-                            startupinfo=g_subprocess_startup_info, creationflags=g_creation_flags,
+                            startupinfo=g_subprocess_startup_info,
+                            creationflags=g_creation_flags,
                             stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT)
     ver_string = proc.stdout.read()
@@ -418,7 +428,7 @@ def get_version():
         ver_string = ver_string.split(" ")[1]
         index = ver_string.find("dev")
         if index:
-          ver_string = ver_string[:index]
+            ver_string = ver_string[:index]
 
         els = ver_string.split(".")
         els = [int(x) for x in els]
