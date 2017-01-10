@@ -8,12 +8,12 @@ setup(
     # - src/pyocr/pyocr.py:VERSION
     # - setup.py:download_url
     # - ChangeLog
-    version="0.4.4",
+    version="0.4.5",
     description=("A Python wrapper for OCR engines (Tesseract, Cuneiform,"
                  " etc)"),
     keywords="tesseract cuneiform ocr",
     url="https://github.com/jflesch/pyocr",
-    download_url="https://github.com/jflesch/pyocr/archive/0.4.3.zip",
+    download_url="https://github.com/jflesch/pyocr/archive/0.4.5.zip",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",

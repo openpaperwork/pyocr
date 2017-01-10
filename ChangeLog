@@ -1,3 +1,10 @@
+10/01/2017 - 0.4.5:
+- Clean up exceptions raised when OCR fails:
+  - Now, all tools raise only exceptions inheriting from
+    pyocr.PyocrException
+  - There is now one and only one TesseractError (shared between
+    pyocr.libtesseract and pyocr.tesseract)
+
 08/12/2016 - 0.4.4:
 - Fix Python 2.7 support (broken import)
 
