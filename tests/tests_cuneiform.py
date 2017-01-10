@@ -55,7 +55,7 @@ class TestTxt(unittest.TestCase, base.BaseTestText, BaseCuneiform):
     a .txt file)
     """
     def setUp(self):
-        super().setUp()
+        super(TestTxt, self).setUp()
         self.tool = cuneiform
         self.set_builder()
 
@@ -74,7 +74,7 @@ class TestTxt(unittest.TestCase, base.BaseTestText, BaseCuneiform):
 
 class TestDigit(base.BaseTestDigit, BaseCuneiform, unittest.TestCase):
     def setUp(self):
-        super().setUp()
+        super(TestDigit, self).setUp()
         self.tool = cuneiform
         self.set_builder()
 
@@ -92,7 +92,7 @@ class TestWordBox(base.BaseTestWordBox, BaseCuneiform, unittest.TestCase):
     These tests make sure that cuneiform box handling works fine.
     """
     def setUp(self):
-        super().setUp()
+        super(TestWordBox, self).setUp()
         self.tool = cuneiform
         self.set_builder()
 
