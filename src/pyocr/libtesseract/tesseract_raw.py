@@ -15,7 +15,9 @@ if getattr(sys, 'frozen', False):
     tessdata = os.path.join(sys._MEIPASS, "data")
     if not os.path.exists(os.path.join(tessdata, "tessdata")):
         logger.warning(
-            "Running from container, but no tessdata ({}) found !".format(tessdata)
+            "Running from container, but no tessdata ({}) found !".format(
+                tessdata
+            )
         )
     else:
         TESSDATA_PREFIX = tessdata
@@ -539,7 +541,8 @@ def detect_os(handle):
         ctypes.pointer(results)
     )
     if not r:
-        raise TesseractError("detect_orientation failed", "TessBaseAPIDetectOS() failed")
+        raise TesseractError("detect_orientation failed",
+                             "TessBaseAPIDetectOS() failed")
     return {
         "orientation": results.best_orientation_id,
         "confidence": results.best_oconfidence,
