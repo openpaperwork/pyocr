@@ -24,8 +24,10 @@ import sys
 import tempfile
 
 from . import builders
+from . import error
 from . import util
 from .builders import DigitBuilder  # backward compatibility
+from .error import TesseractError  # backward compatibility
 
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
 TESSERACT_CMD = 'tesseract.exe' if os.name == 'nt' else 'tesseract'
@@ -304,17 +306,6 @@ def temp_file(suffix):
     if os.name == 'nt':  # Windows
         return ReOpenableTempfile(suffix)
     return tempfile.NamedTemporaryFile(prefix='tess_', suffix=suffix)
-
-
-class TesseractError(Exception):
-    """
-    Exception raised when Tesseract fails.
-    """
-    def __init__(self, status, message):
-        Exception.__init__(self, message)
-        self.status = status
-        self.message = message
-        self.args = (status, message)
 
 
 def image_to_string(image, lang=None, builder=None):

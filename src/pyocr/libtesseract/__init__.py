@@ -16,6 +16,8 @@ https://github.com/jflesch/pyocr#readme
 '''
 from .. import builders
 
+from ..error import TesseractError
+
 from . import tesseract_raw
 
 
@@ -45,7 +47,7 @@ def detect_orientation(image, lang=None):
         tesseract_raw.set_image(handle, image)
         os = tesseract_raw.detect_os(handle)
         if os['confidence'] <= 0:
-            raise tesseract_raw.TesseractError(
+            raise TesseractError(
                 "no script", "no script detected"
             )
         orientation = {
@@ -171,7 +173,7 @@ def get_available_languages():
 def get_version():
     version = tesseract_raw.get_version()
     version = version.split(" ", 1)[0]
-    
+
     # cut off "dev" string if exists for proper int conversion
     index = version.find("dev")
     if index != -1:

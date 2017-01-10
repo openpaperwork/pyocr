@@ -3,6 +3,8 @@ import logging
 import os
 import sys
 
+from ..error import TesseractError
+
 
 logger = logging.getLogger(__name__)
 
@@ -44,17 +46,6 @@ for libname in libnames:
         g_libtesseract = ctypes.cdll.LoadLibrary(libname)
     except OSError:
         pass
-
-
-class TesseractError(Exception):
-    """
-    Exception raised when Tesseract fails.
-    """
-    def __init__(self, status, message):
-        Exception.__init__(self, message)
-        self.status = status
-        self.message = message
-        self.args = (status, message)
 
 
 class PageSegMode(object):

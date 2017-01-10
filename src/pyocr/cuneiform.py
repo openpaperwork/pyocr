@@ -23,6 +23,7 @@ import subprocess
 import tempfile
 
 from . import builders
+from . import error
 from . import util
 
 
@@ -65,9 +66,9 @@ def get_available_builders():
     ]
 
 
-class CuneiformError(Exception):
+class CuneiformError(error.PyocrException):
     def __init__(self, status, message):
-        Exception.__init__(self, message)
+        error.PyocrException.__init__(self, message)
         self.status = status
         self.message = message
         self.args = (status, message)

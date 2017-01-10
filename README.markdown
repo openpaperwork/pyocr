@@ -113,6 +113,12 @@ the tool used.
 Argument 'builder' is optional. Default value is
 builders.TextBuilder().
 
+If the OCR fails, an exception ```pyocr.PyocrException```
+will be raised.
+
+An exception MAY be raised if the input image contains no
+text at all (depends on the OCR tool behavior).
+
 
 ### Orientation detection
 
@@ -120,11 +126,15 @@ Currently only available with Tesseract or Libtesseract.
 
 ```Python
 if tool.can_detect_orientation():
-    orientation = tool.detect_orientation(
-        Image.open('test.png'),
-        lang='fra'
-    )
-    pprint("Orientation: {}".format(orientation))
+    try:
+        orientation = tool.detect_orientation(
+            Image.open('test.png'),
+            lang='fra'
+        )
+    except pyocr.PyocrException as exc:
+        print("Orientation detection failed: {}".format(exc))
+        return
+    print("Orientation: {}".format(orientation))
 # Ex: Orientation: {
 #   'angle': 90,
 #   'confidence': 123.4,
