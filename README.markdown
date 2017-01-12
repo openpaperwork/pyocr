@@ -198,6 +198,14 @@ who gives the best results is
 * [Bug tracker](https://github.com/jflesch/pyocr/issues/)
 
 
+## Applications that use PyOCR
+
+* [Paperless](https://github.com/danielquinn/paperless#readme)
+* [Paperwork](https://github.com/jflesch/paperwork#readme)
+
+If you know of any other applications that use Pyocr, please
+[tell us](https://github.com/jflesch/paperwork/wiki/Contact#mailing-list) :-)
+
 ## Copyright
 
 PyOCR is released under the GPL v3+.
