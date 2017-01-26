@@ -26,8 +26,10 @@ __all__ = [
 
 _XHTML_HEADER = to_unicode("""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 \t<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+\t<title>OCR output</title>
 </head>
 """)
 
@@ -282,7 +284,6 @@ class BaseBuilder(object):
         raise NotImplementedError("Implement in subclasses")
 
 
-
 class TextBuilder(BaseBuilder):
     """
     If passed to image_to_string(), image_to_string() will return a simple
@@ -362,7 +363,6 @@ class DigitBuilder(TextBuilder):
     def __init__(self, tesseract_layout=3):
         super(DigitBuilder, self).__init__(tesseract_layout)
         self.tesseract_configs.append("digits")
-
 
 
 class _WordHTMLParser(HTMLParser):
@@ -583,8 +583,10 @@ class WordBoxBuilder(BaseBuilder):
         file_descriptor.write(to_unicode("<body>\n"))
         for box in boxes:
             xml_str = to_unicode("%s") % box.get_xml_tag(newdoc).toxml()
-            file_descriptor.write(xml_str + to_unicode("<br/>\n"))
-        file_descriptor.write(to_unicode("</body>\n"))
+            file_descriptor.write(
+                to_unicode("<p>") + xml_str + to_unicode("</p>\n")
+            )
+        file_descriptor.write(to_unicode("</body>\n</html>\n"))
 
     def start_line(self, box):
         pass
@@ -660,8 +662,10 @@ class LineBoxBuilder(BaseBuilder):
         for box in boxes:
             xml_str = box.get_xml_tag(newdoc).toxml()
             xml_str = to_unicode(xml_str)
-            file_descriptor.write(xml_str + to_unicode("<br/>\n"))
-        file_descriptor.write(to_unicode("</body>\n"))
+            file_descriptor.write(
+                to_unicode("<p>") + xml_str + to_unicode("</p>\n")
+            )
+        file_descriptor.write(to_unicode("</body>\n</html>\n"))
 
     def start_line(self, box):
         # no empty line
