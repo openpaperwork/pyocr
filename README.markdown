@@ -167,12 +167,7 @@ detect_orientation() MAY raise an exception if there is no text
 detected in the image.
 
 
-### Writing and reading text and hOCR files
-
-Builders provide ```read_file()``` and ```write_file()``` methods.
-
-
-#### Text
+### Writing and reading text files
 
 Writing:
 
@@ -207,7 +202,7 @@ with codecs.open("toto.txt", 'r', encoding='utf-8') as file_descriptor:
 # txt is a Python string
 ```
 
-#### hOCR
+### Writing and reading hOCR files
 
 Writing:
 
