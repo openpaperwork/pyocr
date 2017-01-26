@@ -176,6 +176,7 @@ import codecs
 import pyocr
 import pyocr.builders
 
+tool = pyocr.get_available_tools()[0]
 builder = pyocr.builders.TextBuilder()
 
 txt = tool.image_to_string(
@@ -211,6 +212,7 @@ import codecs
 import pyocr
 import pyocr.builders
 
+tool = pyocr.get_available_tools()[0]
 builder = pyocr.builders.LineBoxBuilder()
 
 line_boxes = tool.image_to_string(
