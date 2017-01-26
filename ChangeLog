@@ -1,3 +1,6 @@
+26/01/2017 - 0.4.6:
+- hOCR outputs: Generate valid XHTML files
+
 10/01/2017 - 0.4.5:
 - Clean up exceptions raised when OCR fails:
   - Now, all tools raise only exceptions inheriting from
