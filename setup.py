@@ -8,6 +8,8 @@ setup(
     # - src/pyocr/pyocr.py:VERSION
     # - setup.py:download_url
     # - ChangeLog
+    # - push
+    # - tag
     version="0.4.6",
     description=("A Python wrapper for OCR engines (Tesseract, Cuneiform,"
                  " etc)"),
