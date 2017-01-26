@@ -19,6 +19,7 @@ __all__ = [
     'Box',
     'TextBuilder',
     'WordBoxBuilder',
+    'LineBox',
     'LineBoxBuilder',
     'DigitBuilder',
     'DigitLineBoxBuilder',
