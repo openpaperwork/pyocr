@@ -87,17 +87,31 @@ txt = tool.image_to_string(
     lang=lang,
     builder=pyocr.builders.TextBuilder()
 )
+# txt is a Python string
 
 word_boxes = tool.image_to_string(
     Image.open('test.png'),
     lang="eng",
     builder=pyocr.builders.WordBoxBuilder()
 )
+# list of box objects. For each box object:
+#   box.content is the word in the box
+#   box.position is its position on the page (in pixels)
+#
+# Beware that some OCR tools (Tesseract for instance)
+# may return empty boxes
 
 line_and_word_boxes = tool.image_to_string(
     Image.open('test.png'), lang="fra",
     builder=pyocr.builders.LineBoxBuilder()
 )
+# list of line objects. For each line object:
+#   line.word_boxes is a list of word boxes (the individual words in the line)
+#   line.content is the whole text of the line
+#   line.position is the position of the whole line on the page (in pixels)
+#
+# Beware that some OCR tools (Tesseract for instance)
+# may return empty boxes
 
 # Digits - Only Tesseract (not 'libtesseract' yet !)
 digits = tool.image_to_string(
@@ -105,6 +119,7 @@ digits = tool.image_to_string(
     lang=lang,
     builder=pyocr.tesseract.DigitBuilder()
 )
+# digits is a python string
 ```
 
 Argument 'lang' is optional. The default value depends of
@@ -150,6 +165,82 @@ be returned.
 
 detect_orientation() MAY raise an exception if there is no text
 detected in the image.
+
+
+### Writing and reading text and hOCR files
+
+Builders provide ```read_file()``` and ```write_file()``` methods.
+
+
+#### Text
+
+Writing:
+
+```Python
+import codecs
+import pyocr
+import pyocr.builders
+
+builder = pyocr.builders.TextBuilder()
+
+txt = tool.image_to_string(
+    Image.open('test.png'),
+    lang=lang,
+    builder=builder
+)
+# txt is a Python string
+
+with codecs.open("toto.txt", 'w', encoding='utf-8') as file_descriptor:
+    builder.write_file(file_descriptor, txt)
+# toto.txt is a simple text file, encoded in utf-8
+```
+
+Reading:
+
+```Python
+import codecs
+import pyocr.builders
+
+builder = pyocr.builders.TextBuilder()
+with codecs.open("toto.txt", 'r', encoding='utf-8') as file_descriptor:
+    txt = builder.read_file(file_descriptor)
+# txt is a Python string
+```
+
+#### hOCR
+
+Writing:
+
+```Python
+import codecs
+import pyocr
+import pyocr.builders
+
+builder = pyocr.builders.LineBoxBuilder()
+
+line_boxes = tool.image_to_string(
+    Image.open('test.png'),
+    lang=lang,
+    builder=builder
+)
+# list of LineBox (each box points to a list of word boxes)
+
+with codecs.open("toto.html", 'w', encoding='utf-8') as file_descriptor:
+    builder.write_file(file_descriptor, line_boxes)
+# toto.html is a valid XHTML file
+```
+
+Reading:
+
+```Python
+import codecs
+import pyocr.builders
+
+builder = pyocr.builders.LineBoxBuilder()
+with codecs.open("toto.html", 'r', encoding='utf-8') as file_descriptor:
+    line_boxes = builder.read_file(file_descriptor)
+# list of LineBox (each box points to a list of word boxes)
+```
 
 
 ## Dependencies
