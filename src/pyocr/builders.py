@@ -231,9 +231,9 @@ class LineBox(object):
 
 class BaseBuilder(object):
     """
-    Builders format the output of the OCR tools, 
+    Builders format the output of the OCR tools,
     and potentially configures the tools.
-    
+
     Attributes:
         file_extensions : File extensions of the output.
         tesseract_configs : Arguments passed to the Tesseract command line.
@@ -271,7 +271,7 @@ class BaseBuilder(object):
         Add a word to output.
         """
         raise NotImplementedError("Implement in subclasses")
-    
+
     def end_line(self):
         """
         End a line in output.
@@ -346,8 +346,8 @@ class TextBuilder(BaseBuilder):
 class DigitBuilder(TextBuilder):
     """
     If passed to image_to_string(), image_to_string() will return a simple
-    string of digits. 
-    This string will be the output of the OCR tool, as-is. 
+    string of digits.
+    This string will be the output of the OCR tool, as-is.
     In other words, the raw text as produced by the tool when the input is
     assumed to be [0-9.] only.
     image_to_string() raises `NotImplementedError` with tools (Cuneiform)
