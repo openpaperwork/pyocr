@@ -45,6 +45,18 @@ class TestContext(unittest.TestCase):
                         ("Japanese training does not appear to be installed."
                          " (required for the tests)"))
 
+    def test_nolangs(self):
+        tessdata_prefix = os.getenv("TESSDATA_PREFIX", "")
+        os.environ['TESSDATA_PREFIX'] = '/opt/tulipe'
+        try:
+            langs = libtesseract.get_available_languages()
+            self.assertEqual(langs, [])
+        finally:
+            if tessdata_prefix == "":
+                os.unsetenv("TESSDATA_PREFIX")
+            else:
+                os.environ['TESSDATA_PREFIX'] = tessdata_prefix
+
     def tearDown(self):
         pass
 
@@ -167,7 +179,7 @@ class TestLineBox(base.BaseTestLineBox, BaseLibtesseract, unittest.TestCase):
             os.remove(tmp_path)
 
 
-class TestDigitLineBox(base.BaseTestDigitLineBox, BaseLibtesseract, 
+class TestDigitLineBox(base.BaseTestDigitLineBox, BaseLibtesseract,
                        unittest.TestCase):
     def test_digits(self):
         self._test_txt('test-digits.png', 'test-digits.lines')
@@ -218,6 +230,7 @@ def get_all_tests():
         'test_available',
         'test_version',
         'test_langs',
+        'test_nolangs',
     ]
     tests = unittest.TestSuite(map(TestContext, test_names))
     all_tests.addTest(tests)
