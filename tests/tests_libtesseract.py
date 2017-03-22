@@ -4,8 +4,11 @@ import tempfile
 
 import unittest
 
+import PIL.Image
+
 from pyocr import builders
 from pyocr import libtesseract
+from pyocr import PyocrException
 from . import tests_base as base
 
 
@@ -53,6 +56,7 @@ class TestContext(unittest.TestCase):
             self.assertEqual(langs, [])
         finally:
             if tessdata_prefix == "":
+                os.environ['TESSDATA_PREFIX'] = ""
                 os.unsetenv("TESSDATA_PREFIX")
             else:
                 os.environ['TESSDATA_PREFIX'] = tessdata_prefix
@@ -91,6 +95,32 @@ class TestTxt(base.BaseTestText, BaseLibtesseract, unittest.TestCase):
 
     def test_japanese(self):
         self._test_txt('test-japanese.jpg', 'test-japanese.txt', 'jpn')
+
+    def test_nolangs(self):
+        """
+        Issue #51: Running OCR without any language installed causes a SIGSEGV.
+        """
+        tessdata_prefix = os.getenv("TESSDATA_PREFIX", "")
+        os.environ['TESSDATA_PREFIX'] = '/opt/tulipe'
+        try:
+            with self.assertRaises(PyocrException):
+                self.tool.image_to_string(
+                    PIL.Image.open(self._path_to_img('test-japanese.jpg')),
+                    lang='fra'
+                )
+        finally:
+            if tessdata_prefix == "":
+                os.environ['TESSDATA_PREFIX'] = ""
+                os.unsetenv("TESSDATA_PREFIX")
+            else:
+                os.environ['TESSDATA_PREFIX'] = tessdata_prefix
+
+    def test_nolangs2(self):
+        with self.assertRaises(PyocrException):
+            self.tool.image_to_string(
+                PIL.Image.open(self._path_to_img('test-japanese.jpg')),
+                lang='doesnotexist'
+            )
 
 
 class TestDigit(base.BaseTestDigit, BaseLibtesseract, unittest.TestCase):
@@ -239,6 +269,7 @@ def get_all_tests():
         'test_basic',
         'test_european',
         'test_french',
+        'test_nolangs',
     ]
     tests = unittest.TestSuite(map(TestTxt, test_names))
     all_tests.addTest(tests)

@@ -91,6 +91,16 @@ def image_to_string(image, lang=None, builder=None):
     lvl_word = tesseract_raw.PageIteratorLevel.WORD
 
     try:
+        # XXX(Jflesch): Issue #51:
+        # Tesseract TessBaseAPIRecognize() may segfault when the target
+        # language is not available
+        clang = lang if lang else "eng"
+        if clang not in tesseract_raw.get_available_languages(handle):
+            raise TesseractError(
+                "no lang",
+                "language {} is not available".format(clang)
+            )
+
         tesseract_raw.set_page_seg_mode(
             handle, builder.tesseract_layout
         )
@@ -103,7 +113,7 @@ def image_to_string(image, lang=None, builder=None):
         tesseract_raw.recognize(handle)
         res_iterator = tesseract_raw.get_iterator(handle)
         if res_iterator is None:
-            raise tesseract_raw.TesseractError(
+            raise TesseractError(
                 "no script", "no script detected"
             )
         page_iterator = tesseract_raw.result_iterator_get_page_iterator(
