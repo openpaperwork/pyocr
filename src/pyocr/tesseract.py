@@ -22,6 +22,8 @@ import os
 import subprocess
 import sys
 import tempfile
+import contextlib
+import shutil
 
 from . import builders
 from . import error
@@ -62,9 +64,11 @@ class CharBoxBuilder(builders.BaseBuilder):
 
     def __init__(self):
         file_ext = ["box"]
+        tess_flags = []
         tess_conf = ["batch.nochop", "makebox"]
         cun_args = []
-        super(CharBoxBuilder, self).__init__(file_ext, tess_conf, cun_args)
+        super(CharBoxBuilder, self).__init__(file_ext, tess_flags, tess_conf,
+                                             cun_args)
         self.tesseract_layout = 1
 
     @staticmethod
@@ -173,18 +177,19 @@ def detect_orientation(image, lang=None):
         TesseractError --- if no script detected on the image
     """
     _set_environment()
-    with temp_file(".bmp") as input_file:
-        command = [TESSERACT_CMD, input_file.name, 'stdout', "-psm", "0"]
+    with temp_dir() as tmpdir:
+        command = [TESSERACT_CMD, "input.bmp", 'stdout', "-psm", "0"]
         if lang is not None:
             command += ['-l', lang]
 
         if image.mode != "RGB":
             image = image.convert("RGB")
-        image.save(input_file.name)
+        image.save(os.path.join(tmpdir, "input.bmp"))
 
         proc = subprocess.Popen(command, stdin=subprocess.PIPE, shell=False,
                                 startupinfo=g_subprocess_startup_info,
                                 creationflags=g_creation_flags,
+                                cwd=tmpdir,
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.STDOUT)
         proc.stdin.close()
@@ -224,8 +229,8 @@ def get_available_builders():
     ]
 
 
-def run_tesseract(input_filename, output_filename_base, lang=None,
-                  configs=None):
+def run_tesseract(input_filename, output_filename_base, cwd=None, lang=None,
+                  flags=None, configs=None):
     '''
     Runs Tesseract:
         `TESSERACT_CMD` \
@@ -238,6 +243,8 @@ def run_tesseract(input_filename, output_filename_base, lang=None,
         input_filename --- image to read
         output_filename_base --- file name in which must be stored the result
             (without the extension)
+        cwd --- Run Tesseract in the specified working directory or use current
+            one if None
         lang --- Tesseract language to use (if None, none will be specified)
         config --- List of Tesseract configs to use (if None, none will be
             specified)
@@ -252,10 +259,13 @@ def run_tesseract(input_filename, output_filename_base, lang=None,
     if lang is not None:
         command += ['-l', lang]
 
+    if flags is not None:
+        command += flags
+
     if configs is not None:
         command += configs
 
-    proc = subprocess.Popen(command,
+    proc = subprocess.Popen(command, cwd=cwd,
                             startupinfo=g_subprocess_startup_info,
                             creationflags=g_creation_flags,
                             stdout=subprocess.PIPE,
@@ -301,11 +311,18 @@ class ReOpenableTempfile(object):
             self.name = None
 
 
-def temp_file(suffix):
-    ''' Returns a temporary file '''
-    if os.name == 'nt':  # Windows
-        return ReOpenableTempfile(suffix)
-    return tempfile.NamedTemporaryFile(prefix='tess_', suffix=suffix)
+@contextlib.contextmanager
+def temp_dir():
+    """
+    A context manager for maintaining a temporary directory
+    """
+    # NOTE: Drop this as soon as we don't support Python 2.7 anymore, because
+    # since Python 3.2 there is a context manager called TemporaryDirectory().
+    path = tempfile.mkdtemp(prefix='tess_')
+    try:
+        yield path
+    finally:
+        shutil.rmtree(path)
 
 
 def image_to_string(image, lang=None, builder=None):
@@ -329,23 +346,20 @@ def image_to_string(image, lang=None, builder=None):
 
     if builder is None:
         builder = builders.TextBuilder()
-    with temp_file(".bmp") as input_file:
-        with temp_file('') as output_file:
-            output_file_name_base = output_file.name
-
+    with temp_dir() as tmpdir:
         if image.mode != "RGB":
             image = image.convert("RGB")
-        image.save(input_file.name)
-        (status, errors) = run_tesseract(input_file.name,
-                                         output_file_name_base,
+        image.save(os.path.join(tmpdir, "input.bmp"))
+        (status, errors) = run_tesseract("input.bmp", "output", cwd=tmpdir,
                                          lang=lang,
+                                         flags=builder.tesseract_flags,
                                          configs=builder.tesseract_configs)
         if status:
             raise TesseractError(status, errors)
 
         output_file_name = "ERROR"
         for file_extension in builder.file_extensions:
-            output_file_name = ('%s.%s' % (output_file_name_base,
+            output_file_name = ('%s.%s' % (os.path.join(tmpdir, "output"),
                                            file_extension))
             if not os.access(output_file_name, os.F_OK):
                 continue
