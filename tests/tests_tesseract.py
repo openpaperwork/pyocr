@@ -27,8 +27,9 @@ class TestContext(unittest.TestCase):
             (3, 3, 0),
             (3, 4, 0),
             (3, 4, 1),
+            (3, 5, 0),
         ), ("Tesseract does not have the expected version"
-            " (3.4.0) ! Some tests will be skipped !"))
+            " (3.5.0) ! Some tests will be skipped !"))
 
     def test_langs(self):
         langs = tesseract.get_available_languages()
