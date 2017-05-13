@@ -1,6 +1,6 @@
 $ git shortlog -sne >| AUTHORS
 
-   223	Jerome Flesch <jflesch@openpaper.work>
+   250	Jerome Flesch <jflesch@openpaper.work>
     12	Samuel Hoffstaetter <samuel@hoffstaetter.com>
     10	Benjamin Nguyen-Van-Yen <queue@Keats.dehors.org>
      6	Paulo Miguel Almeida <paulo.ubuntu@gmail.com>
@@ -11,10 +11,12 @@ $ git shortlog -sne >| AUTHORS
      2	Ross Vandegrift <ross@kallisti.us>
      1	Bernard Cafarelli <bernard.cafarelli@gmail.com>
      1	Bernhard Liebl <Bernhard.Liebl@gmx.org>
+     1	David Martin <david_martin@fastmail.com>
      1	Gian Luca Dalla Torre <gianluca@gestionaleauto.com>
      1	Jakub Semerák <Kalt@users.noreply.github.com>
      1	Jon Debonis <jon@trov.com>
      1	Pedro-Juan Ferrer <vehrka@gmail.com>
      1	Yada <ydt.hran2@gmail.com>
+     1	aszlig <aszlig@redmoonstudios.org>
      1	jbochi <jbochi@gmail.com>
      1	tom <tom@zeitgold.com>
