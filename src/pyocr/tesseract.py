@@ -19,6 +19,7 @@ https://github.com/jflesch/python-tesseract#readme
 import codecs
 import logging
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -414,6 +415,13 @@ def get_version():
     Exception:
         TesseractError --- Unable to run tesseract or to parse the version
     """
+    def digits(string):
+        """Return all digits that the given string starts with."""
+        match = re.match(r'(?P<digits>\d+)', string)
+        if match:
+            return match.group('digits')
+        return ""
+
     _set_environment()
 
     command = [TESSERACT_CMD, "-v"]
@@ -436,7 +444,7 @@ def get_version():
             ver_string = ver_string[:index]
 
         els = ver_string.split(".")
-        els = [int(x) for x in els]
+        els = [int(digits(x)) for x in els]
         major = els[0]
         minor = els[1]
         upd = 0
