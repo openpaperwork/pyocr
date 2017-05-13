@@ -13,6 +13,7 @@ libnames = []
 
 if getattr(sys, 'frozen', False):
     # Pyinstaller integration
+    libnames += [os.path.join(sys._MEIPASS, "libtesseract-4.dll")]
     libnames += [os.path.join(sys._MEIPASS, "libtesseract-3.dll")]
     tessdata = os.path.join(sys._MEIPASS, "data")
     if not os.path.exists(os.path.join(tessdata, "tessdata")):
@@ -31,10 +32,12 @@ if sys.platform[:3] == "win":
         # Windows ?
         "../vs2010/DLL_Release/libtesseract302.dll",
         "libtesseract302.dll",
+        "C:\\Program Files (x86)\\Tesseract-OCR\\libtesseract-4.dll",
         "C:\\Program Files (x86)\\Tesseract-OCR\\libtesseract-3.dll",
     ]
 else:
     libnames += [
+        "libtesseract.so.4",
         "libtesseract.so.3",
     ]
 
@@ -44,6 +47,7 @@ g_libtesseract = None
 for libname in libnames:
     try:
         g_libtesseract = ctypes.cdll.LoadLibrary(libname)
+        break
     except OSError:
         pass
 

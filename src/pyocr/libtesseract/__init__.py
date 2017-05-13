@@ -15,10 +15,9 @@ Copyright (c) Jerome Flesch, 2011-2016
 https://github.com/jflesch/pyocr#readme
 '''
 from .. import builders
-
-from ..error import TesseractError
-
 from . import tesseract_raw
+from ..error import TesseractError
+from ..util import digits_only
 
 
 __all__ = [
@@ -190,9 +189,9 @@ def get_version():
         version = version[:index]
 
     version = version.split(".")
-    major = int(version[0])
-    minor = int(version[1])
+    major = digits_only(version[0])
+    minor = digits_only(version[1])
     upd = 0
     if len(version) >= 3:
-        upd = int(version[2])
+        upd = digits_only(version[2])
     return (major, minor, upd)

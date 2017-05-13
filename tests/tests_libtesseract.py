@@ -27,15 +27,17 @@ class TestContext(unittest.TestCase):
         )
 
     def test_version(self):
-        self.assertTrue(libtesseract.get_version() in (
-            (3, 2, 1),
-            (3, 2, 2),
-            (3, 3, 0),
-            (3, 4, 0),
-            (3, 4, 1),
-            (3, 5, 0),
-        ), ("Tesseract does not have the expected version"
-            " (3.5.0) ! Some tests will be skipped !"))
+        self.assertTrue(
+            libtesseract.get_version() in (
+                (3, 2, 1),
+                (3, 2, 2),
+                (3, 3, 0),
+                (3, 4, 0),
+                (3, 4, 1),
+                (3, 5, 0),
+            ),
+            ("Tesseract does not have the expected version")
+        )
 
     def test_langs(self):
         langs = libtesseract.get_available_languages()

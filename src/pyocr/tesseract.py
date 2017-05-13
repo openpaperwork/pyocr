@@ -19,7 +19,6 @@ https://github.com/jflesch/python-tesseract#readme
 import codecs
 import logging
 import os
-import re
 import subprocess
 import sys
 import tempfile
@@ -27,10 +26,10 @@ import contextlib
 import shutil
 
 from . import builders
-from . import error
 from . import util
 from .builders import DigitBuilder  # backward compatibility
 from .error import TesseractError  # backward compatibility
+from .util import digits_only
 
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
 TESSERACT_CMD = 'tesseract.exe' if os.name == 'nt' else 'tesseract'
@@ -157,8 +156,8 @@ def _set_environment():
 def can_detect_orientation():
     version = get_version()
     return (
-        version[0] > 3
-        or (version[0] == 3 and version[1] >= 3)
+        version[0] > 3 or
+        (version[0] == 3 and version[1] >= 3)
     )
 
 
@@ -415,13 +414,6 @@ def get_version():
     Exception:
         TesseractError --- Unable to run tesseract or to parse the version
     """
-    def digits(string):
-        """Return all digits that the given string starts with."""
-        match = re.match(r'(?P<digits>\d+)', string)
-        if match:
-            return match.group('digits')
-        return ""
-
     _set_environment()
 
     command = [TESSERACT_CMD, "-v"]
@@ -444,7 +436,7 @@ def get_version():
             ver_string = ver_string[:index]
 
         els = ver_string.split(".")
-        els = [int(digits(x)) for x in els]
+        els = [digits_only(x) for x in els]
         major = els[0]
         minor = els[1]
         upd = 0
