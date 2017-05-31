@@ -358,6 +358,20 @@ def set_is_numeric(handle, mode):
     )
 
 
+def set_debug_file(handle, filename):
+    global g_libtesseract
+    assert(g_libtesseract)
+
+    if not isinstance(filename, bytes):
+        filename = filename.encode('utf-8')
+
+    g_libtesseract.TessBaseAPISetVariable(
+        ctypes.c_void_p(handle),
+        b"debug_file",
+        filename
+    )
+
+
 def set_page_seg_mode(handle, mode):
     global g_libtesseract
     assert(g_libtesseract)
