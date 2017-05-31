@@ -14,6 +14,7 @@ PyOCR is released under the GPL v3.
 Copyright (c) Jerome Flesch, 2011-2016
 https://github.com/jflesch/pyocr#readme
 '''
+from os import devnull
 from .. import builders
 from . import tesseract_raw
 from ..error import TesseractError
@@ -103,6 +104,7 @@ def image_to_string(image, lang=None, builder=None):
         tesseract_raw.set_page_seg_mode(
             handle, builder.tesseract_layout
         )
+        tesseract_raw.set_debug_file(handle, devnull)
 
         tesseract_raw.set_image(handle, image)
         if "digits" in builder.tesseract_configs:
