@@ -288,6 +288,7 @@ who gives the best results is
 
 ## Applications that use PyOCR
 
+* [Mayan EDMS](http://mayan-edms.com/)
 * [Paperless](https://github.com/danielquinn/paperless#readme)
 * [Paperwork](https://github.com/jflesch/paperwork#readme)
 
