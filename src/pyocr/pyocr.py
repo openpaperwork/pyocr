@@ -62,7 +62,7 @@ TOOLS = [  # in preference order
     cuneiform,
 ]
 
-VERSION = (0, 4, 6)
+VERSION = (0, 4, 7)
 
 
 def get_available_tools():

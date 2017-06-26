@@ -21,14 +21,17 @@ class TestContext(unittest.TestCase):
                         "Tesseract not found. Is it installed ?")
 
     def test_version(self):
-        self.assertTrue(tesseract.get_version() in (
-            (3, 2, 1),
-            (3, 2, 2),
-            (3, 3, 0),
-            (3, 4, 0),
-            (3, 4, 1),
-        ), ("Tesseract does not have the expected version"
-            " (3.4.0) ! Some tests will be skipped !"))
+        self.assertTrue(
+            tesseract.get_version() in (
+                (3, 2, 1),
+                (3, 2, 2),
+                (3, 3, 0),
+                (3, 4, 0),
+                (3, 4, 1),
+                (3, 5, 0),
+            ),
+            ("Tesseract does not have the expected version")
+        )
 
     def test_langs(self):
         langs = tesseract.get_available_languages()
@@ -84,7 +87,7 @@ class TestCharBox(base.BaseTestBox, BaseTesseract, unittest.TestCase):
     """
     def set_builder(self):
         self._builder = tesseract.CharBoxBuilder()
-    
+
     def _test_equal(self, output, expected_output):
         self.assertEqual(len(output), len(expected_output))
 
@@ -216,7 +219,7 @@ class TestLineBox(base.BaseTestLineBox, BaseTesseract, unittest.TestCase):
         pass
 
 
-class TestDigitLineBox(base.BaseTestDigitLineBox, BaseTesseract, 
+class TestDigitLineBox(base.BaseTestDigitLineBox, BaseTesseract,
                        unittest.TestCase):
     def test_digits(self):
         self._test_txt('test-digits.png', 'test-digits.lines')

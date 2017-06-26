@@ -13,6 +13,7 @@ libnames = []
 
 if getattr(sys, 'frozen', False):
     # Pyinstaller integration
+    libnames += [os.path.join(sys._MEIPASS, "libtesseract-4.dll")]
     libnames += [os.path.join(sys._MEIPASS, "libtesseract-3.dll")]
     tessdata = os.path.join(sys._MEIPASS, "data")
     if not os.path.exists(os.path.join(tessdata, "tessdata")):
@@ -31,10 +32,12 @@ if sys.platform[:3] == "win":
         # Windows ?
         "../vs2010/DLL_Release/libtesseract302.dll",
         "libtesseract302.dll",
+        "C:\\Program Files (x86)\\Tesseract-OCR\\libtesseract-4.dll",
         "C:\\Program Files (x86)\\Tesseract-OCR\\libtesseract-3.dll",
     ]
 else:
     libnames += [
+        "libtesseract.so.4",
         "libtesseract.so.3",
     ]
 
@@ -44,6 +47,7 @@ g_libtesseract = None
 for libname in libnames:
     try:
         g_libtesseract = ctypes.cdll.LoadLibrary(libname)
+        break
     except OSError:
         pass
 
@@ -263,11 +267,22 @@ if g_libtesseract:
     ]
     g_libtesseract.TessDeleteText.restype = None
 
-    g_libtesseract.TessBaseAPIDetectOS.argtypes = [
-        ctypes.c_void_p,  # TessBaseAPI*
-        ctypes.POINTER(OSResults),
-    ]
-    g_libtesseract.TessBaseAPIDetectOS.restype = ctypes.c_bool
+    if hasattr(g_libtesseract, 'TessBaseAPIDetectOrientationScript'):
+        g_libtesseract.TessBaseAPIDetectOrientationScript.argtypes = [
+            ctypes.c_void_p,  # TessBaseAPI*
+            ctypes.POINTER(ctypes.c_int),  # orient_deg
+            ctypes.POINTER(ctypes.c_float),  # orient_conf
+            ctypes.POINTER(ctypes.c_char_p),  # script_name
+            ctypes.POINTER(ctypes.c_float),  # script_conf
+        ]
+        g_libtesseract.TessBaseAPIDetectOrientationScript.restype = \
+            ctypes.c_bool
+    else:
+        g_libtesseract.TessBaseAPIDetectOS.argtypes = [
+            ctypes.c_void_p,  # TessBaseAPI*
+            ctypes.POINTER(OSResults),
+        ]
+        g_libtesseract.TessBaseAPIDetectOS.restype = ctypes.c_bool
 
 
 def init(lang=None):
@@ -340,6 +355,20 @@ def set_is_numeric(handle, mode):
         ctypes.c_void_p(handle),
         b"tessedit_char_whitelist",
         wl
+    )
+
+
+def set_debug_file(handle, filename):
+    global g_libtesseract
+    assert(g_libtesseract)
+
+    if not isinstance(filename, bytes):
+        filename = filename.encode('utf-8')
+
+    g_libtesseract.TessBaseAPISetVariable(
+        ctypes.c_void_p(handle),
+        b"debug_file",
+        filename
     )
 
 
@@ -526,15 +555,37 @@ def detect_os(handle):
     global g_libtesseract
     assert(g_libtesseract)
 
-    results = OSResults()
-    r = g_libtesseract.TessBaseAPIDetectOS(
-        ctypes.c_void_p(handle),
-        ctypes.pointer(results)
-    )
-    if not r:
-        raise TesseractError("detect_orientation failed",
-                             "TessBaseAPIDetectOS() failed")
-    return {
-        "orientation": results.best_orientation_id,
-        "confidence": results.best_oconfidence,
-    }
+    # Use the new API function if it is available, because since Tesseract
+    # 3.05.00 the old API function _always_ returns False.
+    if hasattr(g_libtesseract, 'TessBaseAPIDetectOrientationScript'):
+        orientation_deg = ctypes.c_int(0)
+        orientation_confidence = ctypes.c_float(0.0)
+
+        r = g_libtesseract.TessBaseAPIDetectOrientationScript(
+            ctypes.c_void_p(handle),
+            ctypes.byref(orientation_deg),
+            ctypes.byref(orientation_confidence),
+            None,  # script_name
+            None  # script_confidence
+        )
+
+        if not r:
+            raise TesseractError("detect_orientation failed",
+                                 "TessBaseAPIDetectOrientationScript() failed")
+        return {
+            "orientation": round(orientation_deg.value / 90),
+            "confidence": orientation_confidence.value,
+        }
+    else:  # old API (before Tesseract 3.05.00)
+        results = OSResults()
+        r = g_libtesseract.TessBaseAPIDetectOS(
+            ctypes.c_void_p(handle),
+            ctypes.pointer(results)
+        )
+        if not r:
+            raise TesseractError("detect_orientation failed",
+                                 "TessBaseAPIDetectOS() failed")
+        return {
+            "orientation": results.best_orientation_id,
+            "confidence": results.best_oconfidence,
+        }

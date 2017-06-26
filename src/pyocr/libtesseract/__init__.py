@@ -14,11 +14,11 @@ PyOCR is released under the GPL v3.
 Copyright (c) Jerome Flesch, 2011-2016
 https://github.com/jflesch/pyocr#readme
 '''
+from os import devnull
 from .. import builders
-
-from ..error import TesseractError
-
 from . import tesseract_raw
+from ..error import TesseractError
+from ..util import digits_only
 
 
 __all__ = [
@@ -104,6 +104,7 @@ def image_to_string(image, lang=None, builder=None):
         tesseract_raw.set_page_seg_mode(
             handle, builder.tesseract_layout
         )
+        tesseract_raw.set_debug_file(handle, devnull)
 
         tesseract_raw.set_image(handle, image)
         if "digits" in builder.tesseract_configs:
@@ -190,9 +191,9 @@ def get_version():
         version = version[:index]
 
     version = version.split(".")
-    major = int(version[0])
-    minor = int(version[1])
+    major = digits_only(version[0])
+    minor = digits_only(version[1])
     upd = 0
     if len(version) >= 3:
-        upd = int(version[2])
+        upd = digits_only(version[2])
     return (major, minor, upd)

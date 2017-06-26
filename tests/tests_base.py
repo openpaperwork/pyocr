@@ -108,6 +108,8 @@ class BaseTestLineBox(BaseTestBox):
         self.assertEqual(len(output), len(expected_output))
 
         for i in range(0, min(len(output), len(expected_output))):
+            self.assertEqual(len(output[i].word_boxes),
+                             len(expected_output[i].word_boxes))
             for j in range(0, len(output[i].word_boxes)):
                 self.assertEqual(type(output[i].word_boxes[j]),
                                  type(expected_output[i].word_boxes[j]))

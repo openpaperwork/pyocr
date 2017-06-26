@@ -240,8 +240,10 @@ class BaseBuilder(object):
         cuneiform_args : Arguments passed to the Cuneiform command line.
     """
 
-    def __init__(self, file_extensions, tesseract_configs, cuneiform_args):
+    def __init__(self, file_extensions, tesseract_flags, tesseract_configs,
+                 cuneiform_args):
         self.file_extensions = file_extensions
+        self.tesseract_flags = tesseract_flags
         self.tesseract_configs = tesseract_configs
         self.cuneiform_args = cuneiform_args
 
@@ -298,7 +300,7 @@ class TextBuilder(BaseBuilder):
     def __init__(self, tesseract_layout=3, cuneiform_dotmatrix=False,
                  cuneiform_fax=False, cuneiform_singlecolumn=False):
         file_ext = ["txt"]
-        tess_conf = ["-psm", str(tesseract_layout)]
+        tess_flags = ["-psm", str(tesseract_layout)]
         cun_args = ["-f", "text"]
         # Add custom cuneiform parameters if needed
         for par, arg in [(cuneiform_dotmatrix, "--dotmatrix"),
@@ -306,7 +308,7 @@ class TextBuilder(BaseBuilder):
                          (cuneiform_singlecolumn, "--singlecolumn")]:
             if par:
                 cun_args.append(arg)
-        super(TextBuilder, self).__init__(file_ext, tess_conf, cun_args)
+        super(TextBuilder, self).__init__(file_ext, tess_flags, [], cun_args)
         self.tesseract_layout = tesseract_layout
         self.built_text = []
 
@@ -540,9 +542,11 @@ class WordBoxBuilder(BaseBuilder):
 
     def __init__(self, tesseract_layout=1):
         file_ext = ["html", "hocr"]
-        tess_conf = ["hocr", "-psm", str(tesseract_layout)]
+        tess_flags = ["-psm", str(tesseract_layout)]
+        tess_conf = ["hocr"]
         cun_args = ["-f", "hocr"]
-        super(WordBoxBuilder, self).__init__(file_ext, tess_conf, cun_args)
+        super(WordBoxBuilder, self).__init__(file_ext, tess_flags, tess_conf,
+                                             cun_args)
         self.word_boxes = []
         self.tesseract_layout = tesseract_layout
 
@@ -614,9 +618,11 @@ class LineBoxBuilder(BaseBuilder):
 
     def __init__(self, tesseract_layout=1):
         file_ext = ["html", "hocr"]
-        tess_conf = ["hocr", "-psm", str(tesseract_layout)]
+        tess_flags = ["-psm", str(tesseract_layout)]
+        tess_conf = ["hocr"]
         cun_args = ["-f", "hocr"]
-        super(LineBoxBuilder, self).__init__(file_ext, tess_conf, cun_args)
+        super(LineBoxBuilder, self).__init__(file_ext, tess_flags, tess_conf,
+                                             cun_args)
         self.lines = []
         self.tesseract_layout = tesseract_layout
 

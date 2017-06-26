@@ -1,3 +1,15 @@
+13/05/2017 - 0.4.7:
+- Tesseract 4.00.00alpha:
+  - Version parsing: Ignore suffix (so '4.00.00alpha' == (4, 0, 0))
+  - Libtesseract: Load libtesseract.so.4 instead of libtesseract.so.3 if
+    available
+- Support for Tesseract 3.05.00:
+  - Builders: Split field 'tess_conf' into 'tess_flags' and 'tess_conf'
+  - Libtesseract: If available, use TessBaseAPIDetectOrientationScript()
+    instead of TessBaseAPIDetectOS
+- Libtesseract: Workaround: Prevents possible segfault in image_to_string()
+  when the target language is not available
+
 26/01/2017 - 0.4.6:
 - hOCR outputs: Generate valid XHTML files
 

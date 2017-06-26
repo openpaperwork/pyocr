@@ -2,7 +2,16 @@
 
 import os
 
+import re
 import six
+
+
+def digits_only(string):
+    """Return all digits that the given string starts with."""
+    match = re.match(r'(?P<digits>\d+)', string)
+    if match:
+        return int(match.group('digits'))
+    return 0
 
 
 def to_unicode(string):
