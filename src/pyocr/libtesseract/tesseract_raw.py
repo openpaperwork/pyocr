@@ -177,6 +177,36 @@ if g_libtesseract:
     ]
     g_libtesseract.TessBaseAPISetImage.restype = None
 
+    g_libtesseract.TessResultRendererAddImage.argtypes = [
+        ctypes.c_void_p,  # TessResultRenderer* renderer
+        ctypes.c_void_p  # TessBaseAPI* api
+    ]
+    g_libtesseract.TessResultRendererAddImage.restype = ctypes.c_bool
+
+    g_libtesseract.TessBaseAPISetInputName.argtypes = [
+        ctypes.c_void_p,  # TessBaseAPI* handle
+        ctypes.c_char_p  # const char* name
+    ]
+    g_libtesseract.TessBaseAPISetInputName.restype = None
+
+    g_libtesseract.TessResultRendererBeginDocument.argtypes = [
+        ctypes.c_void_p,  # TessResultRenderer* renderer
+        ctypes.c_char_p  # const char* title
+    ]
+    g_libtesseract.TessResultRendererBeginDocument.restype = ctypes.c_bool
+
+    g_libtesseract.TessResultRendererEndDocument.argtypes = [
+        ctypes.c_void_p  # TessResultRenderer* renderer
+    ]
+    g_libtesseract.TessResultRendererEndDocument.restype = ctypes.c_bool
+
+    g_libtesseract.TessPDFRendererCreate.argtypes = [
+        ctypes.c_char_p,  # const char* outputbase
+        ctypes.c_char_p,  # const char* datadir
+        ctypes.c_bool  # BOOL textonly
+    ]
+    g_libtesseract.TessPDFRendererCreate.restype = ctypes.c_void_p
+
     g_libtesseract.TessBaseAPIRecognize.argtypes = [
         ctypes.c_void_p,  # TessBaseAPI*
         ctypes.c_void_p,  # ETEXT_DESC*
@@ -589,3 +619,55 @@ def detect_os(handle):
             "orientation": results.best_orientation_id,
             "confidence": results.best_oconfidence,
         }
+
+
+def set_input_name(handle, input_file):
+    global g_libtesseract
+    assert(g_libtesseract)
+
+    g_libtesseract.TessBaseAPISetInputName(
+        ctypes.c_void_p(handle),
+        input_file.encode()
+    )
+
+
+def init_pdf_renderer(handle, output_file, tessdata_dir, textonly):
+    global g_libtesseract
+    assert(g_libtesseract)
+
+    renderer = g_libtesseract.TessPDFRendererCreate(
+        output_file.encode(),
+        tessdata_dir.encode(),
+        ctypes.c_bool(textonly)
+    )
+
+    return renderer
+
+
+def begin_document(renderer, doc_name):
+    global g_libtesseract
+    assert(g_libtesseract)
+
+    g_libtesseract.TessResultRendererBeginDocument(
+        ctypes.c_void_p(renderer),
+        doc_name.encode()
+    )
+
+
+def add_renderer_image(handle, renderer):
+    global g_libtesseract
+    assert(g_libtesseract)
+
+    g_libtesseract.TessResultRendererAddImage(
+        ctypes.c_void_p(renderer),
+        ctypes.c_void_p(handle)
+    )
+
+
+def end_document(renderer):
+    global g_libtesseract
+    assert(g_libtesseract)
+
+    g_libtesseract.TessResultRendererEndDocument(
+        ctypes.c_void_p(renderer)
+    )
