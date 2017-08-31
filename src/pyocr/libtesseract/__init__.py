@@ -166,27 +166,34 @@ def image_to_pdf(image, output_file, lang=None, input_file="stdin",
 
     Args:
         image: image to be converted
-        output_file: path to the file that will be created, `.pdf` extension should not be
-            specified
+        output_file: path to the file that will be created, `.pdf` extension
+            should not be specified
         lang: three letter language code. For available languages see
             https://github.com/tesseract-ocr/tesseract/blob/master/doc/tesseract.1.asc#languages.
             Defaults to None.
-        input_file: path to the image file that should be beneath the text in output pdf.
-            If not specified (stdin, incorrect file) output pdf is correct but tesseract
-            writes some errors about not being able to open the file. Defaults to stdin.
-        tessdata_dir: path to tessdata directory. Defaults to /usr/share/tessdata
-        textonly: create pdf with only one invisible text layer. Defaults to False.
+        input_file: path to the image file that should be beneath the text in
+            output pdf. If not specified (stdin, incorrect file) output pdf is
+            correct but tesseract writes some errors about not being able to
+            open the file. Defaults to stdin.
+        tessdata_dir: path to tessdata directory. Defaults to the value built in
+            libtesseract.
+        textonly: create pdf with only one invisible text layer. Defaults to
+            False.
     '''
     handle = tesseract_raw.init(lang=lang)
     renderer = None
     try:
         tesseract_raw.set_image(handle, image)
-        tesseract_raw.set_page_seg_mode(handle, tesseract_raw.PageSegMode.AUTO_OSD)
+        tesseract_raw.set_page_seg_mode(
+            handle, tesseract_raw.PageSegMode.AUTO_OSD
+        )
 
         tesseract_raw.set_input_name(handle, input_file)
         tesseract_raw.recognize(handle)
 
-        renderer = tesseract_raw.init_pdf_renderer(handle, output_file, tessdata_dir, textonly)
+        renderer = tesseract_raw.init_pdf_renderer(
+            handle, output_file, tessdata_dir, textonly
+        )
         assert(renderer)
 
         tesseract_raw.begin_document(renderer, "")
