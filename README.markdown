@@ -240,6 +240,24 @@ with codecs.open("toto.html", 'r', encoding='utf-8') as file_descriptor:
 ```
 
 
+### Generating PDF file from an image
+
+With libtesseract >= 4, it's possible to generate a PDF from an image:
+
+```Python
+import PIL.Image
+import pyocr
+
+pyocr.libtesseract.image_to_pdf(
+    PIL.Image.open("image.jpg"),
+    "output_filename"  # .pdf will be appended
+)
+
+```
+
+Beware this code hasn't been adapted to libtesseract 3 yet.
+
+
 ## Dependencies
 
 * PyOCR requires python 2.7 or later. Python 3 is supported.
