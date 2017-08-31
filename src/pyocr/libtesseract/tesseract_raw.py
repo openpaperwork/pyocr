@@ -134,7 +134,7 @@ if g_libtesseract:
         ctypes.POINTER(ctypes.c_char_p),  # configs
         ctypes.c_int,  # configs_size
     ]
-    g_libtesseract.TessBaseAPIInit1.restypes = ctypes.c_int
+    g_libtesseract.TessBaseAPIInit1.restype = ctypes.c_int
 
     g_libtesseract.TessBaseAPIInit3.argtypes = [
         ctypes.c_void_p,  # TessBaseAPI*
