@@ -256,6 +256,23 @@ class TestBasicDoc(base.BaseTestLineBox, unittest.TestCase):
         self._test_txt('basic_doc.jpg', 'basic_doc.lines')
 
 
+class TestPdf(base.BaseTestPdf, unittest.TestCase):
+    tool = libtesseract
+
+    def _path_to_img(self, image_file):
+        return os.path.join(
+            "tests", "input", "real", image_file
+        )
+
+    def _path_to_out(self, output_file):
+        return os.path.join(
+            "tests", "output", "real", "libtesseract", output_file
+        )
+
+    def test_basic(self):
+        self._test_pdf('basic_doc.jpg')
+
+
 def get_all_tests():
     all_tests = unittest.TestSuite()
 

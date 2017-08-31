@@ -28,6 +28,16 @@ class BaseTest(object):
             builder=self._builder
         )
 
+    def _read_from_pdf(self, image_path, output_path, lang=None):
+        self.tool.image_to_pdf(
+            Image.open(image_path),
+            output_path,
+            lang=lang,
+            input_file=image_path
+        )
+        with open(output_path + ".pdf", 'rb') as file_descriptor:
+            return file_descriptor.read()
+
     def _test_equal(self, output, expected_output):
         raise NotImplementedError("Implement in subclasses.")
 
@@ -45,6 +55,14 @@ class BaseTest(object):
         output = self._read_from_img(image_path, lang)
 
         self._test_equal(output, expected_output)
+
+    def _test_pdf(self, image_file, lang=None):
+        output_path = self._path_to_out(image_file)
+        image_path = self._path_to_img(image_file)
+
+        output = self._read_from_pdf(image_path, output_path, lang)
+
+        self._test_not_empty(output)
 
 
 class BaseTestText(BaseTest):
@@ -119,3 +137,16 @@ class BaseTestLineBox(BaseTestBox):
 class BaseTestDigitLineBox(BaseTestLineBox):
     def set_builder(self):
         self._builder = builders.DigitLineBoxBuilder()
+
+
+class BaseTestPdf(BaseTest):
+    def set_builder(self):
+        self._builder = None
+
+    def _read_from_expected(self, expected_output_path):
+        with codecs.open(expected_output_path, 'rb') \
+                as file_descriptor:
+            return file_descriptor.read()
+
+    def _test_not_empty(self, output):
+        self.assertTrue(len(output) > 0)
