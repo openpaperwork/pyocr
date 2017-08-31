@@ -126,6 +126,11 @@ if g_libtesseract:
     ]
     g_libtesseract.TessBaseAPIDelete.argtypes = None
 
+    g_libtesseract.TessBaseAPIGetDatapath.argtypes = [
+        ctypes.c_void_p,  # TessBaseAPI*
+    ]
+    g_libtesseract.TessBaseAPIGetDatapath.restype = ctypes.c_char_p
+
     g_libtesseract.TessBaseAPIInit1.argtypes = [
         ctypes.c_void_p,  # TessBaseAPI*
         ctypes.c_char_p,  # datapath
@@ -635,9 +640,14 @@ def init_pdf_renderer(handle, output_file, tessdata_dir, textonly):
     global g_libtesseract
     assert(g_libtesseract)
 
+    if tessdata_dir is not None:
+        tessdata_dir = tessdata_dir.encode()
+    else:
+        tessdata_dir = g_libtesseract.TessBaseAPIGetDatapath(handle)
+
     renderer = g_libtesseract.TessPDFRendererCreate(
         output_file.encode(),
-        tessdata_dir.encode(),
+        tessdata_dir,
         ctypes.c_bool(textonly)
     )
 

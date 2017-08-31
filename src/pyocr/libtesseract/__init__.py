@@ -160,7 +160,7 @@ def image_to_string(image, lang=None, builder=None):
 
 
 def image_to_pdf(image, output_file, lang=None, input_file="stdin",
-                 tessdata_dir="/usr/share/tessdata", textonly=False):
+                 tessdata_dir=None, textonly=False):
     '''
     Creates pdf file with embeded text based on OCR from an image
 
