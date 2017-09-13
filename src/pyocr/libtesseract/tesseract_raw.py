@@ -129,7 +129,8 @@ if g_libtesseract:
     g_libtesseract.TessBaseAPIGetDatapath.argtypes = [
         ctypes.c_void_p,  # TessBaseAPI*
     ]
-    g_libtesseract.TessBaseAPIGetDatapath.restype = ctypes.c_char_p
+    g_libtesseract.TessBaseAPIGetDatapath.restype = ctypes.POINTER(
+        ctypes.c_char)
 
     g_libtesseract.TessBaseAPIInit1.argtypes = [
         ctypes.c_void_p,  # TessBaseAPI*
@@ -636,14 +637,11 @@ def set_input_name(handle, input_file):
     )
 
 
-def init_pdf_renderer(handle, output_file, tessdata_dir, textonly):
+def init_pdf_renderer(handle, output_file, textonly):
     global g_libtesseract
     assert(g_libtesseract)
 
-    if tessdata_dir is not None:
-        tessdata_dir = tessdata_dir.encode()
-    else:
-        tessdata_dir = g_libtesseract.TessBaseAPIGetDatapath(handle)
+    tessdata_dir = g_libtesseract.TessBaseAPIGetDatapath(handle)
 
     renderer = g_libtesseract.TessPDFRendererCreate(
         output_file.encode(),
