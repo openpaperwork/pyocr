@@ -159,8 +159,7 @@ def image_to_string(image, lang=None, builder=None):
     return builder.get_output()
 
 
-def image_to_pdf(image, output_file, lang=None, input_file="stdin",
-                 tessdata_dir=None, textonly=False):
+def image_to_pdf(image, output_file, lang=None, input_file="stdin", textonly=False):
     '''
     Creates pdf file with embeded text based on OCR from an image
 
@@ -175,8 +174,6 @@ def image_to_pdf(image, output_file, lang=None, input_file="stdin",
             output pdf. If not specified (stdin, incorrect file) output pdf is
             correct but tesseract writes some errors about not being able to
             open the file. Defaults to stdin.
-        tessdata_dir: path to tessdata directory. Defaults to the value built in
-            libtesseract.
         textonly: create pdf with only one invisible text layer. Defaults to
             False.
     '''
@@ -192,7 +189,7 @@ def image_to_pdf(image, output_file, lang=None, input_file="stdin",
         tesseract_raw.recognize(handle)
 
         renderer = tesseract_raw.init_pdf_renderer(
-            handle, output_file, tessdata_dir, textonly
+            handle, output_file, textonly
         )
         assert(renderer)
 
