@@ -114,14 +114,14 @@ def _set_environment():
     global g_subprocess_startup_info
     global g_creation_flags
 
+    if os.name == "nt":
+        g_subprocess_startup_info = subprocess.STARTUPINFO()
+        g_subprocess_startup_info.wShowWindow = subprocess.SW_HIDE
+        g_subprocess_startup_info.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+        g_creation_flags = 0x08000000  # CREATE_NO_WINDOW
+
     if getattr(sys, 'frozen', False):
         # Pyinstaller support
-        if os.name == "nt":
-            g_subprocess_startup_info = subprocess.STARTUPINFO()
-            g_subprocess_startup_info.wShowWindow = subprocess.SW_HIDE
-            g_subprocess_startup_info.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-            g_creation_flags = 0x08000000  # CREATE_NO_WINDOW
-
         path = os.environ["PATH"]
         if sys._MEIPASS in path:
             # already changed
