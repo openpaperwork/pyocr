@@ -44,6 +44,7 @@ setup(
     },
     data_files=[],
     scripts=[],
+    zip_safe=True,
     install_requires=[
         "Pillow",
         "six",
