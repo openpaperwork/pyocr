@@ -95,11 +95,12 @@ def image_to_string(image, lang=None, builder=None):
         # Tesseract TessBaseAPIRecognize() may segfault when the target
         # language is not available
         clang = lang if lang else "eng"
-        if clang not in tesseract_raw.get_available_languages(handle):
-            raise TesseractError(
-                "no lang",
-                "language {} is not available".format(clang)
-            )
+        for lang_item in clang.split("+"):
+            if lang_item not in tesseract_raw.get_available_languages(handle):
+                raise TesseractError(
+                    "no lang",
+                    "language {} is not available".format(lang_item)
+                )
 
         tesseract_raw.set_page_seg_mode(
             handle, builder.tesseract_layout

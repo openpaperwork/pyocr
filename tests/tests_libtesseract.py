@@ -99,6 +99,9 @@ class TestTxt(base.BaseTestText, BaseLibtesseract, unittest.TestCase):
     def test_japanese(self):
         self._test_txt('test-japanese.jpg', 'test-japanese.txt', 'jpn')
 
+    def test_multi(self):
+        self._test_txt('test-european.jpg', 'test-european.txt', 'eng+fra')
+
     def test_nolangs(self):
         """
         Issue #51: Running OCR without any language installed causes a SIGSEGV.
@@ -289,6 +292,8 @@ def get_all_tests():
         'test_basic',
         'test_european',
         'test_french',
+        'test_japanese',
+        'test_multi',
         'test_nolangs',
     ]
     tests = unittest.TestSuite(map(TestTxt, test_names))
