@@ -42,7 +42,7 @@ class Box(object):
     was used.
     """
 
-    def __init__(self, content, position):
+    def __init__(self, content, position, confidence=None):
         """
         Arguments:
             content --- a single string
@@ -53,6 +53,7 @@ class Box(object):
         content = to_unicode(content)
         self.content = content
         self.position = position
+        self.confidence = confidence
 
     def get_unicode_string(self):
         """
@@ -60,8 +61,9 @@ class Box(object):
         This string can be stored in a file as-is (see write_box_file())
         and reread using read_box_file().
         """
-        return to_unicode("%s %d %d %d %d") % (
+        return to_unicode("%s %s %d %d %d %d") % (
             self.content,
+            self.confidence,
             self.position[0][0],
             self.position[0][1],
             self.position[1][0],
@@ -71,9 +73,10 @@ class Box(object):
     def get_xml_tag(self, parent_doc):
         span_tag = parent_doc.createElement("span")
         span_tag.setAttribute("class", "ocrx_word")
-        span_tag.setAttribute("title", ("bbox %d %d %d %d" % (
+        span_tag.setAttribute("title", ("bbox %d %d %d %d; x_wconf %d" % (
             (self.position[0][0], self.position[0][1],
-             self.position[1][0], self.position[1][1]))))
+             self.position[1][0], self.position[1][1],
+             self.confidence))))
         txt = xml.dom.minidom.Text()
         txt.data = self.content
         span_tag.appendChild(txt)
@@ -268,7 +271,7 @@ class BaseBuilder(object):
         """
         raise NotImplementedError("Implement in subclasses")
 
-    def add_word(self, word, box):
+    def add_word(self, word, box, confidence):
         """
         Add a word to output.
         """
@@ -329,7 +332,7 @@ class TextBuilder(BaseBuilder):
     def start_line(self, box):
         self.built_text.append(u"")
 
-    def add_word(self, word, box):
+    def add_word(self, word, box, confidence=None):
         if self.built_text[-1] != u"":
             self.built_text[-1] += u" "
         self.built_text[-1] += word
@@ -381,11 +384,22 @@ class _WordHTMLParser(HTMLParser):
 
         self.__current_box_position = None
         self.__current_box_text = None
+        self.__current_box_confidence = None
         self.boxes = []
 
         self.__current_line_position = None
         self.__current_line_content = []
         self.lines = []
+
+    @staticmethod
+    def __parse_confidence(title):
+        for piece in title.split("; "):
+            piece = piece.strip()
+            if not piece.startswith("x_wconf"):
+                continue
+            confidence = piece.split(" ")[1]
+            return int(confidence)
+        raise Exception("Invalid hocr confidence measure: %s" % title)
 
     @staticmethod
     def __parse_position(title):
@@ -413,7 +427,9 @@ class _WordHTMLParser(HTMLParser):
             return
         if tag_type == 'ocr_word' or tag_type == 'ocrx_word':
             try:
+                confidence = self.__parse_confidence(position)
                 position = self.__parse_position(position)
+                self.__current_box_confidence = confidence
                 self.__current_box_position = position
             except Exception:
                 # invalid position --> old format --> we ignore this tag
@@ -439,7 +455,7 @@ class _WordHTMLParser(HTMLParser):
             if self.__current_box_text is None:
                 return
             box_position = self.__current_box_position
-            box = Box(self.__current_box_text, box_position)
+            box = Box(self.__current_box_text, box_position, self.__current_box_confidence)
             self.boxes.append(box)
             self.__current_line_content.append(box)
             self.__current_box_text = None
@@ -596,8 +612,8 @@ class WordBoxBuilder(BaseBuilder):
     def start_line(self, box):
         pass
 
-    def add_word(self, word, box):
-        self.word_boxes.append(Box(word, box))
+    def add_word(self, word, box, confidence):
+        self.word_boxes.append(Box(word, box, confidence))
 
     def end_line(self):
         pass
@@ -680,8 +696,8 @@ class LineBoxBuilder(BaseBuilder):
             return
         self.lines.append(LineBox([], box))
 
-    def add_word(self, word, box):
-        self.lines[-1].word_boxes.append(Box(word, box))
+    def add_word(self, word, box, confidence):
+        self.lines[-1].word_boxes.append(Box(word, box, confidence))
 
     def end_line(self):
         pass
