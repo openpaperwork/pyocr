@@ -42,7 +42,7 @@ Copyright (c) Jerome Flesch, 2011-2016
 Tesseract module: Copyright (c) Samuel Hoffstaetter, 2009
 
 WEBSITE:
-https://github.com/jflesch/python-tesseract#readme
+https://github.com/openpaperwork/pyocr#readme
 """
 
 from . import cuneiform

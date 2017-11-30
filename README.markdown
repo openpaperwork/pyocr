@@ -40,7 +40,7 @@ sudo pip3 install pyocr  # Python 3.X
 or the manual way:
 ```sh
 mkdir -p ~/git ; cd git
-git clone https://github.com/jflesch/pyocr.git
+git clone https://github.com/openpaperwork/pyocr.git
 cd pyocr
 sudo python ./setup.py install
 ```
@@ -292,23 +292,23 @@ To run the tesseract tests, you will need the following lang data files:
 If you want to run OCR on natural scenes (photos, etc), you will have to filter
 the image first. There are many algorithms possible to do that. One of those
 who gives the best results is
-[Stroke Width Transform](https://github.com/jflesch/libpillowfight#stroke-width-transformation).
+[Stroke Width Transform](https://github.com/openpaperwork/libpillowfight#stroke-width-transformation).
 
 
 ## Contact
 
-* [Mailing-list](https://github.com/jflesch/paperwork/wiki/Contact#mailing-list)
-* [Bug tracker](https://github.com/jflesch/pyocr/issues/)
+* [Mailing-list](https://github.com/openpaperwork/paperwork/wiki/Contact#mailing-list)
+* [Bug tracker](https://github.com/openpaperwork/pyocr/issues/)
 
 
 ## Applications that use PyOCR
 
 * [Mayan EDMS](http://mayan-edms.com/)
 * [Paperless](https://github.com/danielquinn/paperless#readme)
-* [Paperwork](https://github.com/jflesch/paperwork#readme)
+* [Paperwork](https://github.com/openpaperwork/paperwork#readme)
 
 If you know of any other applications that use Pyocr, please
-[tell us](https://github.com/jflesch/paperwork/wiki/Contact#mailing-list) :-)
+[tell us](https://github.com/openpaperwork/paperwork/wiki/Contact#mailing-list) :-)
 
 ## Copyright
 
@@ -317,4 +317,4 @@ Copyright belongs to the authors of each piece of code
 (see the file AUTHORS for the contributors list, and
 ```git blame``` to know which lines belong to which author).
 
-https://github.com/jflesch/pyocr
+https://github.com/openpaperwork/pyocr
