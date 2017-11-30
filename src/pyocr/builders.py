@@ -273,7 +273,7 @@ class BaseBuilder(object):
         """
         raise NotImplementedError("Implement in subclasses")
 
-    def add_word(self, word, box, confidence):
+    def add_word(self, word, box, confidence=0):
         """
         Add a word to output.
         """
@@ -615,7 +615,7 @@ class WordBoxBuilder(BaseBuilder):
     def start_line(self, box):
         pass
 
-    def add_word(self, word, box, confidence):
+    def add_word(self, word, box, confidence=0):
         self.word_boxes.append(Box(word, box, confidence))
 
     def end_line(self):
@@ -699,7 +699,7 @@ class LineBoxBuilder(BaseBuilder):
             return
         self.lines.append(LineBox([], box))
 
-    def add_word(self, word, box, confidence):
+    def add_word(self, word, box, confidence=0):
         self.lines[-1].word_boxes.append(Box(word, box, confidence))
 
     def end_line(self):
