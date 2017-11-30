@@ -12,8 +12,11 @@ except ImportError:
     from html.parser import HTMLParser
 
 import xml.dom.minidom
+import logging
 
 from .util import to_unicode
+
+logger = logging.getLogger(__name__)
 
 __all__ = [
     'Box',
@@ -398,7 +401,7 @@ class _WordHTMLParser(HTMLParser):
                 continue
             confidence = piece.split(" ")[1]
             return int(confidence)
-        raise Exception("Invalid hocr confidence measure: %s" % title)
+        logger.info("OCR confidence measure not found")
 
     @staticmethod
     def __parse_position(title):
