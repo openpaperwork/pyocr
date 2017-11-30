@@ -1,36 +1,33 @@
 # PyOCR
 
 PyOCR is an optical character recognition (OCR) tool wrapper for python.
-That is, it helps using OCR tools from a Python program.
+That is, it helps using various OCR tools from a Python program.
 
 It has been tested only on GNU/Linux systems. It should also work on similar
 systems (*BSD, etc). It may or may not work on Windows, MacOSX, etc.
 
-PyOCR can be used as a wrapper for google's
-[Tesseract-OCR](http://code.google.com/p/tesseract-ocr/) or Cuneiform.
-It can read all image types supported by
-[Pillow](https://github.com/python-imaging/Pillow), including jpeg, png, gif,
-bmp, tiff, and others. It also support bounding box data.
-
 
 ## Supported OCR tools
 
-* Libtesseract (C API)
-* Tesseract (fork + exec)
-* Cuneiform (fork + exec)
-
+* Libtesseract (Python bindings for the C API)
+* Tesseract (wrapper: fork + exec)
+* Cuneiform (wrapper: fork + exec)
 
 ## Features
 
-* Support all the image formats supported by [Pillow](https://github.com/python-imaging/Pillow)
-* As output, can provide a simple string or boxes (position + string for each word and line)
-* Can focus on digits only (Tesseract only)
+* Supports all the image formats supported by [Pillow](https://github.com/python-imaging/Pillow),
+  including jpeg, png, gif, bmp, tiff and others
+* Various output types: text only, bounding boxes, etc.
+* Orientation detection (Tesseract and libtesseract only)
+* Can focus on digits only (Tesseract and libtesseract only)
 * Can save and reload boxes in hOCR format
+* PDF generation (libtesseract only)
 
 
 ## Limitations
 
-* hOCR: Only a subset of the specification is supported. For instance, pages and paragraph positions are not stored.
+* hOCR: Only a subset of the specification is supported. For instance, pages and
+  paragraph positions are not stored.
 
 
 ## Installation
