@@ -140,13 +140,17 @@ def image_to_string(image, lang=None, builder=None):
                 res_iterator, lvl_word
             )
 
-            if word is not None and word != "":
+            confidence = tesseract_raw.result_iterator_get_confidence(
+                res_iterator, lvl_word
+            )
+
+            if word is not None and confidence is not None and word != "":
                 (r, box) = tesseract_raw.page_iterator_bounding_box(
                     page_iterator, lvl_word
                 )
                 assert(r)
                 box = _tess_box_to_pyocr_box(box)
-                builder.add_word(word, box)
+                builder.add_word(word, box, confidence)
 
                 if last_word_in_line:
                     builder.end_line()

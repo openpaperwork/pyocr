@@ -42,7 +42,7 @@ class Box(object):
     was used.
     """
 
-    def __init__(self, content, position, confidence=None):
+    def __init__(self, content, position, confidence=0):
         """
         Arguments:
             content --- a single string
@@ -61,9 +61,8 @@ class Box(object):
         This string can be stored in a file as-is (see write_box_file())
         and reread using read_box_file().
         """
-        return to_unicode("%s %s %d %d %d %d") % (
+        return to_unicode("%s %d %d %d %d") % (
             self.content,
-            self.confidence,
             self.position[0][0],
             self.position[0][1],
             self.position[1][0],
@@ -332,7 +331,7 @@ class TextBuilder(BaseBuilder):
     def start_line(self, box):
         self.built_text.append(u"")
 
-    def add_word(self, word, box, confidence=None):
+    def add_word(self, word, box, confidence=0):
         if self.built_text[-1] != u"":
             self.built_text[-1] += u" "
         self.built_text[-1] += word

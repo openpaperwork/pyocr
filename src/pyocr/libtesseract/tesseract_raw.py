@@ -298,6 +298,12 @@ if g_libtesseract:
     g_libtesseract.TessResultIteratorGetUTF8Text.restype = \
         ctypes.c_void_p
 
+    g_libtesseract.TessResultIteratorConfidence.argtypes = [
+        ctypes.c_void_p,
+        ctypes.c_int,
+    ]
+    g_libtesseract.TessResultIteratorConfidence.restype = ctypes.c_float
+
     g_libtesseract.TessDeleteText.argtypes = [
         ctypes.c_void_p
     ]
@@ -586,6 +592,14 @@ def result_iterator_get_utf8_text(iterator, level):
     g_libtesseract.TessDeleteText(ptr)
     return val
 
+def result_iterator_get_confidence(iterator, level):
+    ptr = g_libtesseract.TessResultIteratorConfidence(
+        ctypes.c_void_p(iterator), level
+    )
+    if ptr is None:
+        return None
+    val = ctypes.c_float(ptr).value
+    return val
 
 def detect_os(handle):
     global g_libtesseract
