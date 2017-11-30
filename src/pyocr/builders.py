@@ -402,6 +402,7 @@ class _WordHTMLParser(HTMLParser):
             confidence = piece.split(" ")[1]
             return int(confidence)
         logger.info("OCR confidence measure not found")
+        return 0
 
     @staticmethod
     def __parse_position(title):
