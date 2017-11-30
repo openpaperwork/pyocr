@@ -179,6 +179,10 @@ def detect_orientation(image, lang=None):
     _set_environment()
     with temp_dir() as tmpdir:
         command = [TESSERACT_CMD, "input.bmp", 'stdout', "-psm", "0"]
+        version = get_version()
+        if version[0] >= 4:
+            # XXX: temporary fix to remove once Tesseract 4 is stable
+            command += ["--oem", "0"]
         if lang is not None:
             command += ['-l', lang]
 
