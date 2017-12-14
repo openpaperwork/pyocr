@@ -1,6 +1,13 @@
 14/12/2017 - 0.5:
 - Tesseract/Libtesseract + LineBoxBuilder: Add confidence scores to
-  every word boxes and to hOCR files
+  every word boxes and to hOCR files (thanks to Adriano Pagano)
+- Tesseract 4 (shell): Add '--oem 0' to specify legacy model when doing
+  orientation detection as orientation detection does not work yet with
+  Tesseract 4 (thanks to Adriano Pagano)
+- Libtesseract: Fix multi-language support
+- Tesseract (shell) + Windows: Never let the cmd window appear
+- Libtesseract: Implements image_to_pdf() (thanks to Marian Skrip)
+- Libtesseract: Hide debug messages (thanks to Ashish Kulkarni)
 
 13/05/2017 - 0.4.7:
 - Tesseract 4.00.00alpha:
