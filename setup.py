@@ -11,12 +11,13 @@ setup(
     # - ChangeLog
     # - push
     # - tag
-    version="0.4.7",
+    # - python3 ./setup.py sdist upload
+    version="0.5",
     description=("A Python wrapper for OCR engines (Tesseract, Cuneiform,"
                  " etc)"),
     keywords="tesseract cuneiform ocr",
     url="https://github.com/openpaperwork/pyocr",
-    download_url="https://github.com/openpaperwork/pyocr/archive/0.4.7.zip",
+    download_url="https://github.com/openpaperwork/pyocr/archive/0.5.zip",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",

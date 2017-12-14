@@ -1,3 +1,7 @@
+14/12/2017 - 0.5:
+- Tesseract/Libtesseract + LineBoxBuilder: Add confidence scores to
+  every word boxes and to hOCR files
+
 13/05/2017 - 0.4.7:
 - Tesseract 4.00.00alpha:
   - Version parsing: Ignore suffix (so '4.00.00alpha' == (4, 0, 0))

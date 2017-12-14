@@ -107,8 +107,13 @@ line_and_word_boxes = tool.image_to_string(
 #   line.content is the whole text of the line
 #   line.position is the position of the whole line on the page (in pixels)
 #
-# Beware that some OCR tools (Tesseract for instance)
-# may return empty boxes
+# Each word box object has an attribute 'confidence' giving the confidence
+# score provided by the OCR tool. Confidence score depends entirely on
+# the OCR tool. Only supported with Tesseract and Libtesseract (always 0
+# with Cuneiform).
+#
+# Beware that some OCR tools (Tesseract for instance) may return boxes
+# with an empty content.
 
 # Digits - Only Tesseract (not 'libtesseract' yet !)
 digits = tool.image_to_string(
