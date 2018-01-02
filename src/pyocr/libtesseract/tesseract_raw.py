@@ -44,12 +44,14 @@ else:
 
 g_libtesseract = None
 
+lib_load_errors = []
 for libname in libnames:
     try:
         g_libtesseract = ctypes.cdll.LoadLibrary(libname)
+        lib_load_errors = []
         break
-    except OSError:
-        pass
+    except OSError as ex:
+        lib_load_errors.append((libname, ex.message))
 
 
 class PageSegMode(object):
