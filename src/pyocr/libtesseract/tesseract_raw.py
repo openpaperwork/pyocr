@@ -44,12 +44,14 @@ else:
 
 g_libtesseract = None
 
+lib_load_errors = []
 for libname in libnames:
     try:
         g_libtesseract = ctypes.cdll.LoadLibrary(libname)
+        lib_load_errors = []
         break
-    except OSError:
-        pass
+    except OSError as ex:
+        lib_load_errors.append((libname, ex.message))
 
 
 class PageSegMode(object):
@@ -353,23 +355,20 @@ def init(lang=None):
 
 
 def cleanup(handle):
+    assert(g_libtesseract)
     g_libtesseract.TessBaseAPIDelete(ctypes.c_void_p(handle))
 
 
 def is_available():
-    global g_libtesseract
     return g_libtesseract is not None
 
 
 def get_version():
-    global g_libtesseract
     assert(g_libtesseract)
-
     return g_libtesseract.TessVersion().decode("utf-8")
 
 
 def get_available_languages(handle):
-    global g_libtesseract
     assert(g_libtesseract)
 
     langs = []
@@ -385,7 +384,6 @@ def get_available_languages(handle):
 
 
 def set_is_numeric(handle, mode):
-    global g_libtesseract
     assert(g_libtesseract)
 
     if mode:
@@ -401,7 +399,6 @@ def set_is_numeric(handle, mode):
 
 
 def set_debug_file(handle, filename):
-    global g_libtesseract
     assert(g_libtesseract)
 
     if not isinstance(filename, bytes):
@@ -415,7 +412,6 @@ def set_debug_file(handle, filename):
 
 
 def set_page_seg_mode(handle, mode):
-    global g_libtesseract
     assert(g_libtesseract)
 
     g_libtesseract.TessBaseAPISetPageSegMode(
@@ -424,14 +420,12 @@ def set_page_seg_mode(handle, mode):
 
 
 def init_for_analyse_page(handle):
-    global g_libtesseract
     assert(g_libtesseract)
 
     g_libtesseract.TessBaseAPIInitForAnalysePage(ctypes.c_void_p(handle))
 
 
 def set_image(handle, image):
-    global g_libtesseract
     assert(g_libtesseract)
 
     image = image.convert("RGB")
@@ -451,7 +445,6 @@ def set_image(handle, image):
 
 
 def recognize(handle):
-    global g_libtesseract
     assert(g_libtesseract)
 
     return g_libtesseract.TessBaseAPIRecognize(
@@ -460,13 +453,13 @@ def recognize(handle):
 
 
 def analyse_layout(handle):
-    global g_libtesseract
     assert(g_libtesseract)
 
     return g_libtesseract.TessBaseAPIAnalyseLayout(ctypes.c_void_p(handle))
 
 
 def get_utf8_text(handle):
+    assert(g_libtesseract)
     ptr = g_libtesseract.TessBaseAPIGetUTF8Text(ctypes.c_void_p(handle))
     val = ctypes.cast(ptr, ctypes.c_char_p).value.decode("utf-8")
     g_libtesseract.TessDeleteText(ptr)
@@ -474,21 +467,18 @@ def get_utf8_text(handle):
 
 
 def page_iterator_delete(iterator):
-    global g_libtesseract
     assert(g_libtesseract)
 
     return g_libtesseract.TessPageIteratorDelete(ctypes.c_void_p(iterator))
 
 
 def page_iterator_next(iterator, level):
-    global g_libtesseract
     assert(g_libtesseract)
 
     return g_libtesseract.TessPageIteratorNext(ctypes.c_void_p(iterator), level)
 
 
 def page_iterator_is_at_beginning_of(iterator, level):
-    global g_libtesseract
     assert(g_libtesseract)
 
     return g_libtesseract.TessPageIteratorIsAtBeginningOf(
@@ -497,7 +487,6 @@ def page_iterator_is_at_beginning_of(iterator, level):
 
 
 def page_iterator_is_at_final_element(iterator, level, element):
-    global g_libtesseract
     assert(g_libtesseract)
 
     return g_libtesseract.TessPageIteratorIsAtFinalElement(
@@ -506,7 +495,6 @@ def page_iterator_is_at_final_element(iterator, level, element):
 
 
 def page_iterator_block_type(iterator):
-    global g_libtesseract
     assert(g_libtesseract)
 
     return g_libtesseract.TessPageIteratorBlockType(
@@ -515,7 +503,6 @@ def page_iterator_block_type(iterator):
 
 
 def page_iterator_bounding_box(iterator, level):
-    global g_libtesseract
     assert(g_libtesseract)
 
     left = ctypes.c_int(0)
@@ -541,7 +528,6 @@ def page_iterator_bounding_box(iterator, level):
 
 
 def page_iterator_orientation(iterator):
-    global g_libtesseract
     assert(g_libtesseract)
 
     orientation = ctypes.c_int(0)
@@ -566,7 +552,6 @@ def page_iterator_orientation(iterator):
 
 
 def get_iterator(handle):
-    global g_libtesseract
     assert(g_libtesseract)
 
     i = g_libtesseract.TessBaseAPIGetIterator(ctypes.c_void_p(handle))
@@ -574,7 +559,6 @@ def get_iterator(handle):
 
 
 def result_iterator_get_page_iterator(res_iterator):
-    global g_libtesseract
     assert(g_libtesseract)
 
     return g_libtesseract.TessResultIteratorGetPageIterator(
@@ -583,6 +567,7 @@ def result_iterator_get_page_iterator(res_iterator):
 
 
 def result_iterator_get_utf8_text(iterator, level):
+    assert(g_libtesseract)
     ptr = g_libtesseract.TessResultIteratorGetUTF8Text(
         ctypes.c_void_p(iterator), level
     )
@@ -592,7 +577,9 @@ def result_iterator_get_utf8_text(iterator, level):
     g_libtesseract.TessDeleteText(ptr)
     return val
 
+
 def result_iterator_get_confidence(iterator, level):
+    assert(g_libtesseract)
     ptr = g_libtesseract.TessResultIteratorConfidence(
         ctypes.c_void_p(iterator), level
     )
@@ -601,8 +588,8 @@ def result_iterator_get_confidence(iterator, level):
     val = ctypes.c_float(ptr).value
     return val
 
+
 def detect_os(handle):
-    global g_libtesseract
     assert(g_libtesseract)
 
     # Use the new API function if it is available, because since Tesseract
@@ -642,7 +629,6 @@ def detect_os(handle):
 
 
 def set_input_name(handle, input_file):
-    global g_libtesseract
     assert(g_libtesseract)
 
     g_libtesseract.TessBaseAPISetInputName(
@@ -652,7 +638,6 @@ def set_input_name(handle, input_file):
 
 
 def init_pdf_renderer(handle, output_file, textonly):
-    global g_libtesseract
     assert(g_libtesseract)
 
     tessdata_dir = g_libtesseract.TessBaseAPIGetDatapath(handle)
@@ -667,7 +652,6 @@ def init_pdf_renderer(handle, output_file, textonly):
 
 
 def begin_document(renderer, doc_name):
-    global g_libtesseract
     assert(g_libtesseract)
 
     g_libtesseract.TessResultRendererBeginDocument(
@@ -677,7 +661,6 @@ def begin_document(renderer, doc_name):
 
 
 def add_renderer_image(handle, renderer):
-    global g_libtesseract
     assert(g_libtesseract)
 
     g_libtesseract.TessResultRendererAddImage(
@@ -687,7 +670,6 @@ def add_renderer_image(handle, renderer):
 
 
 def end_document(renderer):
-    global g_libtesseract
     assert(g_libtesseract)
 
     g_libtesseract.TessResultRendererEndDocument(

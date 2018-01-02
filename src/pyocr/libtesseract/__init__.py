@@ -20,6 +20,9 @@ from . import tesseract_raw
 from ..error import TesseractError
 from ..util import digits_only
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 __all__ = [
     'can_detect_orientation',
@@ -212,11 +215,13 @@ def is_available():
     if not available:
         return False
     version = get_version()
+
     # C-API with Tesseract <= 3.02 segfaults sometimes
     # (seen with Debian stable + Paperwork)
     # not tested with 3.03
     if (version[0] < 3 or
             (version[0] == 3 and version[1] < 4)):
+        logger.warning("Unsupported version [%s]" % ".".join([str(r) for r in version]))
         return False
     return True
 
