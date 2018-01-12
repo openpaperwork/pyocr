@@ -31,7 +31,13 @@ if sys.platform[:3] == "win":
         # Jflesch> Don't they have the equivalent of LD_LIBRARY_PATH on
         # Windows ?
         "../vs2010/DLL_Release/libtesseract302.dll",
+        # prefer the most recent first
+        "libtesseract305.dll",
+        "libtesseract304.dll",
+        "libtesseract303.dll",
         "libtesseract302.dll",
+        "libtesseract400.dll",  # Tesseract 4 is still in alpha stage
+        "libtesseract.dll",
         "C:\\Program Files (x86)\\Tesseract-OCR\\libtesseract-4.dll",
         "C:\\Program Files (x86)\\Tesseract-OCR\\libtesseract-3.dll",
     ]
