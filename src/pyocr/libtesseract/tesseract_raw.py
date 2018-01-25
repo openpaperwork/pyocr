@@ -57,7 +57,12 @@ for libname in libnames:
         lib_load_errors = []
         break
     except OSError as ex:
-        lib_load_errors.append((libname, ex.message))
+        if hasattr(ex, 'message'):
+            # python 2
+            lib_load_errors.append((libname, ex.message))
+        else:
+            # python 3
+            lib_load_errors.append((libname, str(ex)))
 
 
 class PageSegMode(object):
