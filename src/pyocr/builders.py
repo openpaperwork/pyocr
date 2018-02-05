@@ -401,7 +401,7 @@ class _WordHTMLParser(HTMLParser):
                 continue
             confidence = piece.split(" ")[1]
             return int(confidence)
-        logger.info("OCR confidence measure not found")
+        logger.debug("OCR confidence measure not found. Assuming 0.")
         return 0
 
     @staticmethod
