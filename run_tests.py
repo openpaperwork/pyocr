@@ -14,6 +14,8 @@ from tests import tests_tesseract
 from tests import tests_libtesseract
 
 if __name__ == '__main__':
+    success = True
+
     for tool in pyocr.TOOLS:
         print("- OCR: %s" % tool.get_name())
         available = tool.is_available()
@@ -31,12 +33,20 @@ if __name__ == '__main__':
     if libtesseract.is_available():
         print("---")
         print("Tesseract C-API:")
-        unittest.TextTestRunner().run(tests_libtesseract.get_all_tests())
+        success = unittest.TextTestRunner().run(
+            tests_libtesseract.get_all_tests()
+        ).wasSuccessful() and success
     if tesseract.is_available():
         print("---")
         print("Tesseract SH:")
-        unittest.TextTestRunner().run(tests_tesseract.get_all_tests())
+        success = unittest.TextTestRunner().run(
+            tests_tesseract.get_all_tests()
+        ).wasSuccessful() and success
     if cuneiform.is_available():
         print("---")
         print("Cuneiform SH:")
-        unittest.TextTestRunner().run(tests_cuneiform.get_all_tests())
+        success = unittest.TextTestRunner().run(
+            tests_cuneiform.get_all_tests()
+        ).wasSuccessful() and success
+
+    sys.exit(0 if success else 1)
