@@ -1,4 +1,4 @@
-from .pyocr import *
+from .pyocr import *  # noqa
 from .error import PyocrException
 
 __all__ = [

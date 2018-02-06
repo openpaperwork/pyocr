@@ -204,7 +204,8 @@ def detect_orientation(image, lang=None):
         original_output = original_output.strip()
 
         if "Could not initialize tesseract" in original_output:
-            raise TesseractError(-1, "Error initializing tesseract: %s" % original_output)
+            raise TesseractError(-1, "Error initializing tesseract: %s"
+                                 % original_output)
 
         try:
             output = original_output.split("\n")

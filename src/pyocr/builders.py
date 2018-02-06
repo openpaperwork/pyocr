@@ -458,7 +458,8 @@ class _WordHTMLParser(HTMLParser):
             if self.__current_box_text is None:
                 return
             box_position = self.__current_box_position
-            box = Box(self.__current_box_text, box_position, self.__current_box_confidence)
+            box = Box(self.__current_box_text, box_position,
+                      self.__current_box_confidence)
             self.boxes.append(box)
             self.__current_line_content.append(box)
             self.__current_box_text = None

@@ -1,8 +1,5 @@
-import codecs
 from PIL import Image
-import sys
-sys.path = ["src"] + sys.path
-
+import codecs
 import six
 
 from pyocr import builders

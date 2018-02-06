@@ -135,8 +135,10 @@ def image_to_string(image, lang=None, builder=None):
                 box = _tess_box_to_pyocr_box(box)
                 builder.start_line(box)
 
-            last_word_in_line = tesseract_raw.page_iterator_is_at_final_element(
-                page_iterator, lvl_line, lvl_word
+            last_word_in_line = (
+                tesseract_raw.page_iterator_is_at_final_element(
+                    page_iterator, lvl_line, lvl_word
+                )
             )
 
             word = tesseract_raw.result_iterator_get_utf8_text(
@@ -167,7 +169,8 @@ def image_to_string(image, lang=None, builder=None):
     return builder.get_output()
 
 
-def image_to_pdf(image, output_file, lang=None, input_file="stdin", textonly=False):
+def image_to_pdf(image, output_file, lang=None, input_file="stdin",
+                 textonly=False):
     '''
     Creates pdf file with embeded text based on OCR from an image
 
@@ -221,7 +224,9 @@ def is_available():
     # not tested with 3.03
     if (version[0] < 3 or
             (version[0] == 3 and version[1] < 4)):
-        logger.warning("Unsupported version [%s]" % ".".join([str(r) for r in version]))
+        logger.warning("Unsupported version [%s]" % ".".join(
+            [str(r) for r in version]
+        ))
         return False
     return True
 

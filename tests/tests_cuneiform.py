@@ -17,7 +17,7 @@ class TestContext(unittest.TestCase):
 
     def test_available(self):
         self.assertTrue(cuneiform.is_available(),
-                       "cuneiform not found. Is it installed ?")
+                        "cuneiform not found. Is it installed ?")
 
     def test_version(self):
         self.assertEqual(cuneiform.get_version(), (1, 1, 0),
@@ -116,11 +116,11 @@ class TestWordBox(base.BaseTestWordBox, BaseCuneiform, unittest.TestCase):
             # we must open the file with codecs.open() for utf-8 support
             os.close(file_descriptor)
 
-            with codecs.open(tmp_path, 'w', encoding='utf-8') as file_descriptor:
-                self._builder.write_file(file_descriptor, original_boxes)
+            with codecs.open(tmp_path, 'w', encoding='utf-8') as file_desc:
+                self._builder.write_file(file_desc, original_boxes)
 
-            with codecs.open(tmp_path, 'r', encoding='utf-8') as file_descriptor:
-                new_boxes = self._builder.read_file(file_descriptor)
+            with codecs.open(tmp_path, 'r', encoding='utf-8') as file_desc:
+                new_boxes = self._builder.read_file(file_desc)
 
             self.assertEqual(len(new_boxes), len(original_boxes))
             for i in range(0, len(original_boxes)):

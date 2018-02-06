@@ -486,7 +486,8 @@ def page_iterator_delete(iterator):
 def page_iterator_next(iterator, level):
     assert(g_libtesseract)
 
-    return g_libtesseract.TessPageIteratorNext(ctypes.c_void_p(iterator), level)
+    return g_libtesseract.TessPageIteratorNext(ctypes.c_void_p(iterator),
+                                               level)
 
 
 def page_iterator_is_at_beginning_of(iterator, level):
