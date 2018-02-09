@@ -24,7 +24,7 @@ doc: install_py
 
 check:
 	flake8
-	pydocstyle pyinsane2
+	pydocstyle pyocr
 
 test: ${VERSION_FILE}
 	tox
@@ -60,7 +60,7 @@ install_py: ${VERSION_FILE}
 install_c:
 
 uninstall_py:
-	pip3 uninstall -y pyinsane2
+	pip3 uninstall -y pyocr
 
 uninstall_c:
 
