@@ -5,3 +5,4 @@ dist/
 pyocr.egg-info/
 venv*/
 .tox/
+.egg*/

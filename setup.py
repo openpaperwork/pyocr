@@ -1,23 +1,31 @@
 #!/usr/bin/env python
 
+import sys
 from setuptools import setup
+
+try:
+    with open("src/pyocr/_version.py", "r") as file_descriptor:
+        version = file_descriptor.read().strip()
+        version = version.split(" ")[2][1:-1]
+    print("PyOCR version: {}".format(version))
+    if "-" in version:
+        version = version.split("-")[0]
+except FileNotFoundError:
+    print("ERROR: _version.py file is missing")
+    print("ERROR: Please run 'make version' first")
+    sys.exit(1)
 
 setup(
     name="pyocr",
-    # Don't forget to update
-    # - src/pyocr/pyocr.py:VERSION
-    # - setup.py:version
-    # - setup.py:download_url
-    # - ChangeLog
-    # - push
-    # - tag
-    # - python3 ./setup.py sdist upload
-    version="0.5",
+    version=version,
     description=("A Python wrapper for OCR engines (Tesseract, Cuneiform,"
                  " etc)"),
     keywords="tesseract cuneiform ocr",
     url="https://github.com/openpaperwork/pyocr",
-    download_url="https://github.com/openpaperwork/pyocr/archive/0.5.zip",
+    download_url=(
+        "https://github.com/openpaperwork/pyocr/archive/"
+        "{}.zip".format(version)
+    ),
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
