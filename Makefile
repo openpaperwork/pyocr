@@ -29,8 +29,9 @@ check:
 test: ${VERSION_FILE}
 	tox
 
-exe:
-	echo "Library. Can't make executable"
+linux_exe:
+
+windows_exe:
 
 release:
 ifeq (${RELEASE}, )
@@ -81,7 +82,8 @@ help:
 	build_py \
 	check \
 	doc \
-	exe \
+	linux_exe \
+	windows_exe \
 	help \
 	install \
 	install_c \
