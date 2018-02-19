@@ -42,7 +42,7 @@ or the manual way:
 mkdir -p ~/git ; cd git
 git clone https://github.com/openpaperwork/pyocr.git
 cd pyocr
-sudo python ./setup.py install
+make install  # will run 'python ./setup.py install'
 ```
 
 
