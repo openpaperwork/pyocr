@@ -39,7 +39,7 @@ ifeq (${RELEASE}, )
 else
 	@echo "Will release: ${RELEASE}"
 	@echo "Checking release is in ChangeLog ..."
-	grep ${RELEASE} ChangeLog
+	grep ${RELEASE} ChangeLog | grep -v "/xx"
 	@echo "Releasing ..."
 	git tag -a ${RELEASE} -m ${RELEASE}
 	git push origin ${RELEASE}

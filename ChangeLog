@@ -1,3 +1,13 @@
+01/03/2017 - 0.5.1:
+- libtesseract/Windows: Add possible DLL names for libtesseract
+- libtesseract: Keep track of library-loading errors in
+  pyocr.libtesseract.lib_load_errors (useful for debugging)
+- Build method has been changed: Use now "make install" instead of
+  "python3 ./setup.py install"
+- cosmetic: builders/WordHTMLParser: Message "OCR confidence not found"
+  floods the logs when working with old documents --> switch to debug
+  instead of info.
+
 14/12/2017 - 0.5:
 - Tesseract/Libtesseract + LineBoxBuilder: Add confidence scores to
   every word boxes and to hOCR files (thanks to Adriano Pagano)
