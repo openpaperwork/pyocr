@@ -25,7 +25,7 @@ doc: install_py
 
 check:
 	flake8
-	pydocstyle src/pyocr
+# 	pydocstyle src/pyocr
 
 test: ${VERSION_FILE}
 	tox
