@@ -221,7 +221,7 @@ def detect_orientation(image, lang=None):
             }
         except Exception as ex:
             raise TesseractError(-1, "No script found in image (%s - %s)"
-                                 % (ex.message, original_output))
+                                 % (str(ex), original_output))
 
 
 def get_name():
