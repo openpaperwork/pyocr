@@ -482,6 +482,9 @@ class _LineHTMLParser(HTMLParser):
     line, the position of all its characters.
     Spaces have "-1 -1 -1 -1" for position".
     """
+    TAG_TYPE_CONTENT = 0
+    TAG_TYPE_POSITIONS = 1
+
     def __init__(self):
         HTMLParser.__init__(self)
         self.boxes = []
@@ -489,24 +492,21 @@ class _LineHTMLParser(HTMLParser):
         self.__char_positions = None
 
     def handle_starttag(self, tag, attrs):
-        TAG_TYPE_CONTENT = 0
-        TAG_TYPE_POSITIONS = 1
-
         if (tag != "span"):
             return
         tag_type = -1
         for attr in attrs:
             if attr[0] == 'class':
                 if attr[1] == 'ocr_line':
-                    tag_type = TAG_TYPE_CONTENT
+                    tag_type = self.TAG_TYPE_CONTENT
                 elif attr[1] == 'ocr_cinfo':
-                    tag_type = TAG_TYPE_POSITIONS
+                    tag_type = self.TAG_TYPE_POSITIONS
 
-        if tag_type == TAG_TYPE_CONTENT:
+        if tag_type == self.TAG_TYPE_CONTENT:
             self.__line_text = to_unicode("")
             self.__char_positions = []
             return
-        elif tag_type == TAG_TYPE_POSITIONS:
+        elif tag_type == self.TAG_TYPE_POSITIONS:
             for attr in attrs:
                 if attr[0] == 'title':
                     self.__char_positions = attr[1].split(" ")

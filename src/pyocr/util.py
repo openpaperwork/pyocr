@@ -17,7 +17,7 @@ def digits_only(string):
 def to_unicode(string):
     try:
         return six.u(string)
-    except:
+    except:  # noqa: E722
         # probably already decoded
         return string
 

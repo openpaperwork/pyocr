@@ -359,7 +359,7 @@ def init(lang=None):
             b"tessedit_zero_rejection",
             b"F"
         )
-    except:
+    except:  # noqa: E722
         g_libtesseract.TessBaseAPIDelete(ctypes.c_void_p(handle))
         raise
     return handle
