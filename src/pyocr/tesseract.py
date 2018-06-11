@@ -161,15 +161,6 @@ def can_detect_orientation():
     )
 
 
-def psm_parameter():
-    """Return the psm option string depending on the Tesseract version."""
-    version = get_version()
-    if version[0] <= 3:
-        return "-psm"
-
-    return "--psm"
-
-
 def detect_orientation(image, lang=None):
     """
     Arguments:
@@ -187,7 +178,7 @@ def detect_orientation(image, lang=None):
     """
     _set_environment()
     with temp_dir() as tmpdir:
-        command = [TESSERACT_CMD, "input.bmp", 'stdout', psm_parameter(), "0"]
+        command = [TESSERACT_CMD, "input.bmp", 'stdout', "-psm", "0"]
         version = get_version()
         if version[0] >= 4:
             # XXX: temporary fix to remove once Tesseract 4 is stable
