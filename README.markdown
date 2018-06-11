@@ -280,7 +280,8 @@ Beware this code hasn't been adapted to libtesseract 3 yet.
 ## Tests
 
 ```sh
-python ./run_tests.py
+make check  # requires pyflake8
+make test  # requires tox
 ```
 
 Tests are made to be run with the latest versions of Tesseract and Cuneiform.
